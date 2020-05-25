@@ -1,0 +1,59 @@
+slot 0:
+canstaircase
+add wall1 100
+recolor wall1 default: 45, 55; 44, 56; 48, 21; 37, 36
+staircase wall1: wallstaircase1
+
+slot 1:
+canstaircase
+add testfloor1 100
+recolor testfloor1 default: 21, 14
+staircase testfloor1: floorstaircase1
+
+slot 2:
+canstaircase
+add testceiling1 100
+staircase testceiling1: ceilingstaircase1
+
+slot 4:
+add boards 10
+add nothing 100
+
+slot 5:
+add bard 2
+add reapus 0.2
+add nothing 100
+
+slot 8: # shelves
+canstaircase
+
+lots 1 72 add painting%index% 0.09
+lots 1 72 canmirror painting%index%
+
+add nothing 100
+
+slot 100:
+canstaircase
+add mushroom1 1
+add mushroom2 1
+add mushroom3 1
+add mushroom4 1
+add mushroom5 1
+add mushroom6 1
+add mushroom7 1
+add mushroom8 1
+add mushroom9 1
+add mushroom10 1
+add mushroom11 1
+
+staircase mushroom1 mushroomstaircase1
+staircase mushroom2 mushroomstaircase2
+staircase mushroom3 mushroomstaircase3
+staircase mushroom4 mushroomstaircase4
+staircase mushroom5 mushroomstaircase5
+staircase mushroom6 mushroomstaircase6
+staircase mushroom7 mushroomstaircase7
+staircase mushroom8 mushroomstaircase8
+staircase mushroom9 mushroomstaircase9
+staircase mushroom10 mushroomstaircase10
+staircase mushroom11 mushroomstaircase11

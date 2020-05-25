@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "Brick_MiniDungeons",
+			"path": "../Brick_MiniDungeons"
+		},
+		{
+			"name": "Client_MiniDungeons",
+			"path": "../Client_MiniDungeons"
+		},
+		{
+			"name": "Player_BeefBoy",
+			"path": "../Player_BeefBoy"
+		},
+		{
+			"name": "Server_MiniDungeons",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

@@ -1,0 +1,102 @@
+slot 0:
+canstaircase
+add wall1 100
+staircase wall1: wallstaircase1
+recolor wall1 default: 0, 0
+recolor wall1 1: 45, 53; 44, 52; 48, 56; # 1st: dark brick, 2nd: light brick, 3rd: trim, 4th: vines
+recolor wall1 2: 45, 46; 44, 45; 48, 49;
+recolor wall1 3: 45, 60; 44, 59; 48, 62;
+recolor wall1 4: 45, 55; 44, 56; 48, 21; 37, 36
+recolor wall1 6: 45, 20; 44, 19; 48, 63;
+recolor wall1 7: 45, 19; 44, 18; 48, 56;
+recolor wall1 8: 45, 32; 44, 35; 48, 34;
+recolor wall1 9: 45, 33; 44, 31; 48, 32; 37, 40
+
+add testwall2 1
+setrecoloralias testwall2: wall1
+staircase testwall2: wallstaircase1
+canmirror testwall2
+forbid testwall2: 8
+
+slot 1:
+canstaircase
+add testfloor1 100
+staircase testfloor1: floorstaircase1
+recolor testfloor1 default: 21, 21
+recolor testfloor1 0: 21, 49
+recolor testfloor1 1: 21, 57
+recolor testfloor1 2: 21, 63
+recolor testfloor1 3: 21, 48
+recolor testfloor1 4: 21, 56
+recolor testfloor1 5: 21, 62
+recolor testfloor1 6: 21, 47
+recolor testfloor1 14: 21, 61
+recolor testfloor1 15: 21, 35
+
+slot 2:
+canstaircase
+add testceiling1 100
+staircase testceiling1: ceilingstaircase1
+
+slot 3: # torches
+add skulltorch1 15
+canmirror skulltorch1
+forbid skulltorch1: 5, 6, 7
+add nothing 100
+
+slot 4:
+canstaircase
+add boards 2
+add nothing 100
+
+slot 5:
+add bard 2
+add reapus 0.2
+add crate3 5
+forbid crate3: 6, 7
+add nothing 100
+
+slot 7: # right side of the wall
+add crate1 8
+add crate2 8
+add coffin1 4
+add coffin2 4
+add coffin3 4
+add coffin4 4
+add graves1 8
+add graves2 8
+add graves3 8
+add nothing 150
+
+slot 9: # paintings
+lots 1 72 add painting%index% 0.09
+lots 1 72 canmirror painting%index%
+
+add nothing 100
+
+
+slot 101: # skulls
+canstaircase
+add skulls1 1
+add skulls2 1
+add skulls3 1
+add skulls4 1
+add skulls5 1
+add skulls6 1
+add skulls7 1
+add skulls8 1
+add skulls9 1
+add skulls10 1
+add skulls11 1
+
+staircase skulls1 skullsstaircase1
+staircase skulls2 skullsstaircase2
+staircase skulls3 skullsstaircase3
+staircase skulls4 skullsstaircase4
+staircase skulls5 skullsstaircase5
+staircase skulls6 skullsstaircase6
+staircase skulls7 skullsstaircase7
+staircase skulls8 skullsstaircase8
+staircase skulls9 skullsstaircase9
+staircase skulls10 skullsstaircase10
+staircase skulls11 skullsstaircase11

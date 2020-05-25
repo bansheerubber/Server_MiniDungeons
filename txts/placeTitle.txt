@@ -1,0 +1,13 @@
+Duke
+Marquess
+Earl
+Vicount
+Baron
+King
+Prince
+Count
+Baronet
+Chancellor
+Jester
+Bishop
+Sherif

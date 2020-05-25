@@ -1,0 +1,171 @@
+slot 0:
+canstaircase
+add wall1 100
+staircase wall1: wallstaircase1
+recolor wall1 default: 0, 0
+recolor wall1 0: 45, 25; 44, 24; 48, 29; # 1st: dark brick, 2nd: light brick, 3rd: trim, 4th: vines
+recolor wall1 1: 45, 53; 44, 52; 48, 56;
+recolor wall1 2: 45, 46; 44, 45; 48, 49;
+recolor wall1 3: 45, 60; 44, 59; 48, 62;
+recolor wall1 4: 45, 55; 44, 56; 48, 21; 37, 36
+recolor wall1 5: 45, 18; 44, 17; 48, 20; 37, 61
+recolor wall1 6: 45, 20; 44, 19; 48, 63;
+recolor wall1 7: 45, 19; 44, 18; 48, 56;
+recolor wall1 8: 45, 32; 44, 35; 48, 34;
+recolor wall1 9: 45, 33; 44, 31; 48, 32; 37, 40
+recolor wall1 10: 45, 30; 44, 29; 48, 31; 
+recolor wall1 11: 45, 28; 44, 27; 48, 30;
+
+add testwall2 1
+setrecoloralias testwall2: wall1
+staircase testwall2: wallstaircase1
+canmirror testwall2
+forbid testwall2: 8
+
+slot 1:
+canstaircase
+add testfloor1 100
+staircase testfloor1: floorstaircase1
+recolor testfloor1 default: 21, 21
+recolor testfloor1 0: 21, 49
+recolor testfloor1 1: 21, 57
+recolor testfloor1 2: 21, 63
+recolor testfloor1 3: 21, 48
+recolor testfloor1 4: 21, 56
+recolor testfloor1 5: 21, 62
+recolor testfloor1 6: 21, 47
+recolor testfloor1 7: 21, 55
+recolor testfloor1 8: 21, 34
+recolor testfloor1 9: 21, 20
+recolor testfloor1 10: 21, 19
+recolor testfloor1 11: 21, 60
+recolor testfloor1 12: 21, 54
+recolor testfloor1 13: 21, 46
+recolor testfloor1 14: 21, 61
+recolor testfloor1 15: 21, 35
+recolor testfloor1 16: 21, 32
+recolor testfloor1 17: 21, 31
+recolor testfloor1 18: 21, 14
+
+slot 2:
+canstaircase
+add testceiling1 100
+staircase testceiling1: ceilingstaircase1
+
+slot 3:
+add potted1 1
+add nothing 25
+forbid potted1: 6, 7 # prevent slots 6 and 7 from being loaded
+
+slot 4:
+canstaircase
+add boards 2
+add nothing 100
+
+slot 5:
+add bard 2
+add reapus 0.2
+add nothing 100
+
+slot 6: # right side of the wall
+add potted2 5
+deprecolor potted2 default, wall1, default: 0, 0
+deprecolor potted2 0, wall1, 0: 45, 25; 44, 24; 48, 29;
+deprecolor potted2 1, wall1, 1: 45, 53; 44, 52; 48, 56;
+deprecolor potted2 2, wall1, 2: 45, 46; 44, 45; 48, 49;
+deprecolor potted2 3, wall1, 3: 45, 60; 44, 59; 48, 62;
+deprecolor potted2 4, wall1, 4: 45, 55; 44, 56; 48, 21; 37, 36
+deprecolor potted2 5, wall1, 5: 45, 18; 44, 17; 48, 20; 37, 61
+deprecolor potted2 6, wall1, 6: 45, 20; 44, 19; 48, 63;
+deprecolor potted2 7, wall1, 7: 45, 19; 44, 18; 48, 56;
+deprecolor potted2 8, wall1, 8: 45, 32; 44, 35; 48, 34;
+deprecolor potted2 9, wall1, 9: 45, 33; 44, 31; 48, 32; 37, 40
+deprecolor potted2 10, wall1, 10: 45, 30; 44, 29; 48, 31; 
+deprecolor potted2 11, wall1, 11: 45, 28; 44, 27; 48, 30;
+add bench2 5
+
+add bookcase 5
+canmirror bookcase
+forbidifmirror bookcase 7
+
+add life 0.01
+canmirror life
+forbidifmirror life 7, 8
+
+add nothing 100
+
+slot 7: # left side of the wall
+add testdeco1 1
+add potted3 5
+setrecoloralias potted3 potted2
+add bench1 5
+add nothing 100
+
+slot 8: # shelves
+canstaircase
+add shelf1 5
+canmirror shelf1
+
+add shelf2 5
+canmirror shelf2
+
+add shelf3 1
+canmirror shelf3
+
+lots 1 72 add painting%index% 0.09
+lots 1 72 canmirror painting%index%
+
+add nothing 100
+
+slot 100:
+canstaircase
+add vines1 1
+add vines2 1
+add vines3 1
+add vines4 1
+add vines5 1
+add vines6 1
+add vines7 1
+add vines8 1
+add vines9 1
+add vines10 1
+add vines11 1
+add nothing 80
+
+staircase vines1: vinestaircase1
+staircase vines2: vinestaircase2
+staircase vines3: vinestaircase3
+staircase vines4: vinestaircase4
+staircase vines5: vinestaircase5
+staircase vines6: vinestaircase6
+staircase vines7: vinestaircase7
+staircase vines8: vinestaircase8
+staircase vines9: vinestaircase9
+staircase vines10: vinestaircase10
+staircase vines11: vinestaircase11
+
+slot 101:
+canstaircase
+add stala1 1
+add stala2 1
+add stala3 1
+add stala4 1
+add stala5 1
+add stala6 1
+add stala7 1
+add stala8 1
+add stala9 1
+add stala10 1
+add stala11 1
+
+staircase stala1: stalastaircase1
+staircase stala2: stalastaircase2
+staircase stala3: stalastaircase3
+staircase stala4: stalastaircase4
+staircase stala5: stalastaircase5
+staircase stala6: stalastaircase6
+staircase stala7: stalastaircase7
+staircase stala8: stalastaircase8
+staircase stala9: stalastaircase9
+staircase stala10: stalastaircase10
+staircase stala11: stalastaircase11
