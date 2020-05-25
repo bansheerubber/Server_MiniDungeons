@@ -76,7 +76,7 @@ function AiPlayer::cannonAttack(%this) {
 	else {
 		if(!isEventPending(%this.cannonTrack)) {
 			%this.cannonTrackPlayer();
-			%this.nextCannonFire = getSimTime() + 2000;
+			%this.nextCannonFire = getSimTime() + getRandom(2000, 4000);
 		}
 		
 		%position = %this.getPosition();
