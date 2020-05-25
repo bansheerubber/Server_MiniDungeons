@@ -16,7 +16,7 @@ datablock AudioProfile(GladiusDeath3Sound) {
 	preload = true;
 };
 
-function createGladiusAi(%position) {
+function createGladiusAi(%position, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = MiniDungeonsArmor;
 		position = %position;
@@ -55,6 +55,8 @@ function createGladiusAi(%position) {
 	GladiusSwordArmor.mount(%ai, 0);
 
 	%ai.setAvatar("gladius");
+
+	%ai.onSpawn(%roomIndex);
 
 	return %ai;
 }

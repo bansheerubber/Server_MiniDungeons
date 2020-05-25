@@ -1,4 +1,4 @@
-function createBowAi(%position) {
+function createBowAi(%position, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = MiniDungeonsArmor;
 		position = %position;
@@ -29,6 +29,8 @@ function createBowAi(%position) {
 	%ai.mountImage(AiBowImage, 1);
 
 	%ai.setAvatar("gladius");
+
+	%ai.onSpawn(%roomIndex);
 
 	return %ai;
 }

@@ -16,7 +16,7 @@ datablock AudioProfile(CannonFallSound) {
 	preload = true;
 };
 
-function createCannonAi(%position) {
+function createCannonAi(%position, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = AiCannonPlayer;
 		position = %position;
@@ -47,6 +47,8 @@ function createCannonAi(%position) {
 	%dummyPlayer.setControlObject(%dummyPlayer);
 	%ai.setControlObject(%ai);
 	%ai.dummyPlayer = %dummyPlayer;
+
+	%ai.onSpawn(%roomIndex);
 
 	return %ai;
 }

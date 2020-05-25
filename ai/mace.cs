@@ -1,4 +1,4 @@
-function createMaceAi(%position) {
+function createMaceAi(%position, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = MiniDungeonsArmor;
 		position = %position;
@@ -34,6 +34,8 @@ function createMaceAi(%position) {
 	%ai.setAvatar("mace");
 
 	%ai.setMaxHealth(250);
+
+	%ai.onSpawn(%roomIndex);
 
 	return %ai;
 }

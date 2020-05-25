@@ -20,6 +20,11 @@ $MD::AiIdle = 0;
 $MD::AiSeek = 1;
 $MD::AiAttack = 2;
 
+function AiPlayer::onSpawn(%this, %roomIndex) {
+	%this.roomSet = MiniDungeonsAiRoomSet::get(%roomIndex);
+	%this.roomSet.add(%this);
+}
+
 function AiPlayer::setAiState(%this, %state) {
 	%this.ai = %this.schedule(33, _setAIState, %state);
 }

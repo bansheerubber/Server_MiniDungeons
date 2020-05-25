@@ -35,6 +35,7 @@ exec("./weapons/woodShield.cs");
 exec("./generator/hallwayInterpreter.cs"); // interprets .hall files
 exec("./generator/hallwayBuilder.cs"); // builds a hallway based on .hall files
 
+exec("./ai/rooms.cs");
 exec("./ai/avatars.cs");
 exec("./ai/states.cs");
 exec("./ai/seek.cs");

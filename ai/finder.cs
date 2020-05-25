@@ -20,7 +20,8 @@ function AiPlayer::findTarget(%this) {
 
 		// stagger out if statements in order of expensiveness
 		if((%dist = vectorDist(%position, %targetPosition)) < %this.idleDrawDistance && %dist < %minDist) {
-			%raycast = containerRaycast(%eyePoint, %targetPosition, $TypeMasks::StaticObjectType | $TypeMasks::fxBrickObjectType, false);
+			// if we are in alert phase, do not do the raycast
+			%raycast = %this.roomSet.alert ? 0 : containerRaycast(%eyePoint, %targetPosition, $TypeMasks::StaticObjectType | $TypeMasks::fxBrickObjectType, false);
 			
 			// determine if target is in fov
 			%theta = mRadToDeg(mACos(vectorDot(%this.getForwardVector(), vectorNormalize(vectorSub(%targetPosition, %position)))));
@@ -30,6 +31,10 @@ function AiPlayer::findTarget(%this) {
 				%this.target = %target;
 			}
 		}
+	}
+
+	if(isObject(%this.target) && isObject(%this.roomSet)) {
+		%this.roomSet.alert();
 	}
 
 	%this.target.numAttackers++;
