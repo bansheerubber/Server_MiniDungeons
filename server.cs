@@ -4,9 +4,15 @@ forceRequiredAddOn("Brick_MiniDungeons");
 exec("./playertype.cs");
 exec("./sounds.cs");
 
-exec("./lib/lib.cs");
-exec("./lib/waitSchedule.cs");
+exec("./lib/brick.cs");
 exec("./lib/debug.cs");
+exec("./lib/math.cs");
+exec("./lib/player.cs");
+exec("./lib/projectile.cs");
+exec("./lib/simobject.cs");
+exec("./lib/sound.cs");
+exec("./lib/vector.cs");
+exec("./lib/waitSchedule.cs");
 
 exec("./mechanics/knockback.cs");
 exec("./mechanics/botswords.cs");
