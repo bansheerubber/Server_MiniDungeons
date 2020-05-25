@@ -18,6 +18,7 @@ exec("./mechanics/interactable.cs");
 exec("./mechanics/events.cs");
 exec("./mechanics/health.cs");
 exec("./mechanics/notifications.cs");
+exec("./mechanics/aim prediction.cs");
 
 exec("./weapons/highFlare.cs");
 exec("./weapons/lowExplosion.cs");
