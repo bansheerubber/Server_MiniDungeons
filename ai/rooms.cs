@@ -15,7 +15,7 @@ function MiniDungeonsAiRoomSet::get(%index) {
 }
 
 // garbage collect rooms not in use
-function MiniDungeonsAiRoomSet::garbageCollect(%this) {
+function SimSet::garbageCollect(%this) {
 	if(%this.getCount() == 0) {
 		%this.delete();
 	}
@@ -25,6 +25,6 @@ function MiniDungeonsAiRoomSet::garbageCollect(%this) {
 }
 
 // set the room into the alert phase. in this phase, bots do not check if walls are in the way when searching for players
-function MiniDungeonsAiRoomSet::alert(%this) {
+function SimSet::alert(%this) {
 	%this.alert = true;
 }

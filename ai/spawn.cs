@@ -6,12 +6,12 @@ datablock fxDTSBrickData(BrickAiSpawnData) {
 	brickFile = "Add-ons/Bot_Hole/4xSpawn.blb";
 	category = "Special";
 	subCategory = "DUNGEONS!!!!!!!!";
-	uiName = "Bard Hole";
-	iconName = "Add-Ons/Server_MiniDungeons/ai/shapes/bard icon";
+	uiName = "Ai Hole";
+	iconName = "Add-Ons/Bot_Blockhead/icon_blockhead";
 
-	bricktype = 2;
-	cancover = 0;
-	orientationfix = 1;
+	brickType = 2;
+	canCover = 0;
+	orientationFix = 1;
 	indestructable = 1;
 };
 
@@ -20,16 +20,31 @@ function BrickAiSpawnData::onPlant(%this, %obj) {
 	MiniDungeonsBotSpawnSet.add(%obj);
 }
 
+function BrickAiSpawnData::onLoadPlant(%this, %obj) {
+	Parent::onLoadPlant(%this, %obj);
+	MiniDungeonsBotSpawnSet.add(%obj);
+}
+
 function BrickAiSpawnData::spawnBot(%this, %obj) {
-	%botName = getSubStr(%obj.getName(), 1, strLen(%obj.getName());
-	%transform = %obj.getSpawnPoint();
+	%botName = getSubStr(%obj.getName(), 1, strLen(%obj.getName()));
+	%transform = vectorAdd(%obj.getSpawnPoint(), "0 0 1.2");
 	%function = "create" @ %botName @ "Ai";
 	%roomIndex = 0;
 
 	if(isFunction(%function)) {
 		%bot = 0;
-		eval("%bot = " @ %function @ "(" @ %transform @ ", " @ %roomIndex @ ");"); // create the bot
+		eval("%bot = " @ %function @ "(\"" @ %transform @ "\", " @ %roomIndex @ ");"); // create the bot
 		%obj.bot = %bot;
 		%bot.spawn = %obj;
+	}
+}
+
+function spawnAllBots() {
+	%count = MiniDungeonsBotSpawnSet.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%brick = MiniDungeonsBotSpawnSet.getObject(%i);
+		if(!isObject(%brick.bot)) {
+			%brick.getDatablock().spawnBot(%brick);
+		}
 	}
 }
