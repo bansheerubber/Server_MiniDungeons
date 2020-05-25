@@ -89,7 +89,9 @@ package MiniDungeonsAI {
 	function Armor::onDisabled(%this, %obj) {
 		cancel(%obj.talkSchedule);
 
-		%obj.loseTarget();
+		if(%obj.getClassName() $= "AiPlayer") {
+			%obj.loseTarget();
+		}
 		
 		if(isObject(%obj.ai)) {
 			%obj.ai.delete();

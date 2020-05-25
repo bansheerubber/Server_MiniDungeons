@@ -401,46 +401,51 @@ package MiniDungeonsSwords {
 	}
 
 	function miniGameCanDamage(%obj1, %obj2) {
-		if(%obj1.brickHp !$= "" || %obj2.brickHp !$= "" || %obj1.getDatablock().isBreakable || %obj2.getDatablock().isBreakable) {
-			if(%obj1.sourceObject.isEnemyAi || %obj1.isEnemyAi
-				|| %obj2.sourceObject.isEnemyAi || %obj2.isEnemyAi)
-			{
-				return false;
+		if(isObject(%obj1) && isObject(%obj2)) {
+			if(%obj1.brickHp !$= "" || %obj2.brickHp !$= "" || %obj1.getDatablock().isBreakable || %obj2.getDatablock().isBreakable) {
+				if(%obj1.sourceObject.isEnemyAi || %obj1.isEnemyAi
+					|| %obj2.sourceObject.isEnemyAi || %obj2.isEnemyAi)
+				{
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+			else if(%obj1.sourceObject.isEnemyAi && !%obj2.isEnemyAi) {
+				if(%obj1.sourceObject.getState() $= "Dead") {
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+			else if(!%obj1.isEnemyAi && %obj2.sourceObject.isEnemyAi) {
+				if(%obj2.sourceObject.getState() $= "Dead") {
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+			else if(%obj1.isEnemyAi && !%obj2.isEnemyAi) {
+				if(%obj1.getState() $= "Dead") {
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+			else if(!%obj1.isEnemyAi && %obj2.isEnemyAi) {
+				if(%obj2.getState() $= "Dead") {
+					return false;
+				}
+				else {
+					return true;
+				}
 			}
 			else {
-				return true;
-			}
-		}
-		else if(%obj1.sourceObject.isEnemyAi && !%obj2.isEnemyAi) {
-			if(%obj1.sourceObject.getState() $= "Dead") {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		else if(!%obj1.isEnemyAi && %obj2.sourceObject.isEnemyAi) {
-			if(%obj2.sourceObject.getState() $= "Dead") {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		else if(%obj1.isEnemyAi && !%obj2.isEnemyAi) {
-			if(%obj1.getState() $= "Dead") {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		else if(!%obj1.isEnemyAi && %obj2.isEnemyAi) {
-			if(%obj2.getState() $= "Dead") {
-				return false;
-			}
-			else {
-				return true;
+				return Parent::miniGameCanDamage(%obj1, %obj2);
 			}
 		}
 		else {

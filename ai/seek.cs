@@ -10,13 +10,11 @@ function AiPlayer::seek(%this) {
 	%targetPosition = %this.target.getHackPosition();
 
 	%raycast = containerRaycast(%this.getEyePoint(), %targetPosition, $TypeMasks::fxBrickObjectType, false);
-	if(isObject(%raycast) || (%this.seekHeightCheck && getWord(%targetPosition, 2) - getWord(%position, 2) > 4)) { // if we cannot see our target or our target is above us
+	if(isObject(%raycast) || (%this.seekHeightCheck && getWord(%targetPosition, 2) - getWord(%position, 2) > 3 && mAbs(getWord(%this.target.getVelocity(), 2)) < 4)) { // if we cannot see our target or our target is above us
 		%this.alarmEmote = false;
 		
 		if(!%this.hasPath()) { // if we have no path, then get one. wait around until we have one
 			%this.setAimObject(%this.target);
-			%this.stop();
-			// %this.setMoveY(0);
 
 			%closestNode = getClosestNode(%position);
 			%targetClosestNode = getClosestNode(%targetPosition);
@@ -136,7 +134,10 @@ function AiPlayer::seek(%this) {
 				%flankPosition = vectorAdd(%targetPosition, %x1 SPC %y1 SPC "0");
 				%flankVector = vectorNormalize(getWords(vectorSub(%flankPosition, %this.getPosition()), 0, 1)); // calculate correct heading based off of targets current position
 
-				if(vectorDist(%flankPosition, %position) < 3 || vectorDist(%position, %targetPosition) < %this.flankStopDistance || getSimTime() > %this.flankStopTime) {
+				// if we have a wall in the way, then stop flanking
+				%start = %this.getHackPosition();
+				%raycast = containerRaycast(%start, vectorAdd(%start, vectorScale(%flankVector, 1.5)), $TypeMasks::fxBrickObjectType, false);
+				if(isObject(%raycast) || vectorDist(%flankPosition, %position) < 3 || vectorDist(%position, %targetPosition) < %this.flankStopDistance || getSimTime() > %this.flankStopTime) {
 					%this.setAimObject(%this.target);
 					%this.setMoveY(1);
 					%this.isFlanking = false;

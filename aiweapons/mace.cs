@@ -125,7 +125,7 @@ function MaceSwordArmor::onSwingEnd(%this, %obj, %slot, %id) {
 }
 
 function MaceSwordArmor::spawnSpike(%this, %position, %owner) {
-	%raycast = containerRaycast(vectorAdd(%position, "0 0 0.1"), vectorAdd(%position, "0 0 -3"), $TypeMasks::fxBrickObjectType | $TypeMasks::StaticObjectType, false);
+	%raycast = containerRaycast(vectorAdd(%position, "0 0 3"), vectorAdd(%position, "0 0 -3"), $TypeMasks::fxBrickObjectType | $TypeMasks::StaticObjectType, false);
 
 	if(isObject(%raycast)) {
 		%position = getWords(%raycast, 1, 3);
