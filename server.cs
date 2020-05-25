@@ -1,24 +1,23 @@
 forceRequiredAddOn("Player_BeefBoy");
 forceRequiredAddOn("Brick_MiniDungeons");
 
-exec("./health.cs");
-exec("./events.cs");
-exec("./debug.cs");
-exec("./lib.cs");
-exec("./waitSchedule.cs");
-exec("./nameGenerator.cs");
-exec("./avatars.cs");
-exec("./notifications.cs");
 exec("./playertype.cs");
 exec("./sounds.cs");
-exec("./interactable.cs");
-exec("./currency.cs");
+
+exec("./lib/lib.cs");
+exec("./lib/waitSchedule.cs");
+exec("./lib/debug.cs");
 
 exec("./mechanics/knockback.cs");
 exec("./mechanics/botswords.cs");
 exec("./mechanics/cycle.cs");
 exec("./mechanics/swings.cs");
 exec("./mechanics/parry.cs");
+exec("./mechanics/currency.cs");
+exec("./mechanics/interactable.cs");
+exec("./mechanics/events.cs");
+exec("./mechanics/health.cs");
+exec("./mechanics/notifications.cs");
 
 exec("./weapons/highFlare.cs");
 exec("./weapons/lowExplosion.cs");
@@ -29,6 +28,7 @@ exec("./weapons/woodShield.cs");
 exec("./generator/hallwayInterpreter.cs"); // interprets .hall files
 exec("./generator/hallwayBuilder.cs"); // builds a hallway based on .hall files
 
+exec("./ai/avatars.cs");
 exec("./ai/states.cs");
 exec("./ai/seek.cs");
 exec("./ai/idle.cs");
@@ -41,6 +41,7 @@ exec("./ai/mace.cs");
 exec("./ai/gladius.cs");
 exec("./ai/bow.cs");
 exec("./ai/cannon.cs");
+exec("./ai/nameGenerator.cs");
 
 exec("./aiweapons/mace.cs");
 exec("./aiweapons/gladius.cs");
