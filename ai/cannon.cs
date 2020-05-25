@@ -16,10 +16,10 @@ datablock AudioProfile(CannonFallSound) {
 	preload = true;
 };
 
-function createCannonAi(%position, %roomIndex) {
+function createCannonAi(%transform, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = AiCannonPlayer;
-		position = %position;
+		position = getWords(%transform, 0, 2);
 		rotation = "0 0 0 1";
 
 		idleFOV = 360;
@@ -29,6 +29,7 @@ function createCannonAi(%position, %roomIndex) {
 
 		name = generateRandomName();
 	};
+	%ai.setTransform(%transform);
 
 	%ai.setMaxHealth(50);
 	%ai.cannonAttack();

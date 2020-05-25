@@ -1,7 +1,7 @@
-function createMaceAi(%position, %roomIndex) {
+function createMaceAi(%transform, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = MiniDungeonsArmor;
-		position = %position;
+		position = getWords(%transform, 0, 2);
 		rotation = "0 0 0 1";
 
 		idleDrawDistance = 200;
@@ -22,6 +22,7 @@ function createMaceAi(%position, %roomIndex) {
 
 		name = generateRandomName();
 	};
+	%ai.setTransform(%transform);
 	%ai.setAIState($MD::AiIdle);
 	%ai.setScale("1.3 1.3 1.3");
 	%ai.setSpeedFactor(0.8);

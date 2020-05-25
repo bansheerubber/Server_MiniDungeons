@@ -1,7 +1,7 @@
-function createBowAi(%position, %roomIndex) {
+function createBowAi(%transform, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = MiniDungeonsArmor;
-		position = %position;
+		position = getWords(%transform, 0, 2);
 		rotation = "0 0 0 1";
 
 		attackRange = 35;
@@ -18,6 +18,7 @@ function createBowAi(%position, %roomIndex) {
 
 		name = generateRandomName();
 	};
+	%ai.setTransform(%transform);
 	%ai.setAIState($MD::AiIdle);
 	%ai.setMaxSideSpeed(MiniDungeonsArmor.maxForwardSpeed);
 

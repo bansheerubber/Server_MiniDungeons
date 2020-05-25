@@ -11,8 +11,8 @@ datablock fxDTSBrickData(BrickBardSpawnData) {
 	indestructable = 1;
 };
 
-function BrickBardSpawnData::onAdd(%this, %obj) {
-	Parent::onAdd(%this, %obj);
+function BrickBardSpawnData::onPlant(%this, %obj) {
+	Parent::onPlant(%this, %obj);
 	
 	if(%obj.isPlanted) {
 		%this.schedule(100, spawnBard, %obj);

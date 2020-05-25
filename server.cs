@@ -50,6 +50,7 @@ exec("./ai/gladius.cs");
 exec("./ai/bow.cs");
 exec("./ai/cannon.cs");
 exec("./ai/nameGenerator.cs");
+exec("./ai/spawn.cs");
 
 exec("./aiweapons/mace.cs");
 exec("./aiweapons/gladius.cs");
