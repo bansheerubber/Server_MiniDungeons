@@ -23,6 +23,7 @@ $MD::AiAttack = 2;
 function AiPlayer::onSpawn(%this, %roomIndex) {
 	%this.roomSet = MiniDungeonsAiRoomSet::get(%roomIndex);
 	%this.roomSet.add(%this);
+	%this.spawnTime = getSimTime();
 }
 
 function AiPlayer::setAiState(%this, %state) {

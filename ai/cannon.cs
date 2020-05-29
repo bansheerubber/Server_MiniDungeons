@@ -56,7 +56,7 @@ function createCannonAi(%transform, %roomIndex) {
 
 // does not follow normal state system, because this does not move
 function AiPlayer::cannonAttack(%this) {
-	if(getWord(%this.getVelocity() , 2) < -2) {
+	if(getWord(%this.getVelocity() , 2) < -2 && getSimTime() - %this.spawnTime > 2000) {
 		if(!%this.cannonFalling) {
 			%this.dummyPlayer.playAudio(3, CannonFallSound);
 			%this.cannonFalling = true;
