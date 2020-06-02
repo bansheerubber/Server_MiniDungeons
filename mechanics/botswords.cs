@@ -1,5 +1,5 @@
 datablock TSShapeConstructor(MiniDungeonsHandsDTS) {
-	baseShape = "base/data/shapes/player/minidungeonshands4.dts";
+	baseShape = "base/data/shapes/player/minidungeonshands.dts";
 };
 
 datablock PlayerData(MiniDungeonsHandsArmor : PlayerStandardArmor)  {

@@ -31,6 +31,7 @@ exec("./weapons/lowExplosion.cs");
 exec("./weapons/oneHanded.cs");
 exec("./weapons/doubleHanded.cs");
 exec("./weapons/woodShield.cs");
+exec("./weapons/vault.cs");
 
 exec("./generator/hallwayInterpreter.cs"); // interprets .hall files
 exec("./generator/hallwayBuilder.cs"); // builds a hallway based on .hall files

@@ -48,11 +48,27 @@ function Player::setSwordTrigger(%this, %slot, %boolean) {
 		%cycle = %obj.swordCurrentCycle[%this] | 0;
 
 		// only trigger if the conditions are met
-		if((getSimTime() - %this.swordLastSwing[%this]) >= (%this.swordCyclePrepTime[%cycle] * 1000) && !%this.isParrying && !%this.isStunlocked() && %this.swordCycleState[%this.sword[%slot].getDatablock()] == 1 && %boolean) {
+		if((getSimTime() - %this.swordLastSwing[%this]) >= (%this.swordCyclePrepTime[%cycle] * 1000) && !%this.isParrying && !%this.swordCycleFrozen && !%this.isStunlocked() && %this.swordCycleState[%this.sword[%slot].getDatablock()] == 1 && %boolean) {
 			%this.sword[%slot].getDatablock().prepareCycleFire(%this, %slot);
 		}
 
 		%this.swordTrigger = %boolean;
+	}
+}
+
+function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
+	// only force when we're not firing
+	if(%obj.swordCycleState[%this] == 2) {
+		return %this.schedule(33, forceCycleGuard, %obj, %slot);
+	}
+	else {
+		if(isObject(%obj.swordPrepSchedule)) {
+			%obj.swordPrepSchedule.delete();
+		}
+
+		%obj.swordCycleState[%this] = 0;
+		%obj.swordCurrentCycle[%this] = %cycle;
+		%this.onCycleGuard(%obj, %slot);
 	}
 }
 

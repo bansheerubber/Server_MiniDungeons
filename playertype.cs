@@ -120,16 +120,24 @@ function Player::dungeonsFixAppearance(%obj, %client) {
 	}
 
 	if(isObject(%sword = %obj.sword[0])) {
-		if(%sword.getDatablock().swordDoubleHanded) {
-			%obj.hideNode("rhand");
-			%obj.hideNode("lhand");
-
-			%obj.swordHands.unHideNode("rhand");
-			%obj.swordHands.unHideNode("lhand");
+		if(%obj.forceNormalHands) {
+			if(%sword.getDatablock().swordDoubleHanded) {
+				%obj.hideNode("lhand");
+				%obj.unHideNode("lhand2");
+			}
 		}
 		else {
-			%obj.hideNode("rhand");
-			%obj.swordHands.unHideNode("rhand");
+			if(%sword.getDatablock().swordDoubleHanded) {
+				%obj.hideNode("rhand");
+				%obj.hideNode("lhand");
+
+				%obj.swordHands.unHideNode("rhand");
+				%obj.swordHands.unHideNode("lhand");
+			}
+			else {
+				%obj.hideNode("rhand");
+				%obj.swordHands.unHideNode("rhand");
+			}
 		}
 	}
 }
