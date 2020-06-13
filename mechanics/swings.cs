@@ -266,9 +266,16 @@ function Armor::onSwingHit(%this, %obj, %slot, %col, %tangent, %isRadius, %index
 			}
 
 			if(isObject(%explosion = %this.swordCycleHitExplosion[%cycle])) {
+				%scale = getWord(%col.getScale(), 2);
+				%coordinate = %scale / 1.5 * 10;
 				(%p = new Projectile() {
 					datablock = %explosion;
-					initialPosition = %col.getHackPosition();
+					initialPosition = vectorAdd(
+						%col.getHackPosition(),
+						getRandom(-%coordinate, %coordinate) / 10
+							SPC getRandom(-%coordinate, %coordinate) / 10
+							SPC getRandom(-%coordinate, %coordinate) / 10
+					);
 					initialVelocity = vectorScale(%tangent, -5);
 					sourceObject = 0;
 					sourceSlot = 0;
@@ -279,6 +286,9 @@ function Armor::onSwingHit(%this, %obj, %slot, %col, %tangent, %isRadius, %index
 			serverPlay3d(getField(%sounds, getRandom(0, getFieldCount(%sounds) - 1)), %col.getPosition());
 
 			%col.damage(%obj, %col.getPosition(), %damage, 3); // damage
+			if(%this.swordCycleCrit[%cycle]) {
+				%col.crit(); // apply crit fx
+			}
 		}
 		else if((%col.getType() & $TypeMasks::FxBrickObjectType) && %col.brickHp !$= "") {
 			%cycle = %obj.swordCurrentCycle[%this];

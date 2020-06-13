@@ -54,14 +54,30 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	swordCycleThread[0] 			= "mid4";
 	swordCycleThreadSlot[0]			= 1;
 	swordCycleDamage[0]				= 60;
+	swordCycleCrit[0]				= false;
 	swordCycleImpactImpulse[0]		= 0;
 	swordCycleVerticalImpulse[0]	= 0;
 	swordCycleHitExplosion[0]		= MidHitProjectile;
 	swordCycleHitSound[0]			= BeefBoySwordHit2Sound;
-	swordCyclePrepTime[0]			= 0.01;
+	swordCyclePrepTime[0]			= 0.7;
 	swordCycleGuardSound[0]			= CycleMidReadySound;
 	swordCycleSwingSound[0]			= MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
 	swordCycleSwingSteps[0]			= 4;
+
+	// special attack 1, crits
+	swordCycle[1] 					= "middle left";
+	swordCycleThread[1] 			= "mid4";
+	swordCycleThreadSlot[1]			= 1;
+	swordCycleDamage[1]				= 25;
+	swordCycleCrit[1]				= false;
+	swordCycleImpactImpulse[1]		= 0;
+	swordCycleVerticalImpulse[1]	= 0;
+	swordCycleHitExplosion[1]		= HighHitProjectile;
+	swordCycleHitSound[1]			= BeefBoySwordHit2Sound;
+	swordCyclePrepTime[1]			= 0.01;
+	swordCycleGuardSound[1]			= CycleMidReadySound;
+	swordCycleSwingSound[1]			= MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
+	swordCycleSwingSteps[1]			= 4;
 
 	// parry information
 	parryCooldown						= 1500;
@@ -99,13 +115,15 @@ function VaultSwordArmor::startPoleVault(%this, %obj, %slot) {
 	%obj.client.applyBodyParts();
 	%obj.setLookLimits(0.5, 0.5);
 
-	%obj.schedule(100, poleVaultLoop, 10);
+	%obj.schedule(150, poleVaultLoop, 10);
+
+	%this.setCycleRange(%obj, %slot, 1, 1);
 }
 
-function Player::poleVaultLoop(%this, %ticks) {
-	if(!isObject(%this.antiGravityZone)) {
-		%this.antiGravityZone = new PhysicalZone() {
-			position = %this.getPosition();
+function VaultSwordArmor::poleVaultLoop(%this, %obj, %slot, %ticks) {
+	if(!isObject(%obj.antiGravityZone)) {
+		%obj.antiGravityZone = new PhysicalZone() {
+			position = %obj.getPosition();
 			velocityMod = "1";
 			gravityMod = "0";
 			extraDrag = "0";
@@ -115,29 +133,44 @@ function Player::poleVaultLoop(%this, %ticks) {
 			waterColor = "0.200000 0.600000 0.600000 0.300000";
 			appliedForce = "0 0 0";
 			polyhedron = "0.0 0.0 0.0 1.0 0.0 0.0 0.0 -1.0 0.0 0.0 0.0 1.0";
-			owner = %this;
+			owner = %obj;
 		};
-		%this.vaultForwardVector = %this.getForwardVector();
-		%this.playThread(1, "poleVault");
+		%obj.vaultForwardVector = %obj.getForwardVector();
+		%obj.playThread(1, "poleVault");
 	}
 	
 	if(%ticks > 0) {
-		%velocity = vectorAdd(vectorScale(%this.vaultForwardVector, 15), "0 0 14");
-		%this.schedule(33, setVelocity, %velocity);
-		%this.poleVaultSchedule = %this.schedule(33, poleVaultLoop, %ticks - 1);
+		%velocity = vectorAdd(vectorScale(%obj.vaultForwardVector, 15), "0 0 14");
+		%obj.schedule(33, setVelocity, %velocity);
+		%obj.poleVaultSchedule = %obj.schedule(33, poleVaultLoop, %obj, %slot, %ticks - 1);
 	}
 	else {
-		%this.antiGravityZone.delete();
-		%this.schedule(200, stopPoleVault);
+		%obj.antiGravityZone.delete();
+		%obj.poleVaultSchedule = %this.schedule(200, stopPoleVault, %obj, %slot);
 	}
 }
 
-function Player::stopPoleVault(%this) {
-	%this.swordCycleFrozen = false;
-	%this.forceNormalHands = false;
-	%this.client.applyBodyParts();
-	%this.setLookLimits(1, 0);
-	%this.sword[0].getDatablock().forceCycleGuard(%this, 0, 0);
+function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
+	%obj.swordCycleFrozen = false;
+	%obj.forceNormalHands = false;
+	%obj.client.applyBodyParts();
+	%obj.setLookLimits(1, 0);
+	%this.forceCycleGuard(%this, 1, 1);
+
+	%this.waitSchedule(100, "resetPoleVault", %obj, %slot, true).addCondition(%obj, "isGrounded", true);
+}
+
+function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
+	%this.setCycleRange(%obj, %slot, 0, 0);
+	if(%force) {
+		%this.forceCycleGuard(%obj, 0, 0);
+	}
+}
+
+function VaultSwordArmor::unMount(%this, %obj, %slot) {
+	%this.resetPoleVault(%obj, %slot, false);
+	cancel(%obj.poleVaultSchedule);
+	Parent::unMount(%this, %obj, %slot);
 }
 
 deActivatePackage(Vaulting);
