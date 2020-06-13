@@ -26,6 +26,7 @@ function Armor::mount(%this, %obj, %slot) {
 
 	if(%obj.swordCurrentCycle[%this] $= "") {
 		if(isObject(%obj.sword[%slot])) {
+			%this.setCycleRange(%obj, %slot, 0, %this.swordMaxCycles - 1);
 			%obj.swordCurrentCycle[%this] = 0;
 			%this.waitForCycleGuard(%obj, %slot);
 		}
@@ -39,8 +40,8 @@ function Armor::mount(%this, %obj, %slot) {
 
 	%obj.dungeonsFixAppearance(%obj.client);
 	
-	commandToClient(%obj.client, 'MD_LoadGuardCycles', getCycleLetterFromName(%this.swordCycle[0]), getCycleLetterFromName(%this.swordCycle[1]), getCycleLetterFromName(%this.swordCycle[2]), getCycleLetterFromName(%this.swordCycle[3]), getCycleLetterFromName(%this.swordCycle[4]), getCycleLetterFromName(%this.swordCycle[5]));
-	commandToClient(%obj.client, 'MD_SetActiveCycle', %obj.swordCurrentCycle[%this]);
+	%this.setCycleActiveUI(%obj, %slot);
+	%this.setCycleUI(%obj, %slot);
 }
 
 function Armor::unMount(%this, %obj, %slot) {

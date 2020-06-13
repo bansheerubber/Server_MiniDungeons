@@ -56,6 +56,32 @@ function Player::setSwordTrigger(%this, %slot, %boolean) {
 	}
 }
 
+// lets us decide which cycles within a range to use. useful for specials/switching up guard patterns
+function Armor::setCycleRange(%this, %obj, %slot, %start, %end) {
+	for(%i = %start; %i <= %end; %i++) {
+		%cycle[%i] = %this.swordCycle[%i];
+	}
+	%obj.swordCycleStart[%this.getId()] = %start;
+	%obj.swordCycleEnd[%this.getId()] = %end;
+
+	%this.setCycleUI(%obj, %slot);
+}
+
+function Armor::setCycleUI(%this, %obj, %slot) {
+	%start = %obj.swordCycleStart[%this.getId()];
+	%end = %obj.swordCycleEnd[%this.getId()];
+	
+	for(%i = %start; %i <= %end; %i++) {
+		%cycle[%i - %start] = %this.swordCycle[%i];
+	}
+	
+	commandToClient(%obj.client, 'MD_LoadGuardCycles', getCycleLetterFromName(%cycle[0]), getCycleLetterFromName(%cycle[1]), getCycleLetterFromName(%cycle[2]), getCycleLetterFromName(%cycle[3]), getCycleLetterFromName(%cycle[4]), getCycleLetterFromName(%cycle[5]));
+}
+
+function Armor::setCycleActiveUI(%this, %obj, %slot) {
+	commandToClient(%obj.client, 'MD_SetActiveCycle', %obj.swordCurrentCycle[%this] - %obj.swordCycleStart[%this.getId()]);
+}
+
 function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
 	// only force when we're not firing
 	if(%obj.swordCycleState[%this] == 2) {
@@ -93,7 +119,7 @@ function Armor::onCycleGuard(%this, %obj, %slot) {
 		%obj.playAudio(1, %this.swordCycleGuardSound[%cycle]);
 	}
 
-	commandToClient(%obj.client, 'MD_SetActiveCycle', %cycle);
+	%this.setCycleActiveUI(%obj, %slot);
 }
 
 function Armor::prepareCycleFire(%this, %obj, %slot) {
@@ -145,7 +171,16 @@ function Armor::onCycleFire(%this, %obj, %slot) {
 
 function Armor::onSwingEnd(%this, %obj, %slot) {
 	if(%this.swordCycle[0] !$= "") {
-		%obj.swordCurrentCycle[%this] = (%obj.swordCurrentCycle[%this] + 1) % %this.swordMaxCycles;
+		%start = %obj.swordCycleStart[%this];
+		%end = %obj.swordCycleEnd[%this];
+		
+		%cycle = (%obj.swordCurrentCycle[%this] + 1);
+
+		if(%cycle > %end) {
+			%cycle = %start;
+		}
+
+		%obj.swordCurrentCycle[%this] = %cycle;
 	}
 	
 	%this.waitForCycleGuard(%obj, %slot);
