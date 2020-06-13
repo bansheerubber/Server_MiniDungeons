@@ -36,11 +36,11 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 
 	swordStartMount[0] 					= 0; // start point for raycast/interpolation
 	swordEndMount[0] 					= 1; // end point for raycast/interpolation
-	swordStepInterpolationCount 		= 3; // how many linear interpolations we do between steps, based on distance
+	swordStepInterpolationCount 		= 1; // how many linear interpolations we do between steps, based on distance
 	swordStepTick						= 33; // how fast we do sword stepping
 
 	swordInterpolationDistance[0, 0]	= 1;
-	swordInterpolationRadius[0, 0]		= 0.75;
+	swordInterpolationRadius[0, 0]		= 1;
 
 	swordStopSwingOnBrickHit			= false; // whether or not we want to stop our sword swing when we hit a brick wall (and setImageLoaded to false)
 
@@ -54,8 +54,8 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	swordCycleThread[0] 			= "mid4";
 	swordCycleThreadSlot[0]			= 1;
 	swordCycleDamage[0]				= 60;
-	swordCycleImpactImpulse[0]		= 300;
-	swordCycleVerticalImpulse[0]	= 500;
+	swordCycleImpactImpulse[0]		= 0;
+	swordCycleVerticalImpulse[0]	= 0;
 	swordCycleHitExplosion[0]		= MidHitProjectile;
 	swordCycleHitSound[0]			= BeefBoySwordHit2Sound;
 	swordCyclePrepTime[0]			= 0.01;
@@ -79,18 +79,27 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	parrySelfImpactImpulse				= 800;
 	parrySelfVerticalImpulse 			= 800;
 	parryProgressiveKnockback			= 8 SPC 8;
+
+	specialMethod						= "startPoleVault";
+	specialConditionalMethod			= "canStartPoleVault";
+	specialCooldown						= 2000;
+	specialDuration						= 1000;
 };
 
-function Player::startPoleVault(%this) {
-	%this.playThread(1, "poleVault");
-	%this.schedule(33, stopThread, 1);
+function VaultSwordArmor::canStartPoleVault(%this, %obj, %slot) {
+	return %obj.isGrounded;
+}
 
-	%this.forceNormalHands = true;
-	%this.swordCycleFrozen = true;
-	%this.client.applyBodyParts();
-	%this.setLookLimits(0.5, 0.5);
+function VaultSwordArmor::startPoleVault(%this, %obj, %slot) {
+	%obj.playThread(1, "poleVault");
+	%obj.schedule(33, stopThread, 1);
 
-	%this.schedule(100, poleVaultLoop, 10);
+	%obj.forceNormalHands = true;
+	%obj.swordCycleFrozen = true;
+	%obj.client.applyBodyParts();
+	%obj.setLookLimits(0.5, 0.5);
+
+	%obj.schedule(100, poleVaultLoop, 10);
 }
 
 function Player::poleVaultLoop(%this, %ticks) {
@@ -113,13 +122,13 @@ function Player::poleVaultLoop(%this, %ticks) {
 	}
 	
 	if(%ticks > 0) {
-		%velocity = vectorAdd(vectorScale(%this.vaultForwardVector, 20), "0 0 15");
+		%velocity = vectorAdd(vectorScale(%this.vaultForwardVector, 15), "0 0 14");
 		%this.schedule(33, setVelocity, %velocity);
 		%this.poleVaultSchedule = %this.schedule(33, poleVaultLoop, %ticks - 1);
 	}
 	else {
 		%this.antiGravityZone.delete();
-		%this.schedule(500, stopPoleVault);
+		%this.schedule(200, stopPoleVault);
 	}
 }
 
