@@ -12,7 +12,7 @@ def calc_h(node1, goal):
 
 def a_star(start, goal):
 	open_set = []
-	heapq.heappush(open_set, (calc_h(start, goal), start)) # min-heap is correlation between node and its f-score
+	heapq.heappush(open_set, (calc_h(start, goal), id(start), start)) # min-heap is correlation between node and its f-score
 
 	close_set = []
 
@@ -38,7 +38,7 @@ def a_star(start, goal):
 				g_score[neighbor] = calc_g(g_score, current, neighbor)
 				f_score[neighbor] = g_score[neighbor] + calc_h(neighbor, goal)
 				if neighbor not in close_set:
-					heapq.heappush(open_set, (f_score[neighbor], neighbor))
+					heapq.heappush(open_set, (f_score[neighbor], id(neighbor), neighbor))
 	
 	return False
 
