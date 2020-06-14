@@ -136,7 +136,7 @@ function AiPlayer::seek(%this) {
 
 				// if we have a wall in the way, then stop flanking
 				%start = %this.getHackPosition();
-				%raycast = containerRaycast(%start, vectorAdd(%start, vectorScale(%flankVector, 1.5)), $TypeMasks::fxBrickObjectType, false);
+				%raycast = containerRaycast(%start, vectorAdd(%start, vectorScale(%flankVector, 4)), $TypeMasks::fxBrickObjectType, false);
 				if(isObject(%raycast) || vectorDist(%flankPosition, %position) < 3 || vectorDist(%position, %targetPosition) < %this.flankStopDistance || getSimTime() > %this.flankStopTime) {
 					%this.setAimObject(%this.target);
 					%this.setMoveY(1);

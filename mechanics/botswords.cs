@@ -200,8 +200,13 @@ package MiniDungeonsBotSwords {
 	}
 
 	function serverPlay3d(%data, %position) {
-		if(%data.getId() != playerMountSound.getId()) {
-			Parent::serverPlay3d(%data, %position);
+		if(isObject(%data)) {
+			if(%data.getId() != playerMountSound.getId()) {
+				Parent::serverPlay3d(%data, %position);
+			}
+		}
+		else {
+			warn(%data SPC "doesn't exists");
 		}
 	}
 };
