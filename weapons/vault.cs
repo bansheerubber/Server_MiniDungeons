@@ -1,3 +1,90 @@
+datablock AudioProfile(VaultSound) {
+	filename    = "./sounds/vault.ogg";
+	description = AudioDefault3d;
+	preload = true;
+};
+
+datablock AudioProfile(VaultAirSound) {
+	filename    = "./sounds/air.ogg";
+	description = AudioClosest3d;
+	preload = true;
+};
+
+datablock AudioProfile(VaultLandingSound) {
+	filename    = "./sounds/landing.ogg";
+	description = AudioClose3d;
+	preload = true;
+};
+
+datablock ParticleData(VaultFlyParticle) {
+	dragCoefficient      = 4;
+	gravityCoefficient   = 0.0;
+	inheritedVelFactor   = 0.0;
+	constantAcceleration = 0.0;
+	lifetimeMS           = 700;
+	lifetimeVarianceMS   = 200;
+	spinSpeed       	 = 0;
+	spinRandomMin        = 0;
+	spinRandomMax        = 0;
+
+	textureName = "Add-Ons/Player_Beefboy/textures/trail";
+
+	colors[0] = "1.0 1.0 1.0 0.15";
+	colors[1] = "1.0 1.0 1.0 0.15";
+	colors[2] = "1.0 1.0 1.0 0.0.75";
+	colors[3] = "1.0 1.0 1.0 0.0";
+
+	sizes[0] = 3;
+	sizes[1] = 3;
+	sizes[2] = 3;
+	sizes[3] = 3;
+
+	times[0] = 0.0;
+	times[1] = 0.05;
+	times[2] = 0.5;
+	times[3] = 0.9;
+
+	useInvAlpha = false;
+};
+
+datablock ParticleEmitterData(VaultFlyEmitter) {
+	ejectionPeriodMS = 15;
+	periodVarianceMS = 0;
+	ejectionVelocity = 0;
+	velocityVariance = 0;
+	ejectionOffset   = 0;
+	thetaMin         = 0;
+	thetaMax         = 0;
+	phiReferenceVel  = 0;
+	phiVariance      = 0;
+	overrideAdvance = true;
+	orientOnVelocity = false;
+	orientParticles = false;
+
+	particles = VaultFlyParticle;
+};
+
+datablock ShapeBaseImageData(VaultFlyImage) {
+	shapeFile = "base/data/shapes/empty.dts";
+	emap = true;
+	mountPoint = 9;
+	offset = "0 0 0";
+	eyeOffset = "0 0 -1000";
+	rotation = eulerToMatrix("0 0 0");
+	correctMuzzleVector = true;
+	className = "WeaponImage";
+	item = BeefBoyBeefboySwordItem;
+
+	melee = false;
+	armReady = true;
+
+	doColorShift = false;
+
+	stateName[0]		= "Activate";
+	stateEmitter[0]		= "VaultFlyEmitter";
+	stateEmitterTime[0]	= 9999;
+};
+
 datablock ItemData(VaultSwordItem) {
 	category = "Weapon";
 	className = "Weapon";
@@ -98,7 +185,7 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	swordCycle[3] 					= "special left";
 	swordCycleThread[3] 			= "mid4";
 	swordCycleThreadSlot[3]			= 1;
-	swordCycleDamage[3]				= 25;
+	swordCycleDamage[3]				= 35;
 	swordCycleCrit[3]				= false;
 	swordCycleImpactImpulse[3]		= 0;
 	swordCycleVerticalImpulse[3]	= 0;
@@ -192,6 +279,10 @@ function VaultSwordArmor::poleVaultLoop(%this, %obj, %slot, %ticks) {
 		};
 		%obj.vaultForwardVector = %obj.getForwardVector();
 		%obj.playThread(1, "poleVault");
+
+		%obj.playAudio(0, VaultSound);
+		%obj.playAudio(1, VaultAirSound);
+		%obj.mountImage(VaultFlyImage, 3);
 	}
 	
 	if(%ticks > 0) {
@@ -217,8 +308,13 @@ function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
 
 function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
 	%this.setCycleRange(%obj, %slot, 0, 2);
+	%obj.unMountImageSafe(3);
 	if(%force) {
 		%this.forceCycleGuard(%obj, %slot, 0);
+		%obj.playAudio(1, VaultLandingSound);
+	}
+	else {
+		%obj.stopAudio(1);
 	}
 }
 

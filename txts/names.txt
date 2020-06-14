@@ -633,3 +633,5 @@ Smack
 Sport
 Father
 Penguin
+Sentient
+Hollow
