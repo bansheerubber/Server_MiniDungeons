@@ -25,7 +25,7 @@ def a_star(start, goal):
 	f_score[start] = calc_h(start, goal)
 
 	while len(open_set) > 0:
-		current = heapq.heappop(open_set)[1]
+		current = heapq.heappop(open_set)[2]
 		if current == goal:
 			return reconstruct_path(came_from, current)
 		

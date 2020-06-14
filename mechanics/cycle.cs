@@ -112,7 +112,7 @@ function Armor::onCycleGuard(%this, %obj, %slot) {
 		%this.prepareCycleFire(%obj, %slot);
 	}
 	else {
-		%obj.playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle] @ "Swing"); // play cycle animation
+	%obj.playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle] @ "Swing"); // play cycle animation
 		%obj.stopThreadSchedule = %obj.schedule(33, stopThread, %this.swordCycleThreadSlot[%cycle]);
 		%obj.sword[%slot].playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle]);
 		%obj.playThread(0, "plant");
@@ -192,7 +192,10 @@ function Armor::waitForCycleGuard(%this, %obj, %slot) {
 	%obj.swordCycleState[%this] = 0;
 	
 	%obj.swordLastSwing[%this] = getSimTime();
-	%obj.swordPrepSchedule = %this.waitSchedule(%this.swordCyclePrepTime[%cycle] * 1000, "onCycleGuard", %obj, %slot).addCondition(%obj, "isParrying", false).addMethodCondition(%obj, "isStunLocked", false);
+	%obj.swordPrepSchedule = %this.waitSchedule(%this.swordCyclePrepTime[%cycle] * 1000, "onCycleGuard", %obj, %slot)
+		.addCondition(%obj, "isParrying", false)
+		.addCondition(%obj, "swordCycleFrozen", false)
+		.addMethodCondition(%obj, "isStunLocked", false);
 }
 
 function Armor::transitionToCycleGuard(%this, %obj, %slot) {

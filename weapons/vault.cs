@@ -46,14 +46,14 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 
 
 	// GUARD CYCLE: M -> L -> M
-	swordMaxCycles = 1;
+	swordMaxCycles = 3;
 	swordDoubleHanded = true;
 	
 	// middle attack 1, just a standard attack
 	swordCycle[0] 					= "middle left";
 	swordCycleThread[0] 			= "mid4";
 	swordCycleThreadSlot[0]			= 1;
-	swordCycleDamage[0]				= 60;
+	swordCycleDamage[0]				= 50;
 	swordCycleCrit[0]				= false;
 	swordCycleImpactImpulse[0]		= 0;
 	swordCycleVerticalImpulse[0]	= 0;
@@ -64,19 +64,49 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	swordCycleSwingSound[0]			= MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
 	swordCycleSwingSteps[0]			= 4;
 
-	// special attack 1, crits
+	// middle attack 2, another standard attack
 	swordCycle[1] 					= "middle left";
 	swordCycleThread[1] 			= "mid4";
 	swordCycleThreadSlot[1]			= 1;
-	swordCycleDamage[1]				= 25;
+	swordCycleDamage[1]				= 50;
 	swordCycleCrit[1]				= false;
 	swordCycleImpactImpulse[1]		= 0;
 	swordCycleVerticalImpulse[1]	= 0;
-	swordCycleHitExplosion[1]		= HighHitProjectile;
-	swordCycleHitSound[1]			= HighHit1Sound;
-	swordCyclePrepTime[1]			= 0.01;
-	swordCycleGuardSound[1]			= "";
+	swordCycleHitExplosion[1]		= MidHitProjectile;
+	swordCycleHitSound[1]			= BeefBoySwordHit2Sound;
+	swordCyclePrepTime[1]			= 0.4;
+	swordCycleGuardSound[1]			= CycleMidReadySound;
+	swordCycleSwingSound[1]			= MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
 	swordCycleSwingSteps[1]			= 4;
+
+	// low attack, knock enemies far back
+	swordCycle[2] 					= "low left";
+	swordCycleThread[2] 			= "";
+	swordCycleThreadSlot[2]			= 1;
+	swordCycleDamage[2]				= 20;
+	swordCycleCrit[2]				= false;
+	swordCycleImpactImpulse[2]		= 1500;
+	swordCycleVerticalImpulse[2]	= 800;
+	swordCycleHitExplosion[2]		= LowHitProjectile;
+	swordCycleHitSound[2]			= LowHit1Sound;
+	swordCyclePrepTime[2]			= 0.4;
+	swordCycleGuardSound[2]			= CycleLowReadySound;
+	swordCycleSwingSound[2]			= LowSwingSound;
+	swordCycleSwingSteps[2]			= 4;
+
+	// special attack 1, crits
+	swordCycle[3] 					= "special left";
+	swordCycleThread[3] 			= "mid4";
+	swordCycleThreadSlot[3]			= 1;
+	swordCycleDamage[3]				= 25;
+	swordCycleCrit[3]				= false;
+	swordCycleImpactImpulse[3]		= 0;
+	swordCycleVerticalImpulse[3]	= 0;
+	swordCycleHitExplosion[3]		= HighHitProjectile;
+	swordCycleHitSound[3]			= HighHit1Sound;
+	swordCyclePrepTime[3]			= 0.01;
+	swordCycleGuardSound[3]			= "";
+	swordCycleSwingSteps[3]			= 4;
 
 	// parry information
 	parryCooldown						= 1500;
@@ -97,16 +127,31 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 
 	specialMethod						= "startPoleVault";
 	specialConditionalMethod			= "canStartPoleVault";
-	specialCooldown						= 2000;
+	specialCooldown						= 2500;
 	specialDuration						= 1000;
 };
+
+function VaultSwordArmor::onCycleGuard(%this, %obj, %slot) {
+	Parent::onCycleGuard(%this, %obj, %slot);
+
+	%cycle = %obj.swordCurrentCycle[%this] | 0;
+	if(%cycle == 2) {
+		%obj.playThread(%this.swordCycleThreadSlot[%cycle], "mid4Swing");
+		%obj.schedule(33, stopThread, %this.swordCycleThreadSlot[%cycle]);
+	}
+}
 
 function VaultSwordArmor::onCycleFire(%this, %obj, %slot) {
 	%cycle = %obj.swordCurrentCycle[%this] | 0;
 
-	if(%cycle == 1) {
+	if(%cycle == 2) {
+		%obj.playThread(0, "shiftAway");
+		%obj.playThread(2, "plant");
+	}
+	else if(%cycle == 3) {
 		%sounds = MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
 		serverPlay3d(getField(%sounds, getRandom(0, getFieldCount(%sounds) - 1)), %obj.getPosition(), getRandom(8, 12) / 10);
+		%obj.playThread(0, "plant");
 	}
 
 	Parent::onCycleFire(%this, %obj, %slot);
@@ -127,7 +172,7 @@ function VaultSwordArmor::startPoleVault(%this, %obj, %slot) {
 
 	%this.schedule(150, poleVaultLoop, %obj, %slot, 10);
 
-	%this.setCycleRange(%obj, %slot, 1, 1);
+	%this.setCycleRange(%obj, %slot, 3, 3);
 }
 
 function VaultSwordArmor::poleVaultLoop(%this, %obj, %slot, %ticks) {
@@ -165,14 +210,13 @@ function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
 	%obj.forceNormalHands = false;
 	%obj.client.applyBodyParts();
 	%obj.setLookLimits(1, 0);
-	%this.forceCycleGuard(%obj, %slot, 1);
+	%this.forceCycleGuard(%obj, %slot, 3);
 
 	%this.waitSchedule(100, "resetPoleVault", %obj, %slot, true).addCondition(%obj, "isGrounded", true);
 }
 
 function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
-	talk("reset" SPC %force);
-	%this.setCycleRange(%obj, %slot, 0, 0);
+	%this.setCycleRange(%obj, %slot, 0, 2);
 	if(%force) {
 		%this.forceCycleGuard(%obj, %slot, 0);
 	}
