@@ -1,5 +1,5 @@
 // creates a wait schedules. wait schedules are only evaluted when the specified conditions are met. if they are not met, the schedule waits until the conditions are met, with conditions checked every tick
-function SimObject::waitSchedule(%this, %time, %call, %arg0, %arg1, %arg3, %arg4, %arg5, %arg6, %arg7, %arg8, %arg9, %arg10, %arg11) {
+function SimObject::waitSchedule(%this, %time, %call, %arg0, %arg1, %arg2, %arg3, %arg4, %arg5, %arg6, %arg7, %arg8, %arg9, %arg10) {
 	%waitSchedule = new ScriptObject(WaitSchedule) {
 		call = %call;
 		time = %time;
@@ -58,7 +58,7 @@ function WaitSchedule::loop(%this) {
 		}
 	}
 
-	%this.owner.call(%this.call, %this.arg[0], %this.arg[1], %this.arg[2], %this.arg[3], %this.arg[4], %this.arg[5], %this.arg[5], %this.arg[6], %this.arg[7], %this.arg[8], %this.arg[9], %this.arg[10], %this.arg[11], %this.arg[12], %this.arg[13]);
+	%this.owner.call(%this.call, %this.arg[0], %this.arg[1], %this.arg[2], %this.arg[3], %this.arg[4], %this.arg[5], %this.arg[6], %this.arg[7], %this.arg[8], %this.arg[9], %this.arg[10], %this.arg[11], %this.arg[12], %this.arg[13], %this.arg[14]);
 
 	if(isObject(%this)) {
 		%this.delete();

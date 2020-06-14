@@ -73,15 +73,14 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	swordCycleImpactImpulse[1]		= 0;
 	swordCycleVerticalImpulse[1]	= 0;
 	swordCycleHitExplosion[1]		= HighHitProjectile;
-	swordCycleHitSound[1]			= BeefBoySwordHit2Sound;
+	swordCycleHitSound[1]			= HighHit1Sound;
 	swordCyclePrepTime[1]			= 0.01;
-	swordCycleGuardSound[1]			= CycleMidReadySound;
-	swordCycleSwingSound[1]			= MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
+	swordCycleGuardSound[1]			= "";
 	swordCycleSwingSteps[1]			= 4;
 
 	// parry information
 	parryCooldown						= 1500;
-	parryDuration						= 900;
+	parryDuration						= 300;
 	parryThread 						= "parry1";
 
 	parryStunDurationSuccess			= 500; // how long targets are stunned for
@@ -102,6 +101,17 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	specialDuration						= 1000;
 };
 
+function VaultSwordArmor::onCycleFire(%this, %obj, %slot) {
+	%cycle = %obj.swordCurrentCycle[%this] | 0;
+
+	if(%cycle == 1) {
+		%sounds = MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
+		serverPlay3d(getField(%sounds, getRandom(0, getFieldCount(%sounds) - 1)), %obj.getPosition(), getRandom(8, 12) / 10);
+	}
+
+	Parent::onCycleFire(%this, %obj, %slot);
+}
+
 function VaultSwordArmor::canStartPoleVault(%this, %obj, %slot) {
 	return %obj.isGrounded;
 }
@@ -115,7 +125,7 @@ function VaultSwordArmor::startPoleVault(%this, %obj, %slot) {
 	%obj.client.applyBodyParts();
 	%obj.setLookLimits(0.5, 0.5);
 
-	%obj.schedule(150, poleVaultLoop, 10);
+	%this.schedule(150, poleVaultLoop, %obj, %slot, 10);
 
 	%this.setCycleRange(%obj, %slot, 1, 1);
 }
@@ -142,7 +152,7 @@ function VaultSwordArmor::poleVaultLoop(%this, %obj, %slot, %ticks) {
 	if(%ticks > 0) {
 		%velocity = vectorAdd(vectorScale(%obj.vaultForwardVector, 15), "0 0 14");
 		%obj.schedule(33, setVelocity, %velocity);
-		%obj.poleVaultSchedule = %obj.schedule(33, poleVaultLoop, %obj, %slot, %ticks - 1);
+		%obj.poleVaultSchedule = %this.schedule(33, poleVaultLoop, %obj, %slot, %ticks - 1);
 	}
 	else {
 		%obj.antiGravityZone.delete();
@@ -155,15 +165,16 @@ function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
 	%obj.forceNormalHands = false;
 	%obj.client.applyBodyParts();
 	%obj.setLookLimits(1, 0);
-	%this.forceCycleGuard(%this, 1, 1);
+	%this.forceCycleGuard(%obj, %slot, 1);
 
 	%this.waitSchedule(100, "resetPoleVault", %obj, %slot, true).addCondition(%obj, "isGrounded", true);
 }
 
 function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
+	talk("reset" SPC %force);
 	%this.setCycleRange(%obj, %slot, 0, 0);
 	if(%force) {
-		%this.forceCycleGuard(%obj, 0, 0);
+		%this.forceCycleGuard(%obj, %slot, 0);
 	}
 }
 
