@@ -60,7 +60,7 @@ function Player::setStunlocked(%this, %bool, %time) {
 		%this.playThread(1, "stunlock");
 	}
 	else {
-		if(isObject(%this.getMountedImage(0))) {
+		if(isObject(%this.sword[0])) {
 			%this.playThread(1, "armReadyRight");
 		}
 		else {

@@ -291,12 +291,12 @@ function VaultSwordArmor::poleVaultLoop(%this, %obj, %slot, %ticks) {
 		%obj.poleVaultSchedule = %this.schedule(33, poleVaultLoop, %obj, %slot, %ticks - 1);
 	}
 	else {
-		%obj.antiGravityZone.delete();
 		%obj.poleVaultSchedule = %this.schedule(200, stopPoleVault, %obj, %slot);
 	}
 }
 
 function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
+	%obj.antiGravityZone.delete();
 	%obj.swordCycleFrozen = false;
 	%obj.forceNormalHands = false;
 	%obj.client.applyBodyParts();
@@ -316,6 +316,17 @@ function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
 	else {
 		%obj.stopAudio(1);
 	}
+
+	if(isObject(%obj.antiGravityZone)) {
+		%obj.antiGravityZone.delete();
+	}
+
+	%obj.swordCycleFrozen = false;
+	%obj.forceNormalHands = false;
+	%obj.client.applyBodyParts();
+	%obj.setLookLimits(1, 0);
+	
+	cancel(%obj.poleVaultSchedule);
 }
 
 function VaultSwordArmor::unMount(%this, %obj, %slot) {

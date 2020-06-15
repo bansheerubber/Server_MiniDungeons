@@ -75,14 +75,18 @@ class PathfindingServer:
 								start = int(words[2])
 								end = int(words[3])
 
-								starttime = time.time()
-								path = a_star(self.nodes[start], self.nodes[end])
-								self.outgoing = f"path {path_id}"
-								for node in path:
-									self.outgoing = f"{self.outgoing} {node.id}"
-								self.outgoing = self.outgoing + "\r\n"
-								
-								print(f"Completed path in {time.time() - starttime}")
+								if start in self.nodes and end in self.nodes:
+									starttime = time.time()
+									path = a_star(self.nodes[start], self.nodes[end])
+									self.outgoing = f"path {path_id}"
+									for node in path:
+										self.outgoing = f"{self.outgoing} {node.id}"
+									self.outgoing = self.outgoing + "\r\n"
+									
+									print(f"Completed path in {time.time() - starttime}")
+								else:
+									self.outgoing = f"error {path_id}"
+									print(f"Error completing path")
 
 					self.incoming = ""
 			else: # kill the server on disconnect

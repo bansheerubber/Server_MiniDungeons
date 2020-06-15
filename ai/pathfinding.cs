@@ -85,13 +85,17 @@ function MiniDungeonsPathfinding::onConnectFailed(%this) {
 function MiniDungeonsPathfinding::onLine(%this, %data) {
 	%command = getWord(%data, 0);
 	if(%command $= "path") {
-		%start = getRealTime();
-		$MD::Path = %data;
-
 		%id = getWord(%data, 1);
 		if(isObject(%bot = $MD::PathIDTable[%id])) {
 			%bot.setPath(%data);
 		}
+	}
+	else if(%command $= "error") {
+		%id = getWord(%data, 1);
+		if(isObject(%bot = $MD::PathIDTable[%id])) {
+			%bot.setPath("");
+		}
+		warn("Failed to get path for bot" SPC $MD::PathIDTable[%id]);
 	}
 }
 
