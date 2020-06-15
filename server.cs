@@ -27,6 +27,8 @@ exec("./mechanics/notifications.cs");
 exec("./mechanics/aim prediction.cs");
 exec("./mechanics/crit.cs");
 exec("./mechanics/specials.cs");
+exec("./mechanics/compass.cs");
+exec("./mechanics/pearl compass.cs");
 
 exec("./weapons/highFlare.cs");
 exec("./weapons/lowExplosion.cs");
