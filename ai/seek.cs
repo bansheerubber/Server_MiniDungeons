@@ -25,7 +25,12 @@ function AiPlayer::seek(%this) {
 			&& getWord(%targetPosition, 2) - getWord(%position, 2) > 3
 		)
 	) {
-		%this.alarmEmote = false;
+		if(isObject(%raycast)) {
+			%this.alarmEmote = false;
+		}
+		else {
+			%this.alarmEmote = true;
+		}
 		
 		if(!%this.hasPath()) { // if we have no path, then get one. wait around until we have one
 			%this.setAimObject(%this.target);
@@ -107,6 +112,8 @@ function AiPlayer::seek(%this) {
 				%this.setMoveY(1);
 			}
 		}
+
+		%this.lastPathTick = getSimTime();
 	}
 	else {
 		%this.aiSuprise = false; // reset the suprise every tick
@@ -232,9 +239,10 @@ function AiPlayer::seek(%this) {
 
 		if(
 			vectorDist(
-				%targetPosition
+				%targetPosition,
 				%this.getPosition()
 			) < %this.attackRange
+			&& getSimTime() - %this.lastPathTick > 200
 		) {
 			%this.setAiState($MD::AiAttack);
 			return;
