@@ -17,6 +17,15 @@ function getCycleLetterFromName(%cycle) {
 	return strUpr(getSubStr(%cycle, 0, 1));
 }
 
+function Armor::isMounted(%this, %obj, %slot) {
+	for(%i = 0; %i < 4; %i++) {
+		if(%obj.sword[%i] == %this) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function Armor::mount(%this, %obj, %slot) {
 	%this = %this.getId();
 	

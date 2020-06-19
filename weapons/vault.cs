@@ -310,7 +310,9 @@ function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
 	%this.setCycleRange(%obj, %slot, 0, 2);
 	%obj.unMountImageSafe(3);
 	if(%force) {
-		%this.forceCycleGuard(%obj, %slot, 0);
+		if(%this.isMounted(%obj, %slot)) {
+			%this.forceCycleGuard(%obj, %slot, 0);	
+		}
 		%obj.playAudio(1, VaultLandingSound);
 	}
 	else {
