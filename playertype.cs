@@ -119,7 +119,7 @@ function Player::dungeonsFixAppearance(%obj, %client) {
 		%obj.swordHands.setNodeColor("lhand", %client.lhandColor);
 	}
 
-	if(isObject(%sword = %obj.sword[0])) {
+	if(%obj.hideRightHand || isObject(%sword = %obj.sword[0])) {
 		if(%obj.forceNormalHands) {
 			if(%sword.getDatablock().swordDoubleHanded) {
 				%obj.hideNode("lhand");
@@ -127,7 +127,7 @@ function Player::dungeonsFixAppearance(%obj, %client) {
 			}
 		}
 		else {
-			if(%sword.getDatablock().swordDoubleHanded) {
+			if(!%obj.hideRightHand && %sword.getDatablock().swordDoubleHanded) {
 				%obj.hideNode("rhand");
 				%obj.hideNode("lhand");
 
