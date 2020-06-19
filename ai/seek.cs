@@ -10,7 +10,7 @@ function AiPlayer::seek(%this) {
 	%targetPosition = %this.target.getHackPosition();
 
 	%raycast = containerRaycast(%this.getEyePoint(), %targetPosition, $TypeMasks::fxBrickObjectType, false);
-	if(isObject(%raycast) || (%this.seekHeightCheck && getWord(%targetPosition, 2) - getWord(%position, 2) > 3 && mAbs(getWord(%this.target.getVelocity(), 2)) < 4)) { // if we cannot see our target or our target is above us
+	if(isObject(%raycast) || (%this.seekHeightCheck && %target.isGrounded && getWord(%targetPosition, 2) - getWord(%position, 2) > 3 && mAbs(getWord(%this.target.getVelocity(), 2)) < 4)) { // if we cannot see our target or our target is above us
 		%this.alarmEmote = false;
 		
 		if(!%this.hasPath()) { // if we have no path, then get one. wait around until we have one
@@ -96,6 +96,7 @@ function AiPlayer::seek(%this) {
 			%position = %this.getPosition();
 			%targetPosition = %this.target.getPosition();
 			
+			// setup flanking
 			if(!%this.isFlanking && %this.canFlank !$= "" && %this.call(%this.canFlank)) {
 				%forwardVector = %this.target.getForwardVector();
 				%angle = mATan(getWord(%forwardVector, 0), getWord(%forwardVector, 1));
