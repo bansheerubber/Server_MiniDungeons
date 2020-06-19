@@ -1,11 +1,17 @@
 function SimObject::unGhost(%this, %client) {
 	%this.setNetFlag(6, 1);
-	%this.clearScopeToClient(%client);
+
+	if(isObject(%client)) {
+		%this.clearScopeToClient(%client);	
+	}
 }
 
 function SimObject::reGhost(%this, %client) {
 	%this.setNetFlag(6, 0);
-	%this.scopeToClient(%client);
+
+	if(isObject(%client)) {
+		%this.scopeToClient(%client);
+	}
 }
 
 function SimObject::unGhostAll(%this) {
