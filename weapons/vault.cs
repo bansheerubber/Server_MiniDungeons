@@ -301,7 +301,10 @@ function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
 	%obj.forceNormalHands = false;
 	%obj.client.applyBodyParts();
 	%obj.setLookLimits(1, 0);
-	%this.forceCycleGuard(%obj, %slot, 3);
+
+	if(%this.isMounted(%obj, %slot)) {
+		%this.forceCycleGuard(%obj, %slot, 3);
+	}
 
 	%this.waitSchedule(100, "resetPoleVault", %obj, %slot, true).addCondition(%obj, "isGrounded", true);
 }
