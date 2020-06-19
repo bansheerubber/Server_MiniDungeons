@@ -9,14 +9,20 @@ function AiPlayer::seek(%this) {
 	%position = %this.getHackPosition();
 	%targetPosition = %this.target.getHackPosition();
 
-	%raycast = containerRaycast(%this.getEyePoint(), %targetPosition, $TypeMasks::fxBrickObjectType, false);
+	%raycast = containerRaycast(
+		%this.getEyePoint(),
+		%targetPosition,
+		$TypeMasks::fxBrickObjectType,
+		false
+	);
+
 	if(
 		isObject(%raycast) // if we cannot see our target
 		||
 		( // if our target is above us
 			%this.seekHeightCheck
+			&& %this.target.isGrounded
 			&& getWord(%targetPosition, 2) - getWord(%position, 2) > 3
-			&& mAbs(getWord(%this.target.getVelocity(), 2)) < 4
 		)
 	) {
 		%this.alarmEmote = false;
@@ -35,7 +41,7 @@ function AiPlayer::seek(%this) {
 
 			%this.requestPath(%closestNode, %targetClosestNode);
 			%this.nextPathRequest = getSimTime() + 10000;
-
+			
 			%this.ai = %this.waitSchedule(500, seek).addMethodCondition(%this, "hasPath", true);
 			return;
 		}
@@ -50,7 +56,16 @@ function AiPlayer::seek(%this) {
 			%nextPosition = %this.path[%this.currentPathIndex];
 
 			// skip over nodes that we can see
-			while((%raycast = containerRaycast(%position, %nextPosition, $TypeMasks::fxBrickObjectType, 0)).getName() $= "_node" && %this.currentPathIndex < %this.pathCount && mAbs(getWord(%nextPosition, 2) - getWord(%position, 2)) < 3) {
+			while(
+				(%raycast = containerRaycast(
+					%position,
+					%nextPosition,
+					$TypeMasks::fxBrickObjectType,
+					0)
+				).getName() $= "_node"
+				&& %this.currentPathIndex < %this.pathCount
+				&& mAbs(getWord(%nextPosition, 2) - getWord(%position, 2)) < 3
+			) {
 				%this.currentPathIndex++;
 				%nextPosition = %this.path[%this.currentPathIndex];
 			}
@@ -64,7 +79,16 @@ function AiPlayer::seek(%this) {
 			}
 
 			// if we're standing ontop of a player, stop for a second so we dismount
-			if(isObject(containerRaycast(%this.getPosition(), vectorAdd(%this.getPosition(), "0 0 -1"), $TypeMasks::PlayerObjectType, %this))) {
+			if(
+				isObject(
+					containerRaycast(
+						%this.getPosition(),
+						vectorAdd(%this.getPosition(), "0 0 -1"),
+						$TypeMasks::PlayerObjectType,
+						%this
+					)
+				)
+			) {
 				%this.setMoveX(0);
 				%this.setMoveY(0);
 			}
@@ -72,7 +96,14 @@ function AiPlayer::seek(%this) {
 				%this.resetPath();
 			}
 			else {
-				%this.setAimVector(vectorNormalize(getWords(vectorSub(%nextPosition, %this.getPosition()), 0, 1)));
+				%this.setAimVector(
+					vectorNormalize(
+						getWords(
+							vectorSub(%nextPosition, %this.getPosition()),
+							0, 1
+						)
+					)
+				);
 				%this.setMoveY(1);
 			}
 		}
@@ -96,7 +127,16 @@ function AiPlayer::seek(%this) {
 			%this.resetPath();
 		}
 
-		if(isObject(containerRaycast(%this.getPosition(), vectorAdd(%this.getPosition(), "0 0 -1"), $TypeMasks::PlayerObjectType, %this))) {
+		if(
+			isObject(
+				containerRaycast(
+					%this.getPosition(),
+					vectorAdd(%this.getPosition(), "0 0 -1"),
+					$TypeMasks::PlayerObjectType,
+					%this
+				)
+			)
+		) {
 			%this.setMoveX(0);
 			%this.setMoveY(0);
 		}
@@ -105,9 +145,16 @@ function AiPlayer::seek(%this) {
 			%targetPosition = %this.target.getPosition();
 			
 			// setup flanking
-			if(!%this.isFlanking && %this.canFlank !$= "" && %this.call(%this.canFlank)) {
+			if(
+				!%this.isFlanking
+				&& %this.canFlank !$= "" &&
+				%this.call(%this.canFlank)
+			) {
 				%forwardVector = %this.target.getForwardVector();
-				%angle = mATan(getWord(%forwardVector, 0), getWord(%forwardVector, 1));
+				%angle = mATan(
+					getWord(%forwardVector, 0),
+					getWord(%forwardVector, 1)
+				);
 				// %radius = vectorDist(%position, %targetPosition) * 0.6;
 				%radius = 10;
 				%x1 = mSin(%angle - $pi / 2) * %radius;
@@ -137,16 +184,36 @@ function AiPlayer::seek(%this) {
 			}
 
 			if(%this.isFlanking) {
-				%angle = mATan(getWord(%this.flankForwardVector, 0), getWord(%this.flankForwardVector, 1));
+				%angle = mATan(
+					getWord(%this.flankForwardVector, 0),
+					getWord(%this.flankForwardVector, 1)
+				);
 				%x1 = mSin(%angle - $pi / 2) * %this.flankRadius;
 				%y1 = mCos(%angle - $pi / 2) * %this.flankRadius;
 				%flankPosition = vectorAdd(%targetPosition, %x1 SPC %y1 SPC "0");
-				%flankVector = vectorNormalize(getWords(vectorSub(%flankPosition, %this.getPosition()), 0, 1)); // calculate correct heading based off of targets current position
+				
+				// calculate correct heading based off of targets current position
+				%flankVector = vectorNormalize(
+					getWords(
+						vectorSub(%flankPosition, %position),
+						0, 1
+					)
+				);
 
 				// if we have a wall in the way, then stop flanking
-				%start = %this.getHackPosition();
-				%raycast = containerRaycast(%start, vectorAdd(%start, vectorScale(%flankVector, 4)), $TypeMasks::fxBrickObjectType, false);
-				if(isObject(%raycast) || vectorDist(%flankPosition, %position) < 3 || vectorDist(%position, %targetPosition) < %this.flankStopDistance || getSimTime() > %this.flankStopTime) {
+				%raycast = containerRaycast(
+					%position,
+					vectorAdd(%position, vectorScale(%flankVector, 4)),
+					$TypeMasks::fxBrickObjectType,
+					false
+				);
+
+				if(
+					isObject(%raycast)
+					|| vectorDist(%flankPosition, %position) < 3
+					|| vectorDist(%position, %targetPosition) < %this.flankStopDistance
+					|| getSimTime() > %this.flankStopTime
+				) {
 					%this.setAimObject(%this.target);
 					%this.setMoveY(1);
 					%this.isFlanking = false;
@@ -163,7 +230,12 @@ function AiPlayer::seek(%this) {
 			}
 		}
 
-		if(vectorDist(%this.target.getPosition(), %this.getPosition()) < %this.attackRange) {
+		if(
+			vectorDist(
+				%targetPosition
+				%this.getPosition()
+			) < %this.attackRange
+		) {
 			%this.setAiState($MD::AiAttack);
 			return;
 		}
