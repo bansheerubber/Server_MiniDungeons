@@ -19,7 +19,7 @@ function getCycleLetterFromName(%cycle) {
 
 function Armor::isMounted(%this, %obj, %slot) {
 	for(%i = 0; %i < 4; %i++) {
-		if(%obj.sword[%i] == %this) {
+		if(isObject(%sword = %obj.sword[%i]) && %sword.getDatablock() == %this) {
 			return true;
 		}
 	}
