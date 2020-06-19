@@ -314,6 +314,7 @@ function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
 			%this.forceCycleGuard(%obj, %slot, 0);	
 		}
 		%obj.playAudio(1, VaultLandingSound);
+		%obj.playThread(0, "plant");
 	}
 	else {
 		%obj.stopAudio(1);
