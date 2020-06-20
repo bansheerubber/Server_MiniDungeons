@@ -244,7 +244,7 @@ function interpretHallLine(%name, %line, %slot, %lineCount) {
 		
 		case "add":
 			%partName = getWord(%line, 1);
-			loadHallwayBLS("config/NewDuplicator/Saves/" @ %partName @ ".bls", %partName);
+			loadDungeonBLS("config/NewDuplicator/Saves/" @ %partName @ ".bls", %partName, "Hallway");
 			addHallwayPart(%name, %partName, %slot, getWord(%line, 2));
 		
 		case "recolor":
@@ -348,7 +348,7 @@ function interpretHallLine(%name, %line, %slot, %lineCount) {
 		case "staircase":
 			%partName = getWord(%line, 1);
 			%staircasePartName = getWord(%line, 2);
-			loadHallwayBLS("config/NewDuplicator/Saves/" @ %staircasePartName @ ".bls", %staircasePartName);
+			loadDungeonBLS("config/NewDuplicator/Saves/" @ %staircasePartName @ ".bls", %staircasePartName, "Hallway");
 			$MD::Hallway[%name, %partName, "staircase"] = %staircasePartName;
 			setHallwayRecolorAlias(%name, %staircasePartName, %partName); // set recolor alias for all staircases
 		

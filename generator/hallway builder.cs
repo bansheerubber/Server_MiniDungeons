@@ -1,5 +1,11 @@
-function loadHallwayBLS(%fileName, %name) {
-	if($MD::Hallway[%name, "brickCount"] $= "") {
+function loadDungeonBLS(%fileName, %name, %globalPrefix) {
+	if(
+		getMDGlobal(
+			%globalPrefix,
+			%name,
+			%brickCount
+		) $= ""
+	) {
 		%file = new FileObject();
 		%file.openForRead(%fileName);
 		%brickCount = 0;
@@ -10,35 +16,104 @@ function loadHallwayBLS(%fileName, %name) {
 			// handle brick names
 			if(getWord(%line, 0) $= "+-NTOBJECTNAME") {
 				%objectName = getWord(%line, 1);
-				$MD::Hallway[%name, %brickCount - 1, "name"] = %objectName;
+				setMDGlobal(
+					%objectName,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"name"
+				);
 				// detect the origin so we can handle it
 				if(%objectName $= "origin") {
-					%position = $MD::Hallway[%name, %brickCount - 1, "position"];
+					%position = getMDGlobal(
+						%globalPrefix,
+						%name,
+						%brickCount - 1,
+						"position"
+					);
+
 					if(getWord(%position, 2) < getWord(%origin, 2)) {
 						%origin = %position;
 					}
 
 					%brickCount--;
-					$MD::Hallway[%name, "brickCount"] = %brickCount;
+					setMDGlobal(
+						%brickCount,
+						%globalPrefix,
+						%name,
+						"brickCount"
+					);
 				}
 			}
 			// handle events
 			else if(getWord(%line, 0) $= "+-EVENT") {
 				%eventCount = $MD::Hallway[%name, %brickCount - 1, "eventCount"] | 0;
-				$MD::Hallway[%name, %brickCount - 1, "event", %eventCount] = %line;
-				$MD::Hallway[%name, %brickCount - 1, "eventCount"]++;
+				setMDGlobal(
+					%line,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"event",
+					%eventCount
+				);
+				setMDGlobal(
+					getMDGlobal(
+						%globalPrefix,
+						%name,
+						%brickCount - 1,
+						"eventCount"
+					) + 1,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"eventCount"
+				);
 			}
 			else if(getWord(%line, 0) $= "+-LIGHT") {
 				%linething = getWords(%line, 1, getWordCount(%line));
-				%light = $uiNameTable_Lights[getSubStr(%linething, 0, strPos(%linething, "\""))];
-				$MD::Hallway[%name, %brickCount - 1, "light"] = %light;
+				setMDGlobal(
+					$uiNameTable_Lights[
+						getSubStr(
+							%linething,
+							0,
+							strPos(%linething, "\"")
+						)
+					],
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"light"
+				);
 			}
 			else if(getWord(%line, 0) $= "+-EMITTER") {
 				%linething = getWords(%line, 1, getWordCount(%line));
-				%emitter = $uiNameTable_Emitters[getSubStr(%linething, 0, strPos(%linething, "\""))];
-				%direction = getSubStr(%linething, strPos(%linething, "\"") + 2, strLen(%linething));
-				$MD::Hallway[%name, %brickCount - 1, "emitter"] = %emitter;
-				$MD::Hallway[%name, %brickCount - 1, "emitterDirection"] = %direction;
+				%emitter = $uiNameTable_Emitters[
+					getSubStr(
+						%linething,
+						0,
+						strPos(%linething, "\"")
+					)
+				];
+				%direction = getSubStr(
+					%linething,
+					strPos(%linething, "\"") + 2,
+					strLen(%linething)
+				);
+
+				setMDGlobal(
+					%emitter,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"emitter"
+				);
+				setMDGlobal(
+					%direction,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"emitterDirection"
+				);
 			}
 			else if((%index = strPos(%line, "\"")) != -1) {
 				// position, angleid, isBasePlate, colorID, print, colorFXID, shapeFXID, isRaycasting, isColliding, isRendering
@@ -52,19 +127,92 @@ function loadHallwayBLS(%fileName, %name) {
 					%rest = getSubStr(%line, %index + 2, strLen(%line));
 					if(getWord(%rest, 6) !$= "2x2f/arrow") { // only save bricks that do not have the arrow print
 						%rest = getSubStr(%line, %index + 2, strLen(%line));
-						$MD::Hallway[%name, %brickCount, "datablock"] = %datablock;
-						$MD::Hallway[%name, %brickCount, "position"] = getWords(%rest, 0, 2);
-						$MD::Hallway[%name, %brickCount, "angleId"] = getWord(%rest, 3);
-						$MD::Hallway[%name, %brickCount, "isBasePlate"] = getWord(%rest, 4);
-						$MD::Hallway[%name, %brickCount, "colorId"] = getWord(%rest, 5);
-						$MD::Hallway[%name, %brickCount, "print"] = getWord(%rest, 6);
-						$MD::Hallway[%name, %brickCount, "colorFXID"] = getWord(%rest, 7);
-						$MD::Hallway[%name, %brickCount, "shapeFXID"] = getWord(%rest, 8);
-						$MD::Hallway[%name, %brickCount, "isRaycasting"] = getWord(%rest, 9);
-						$MD::Hallway[%name, %brickCount, "isColliding"] = getWord(%rest, 10);
-						$MD::Hallway[%name, %brickCount, "isRendering"] = getWord(%rest, 11);
+
+						setMDGlobal(
+							%datablock,
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"datablock"
+						);
+						setMDGlobal(
+							getWords(%rest, 0, 2),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"position"
+						);
+						setMDGlobal(
+							getWord(%rest, 3),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"angleId"
+						);
+						setMDGlobal(
+							getWord(%rest, 4),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"isBasePlate"
+						);
+						setMDGlobal(
+							getWord(%rest, 5),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"colorId"
+						);
+						setMDGlobal(
+							getWord(%rest, 6),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"print"
+						);
+						setMDGlobal(
+							getWord(%rest, 7),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"colorFXID"
+						);
+						setMDGlobal(
+							getWord(%rest, 8),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"shapeFXID"
+						);
+						setMDGlobal(
+							getWord(%rest, 9),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"isRaycasting"
+						);
+						setMDGlobal(
+							getWord(%rest, 10),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"isColliding"
+						);
+						setMDGlobal(
+							getWord(%rest, 11),
+							%globalPrefix,
+							%name,
+							%brickCount,
+							"isRendering"
+						);
+
 						%brickCount++;
-						$MD::Hallway[%name, "brickCount"] = %brickCount;
+						setMDGlobal(
+							%brickCount,
+							%globalPrefix,
+							%name,
+							"brickCount"
+						);
 					}
 				}
 			}
@@ -73,12 +221,31 @@ function loadHallwayBLS(%fileName, %name) {
 		%file.delete();
 
 		// go through all bricks and apply the origin modifier
-		for(%i = 0; %i < $MD::Hallway[%name, "brickCount"]; %i++) {
+		%count = getMDGlobal(
+			%globalPrefix,
+			%name,
+			"brickCount"
+		);
+		for(%i = 0; %i < %count; %i++) {
 			if(getWord(%origin, 2) == 7.5) {
 				%origin = setWord(%origin, 2, 0.1);
 			}
 			
-			$MD::Hallway[%name, %i, "position"] = vectorSub($MD::Hallway[%name, %i, "position"], %origin SPC "0");
+			setMDGlobal(
+				vectorSub(
+					getMDGlobal(
+						%globalPrefix,
+						%name,
+						%i,
+						"position"
+					),
+					%origin SPC "0"
+				),
+				%globalPrefix,
+				%name,
+				%i,
+				"position"
+			);
 		}
 	}
 }
@@ -277,7 +444,7 @@ function buildHallway(%hallwayCollectionName, %startPosition, %endPosition, %run
 	}
 
 	%oldPosition = %startPosition;
-	for(%i = 0; %i < %distance; %i += 8) {
+	for(%i = 8; %i < %distance; %i += 8) {
 		%position = vectorAdd(%startPosition, vectorScale(%xyDirection, %i));
 		%position = vectorAdd(%position, "0 0" SPC getWord(vectorScale(%direction, %i), 2));
 		%x = mFloor(getWord(%position, 0) / 0.5) * 0.5;

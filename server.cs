@@ -30,15 +30,16 @@ exec("./mechanics/specials.cs");
 exec("./mechanics/compass.cs");
 exec("./mechanics/pearl compass.cs");
 
-exec("./weapons/highFlare.cs");
-exec("./weapons/lowExplosion.cs");
-exec("./weapons/oneHanded.cs");
-exec("./weapons/doubleHanded.cs");
-exec("./weapons/woodShield.cs");
+exec("./weapons/high flare.cs");
+exec("./weapons/low explosion.cs");
+exec("./weapons/one handed.cs");
+exec("./weapons/double handed.cs");
+exec("./weapons/wood shield.cs");
 exec("./weapons/vault.cs");
 
-exec("./generator/hallwayInterpreter.cs"); // interprets .hall files
-exec("./generator/hallwayBuilder.cs"); // builds a hallway based on .hall files
+exec("./generator/hallway interpreter.cs"); // interprets .hall files
+exec("./generator/hallway builder.cs"); // builds a hallway based on .hall files
+exec("./generator/dungeon interpreter.cs");
 
 exec("./ai/rooms.cs");
 exec("./ai/avatars.cs");
@@ -54,7 +55,7 @@ exec("./ai/mace.cs");
 exec("./ai/gladius.cs");
 exec("./ai/bow.cs");
 exec("./ai/cannon.cs");
-exec("./ai/nameGenerator.cs");
+exec("./ai/name generator.cs");
 exec("./ai/spawn.cs");
 
 exec("./aiweapons/mace.cs");
