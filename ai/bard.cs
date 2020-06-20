@@ -20,7 +20,9 @@ function BrickBardSpawnData::onPlant(%this, %obj) {
 }
 
 function BrickBardSpawnData::spawnBard(%this, %obj) {
-	%obj.bard = spawnBard(%obj.getPosition(), "0 0" SPC 90 * %obj.angleId);
+	if(!isObject(%obj.bard)) {
+		%obj.bard = spawnBard(%obj.getPosition(), "0 0" SPC 90 * %obj.angleId);
+	}
 }
 
 function BrickBardSpawnData::onRemove(%this, %obj) {
