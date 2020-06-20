@@ -1,18 +1,28 @@
 function loadDungeonBLS(%fileName, %name, %globalPrefix) {
+	if(!isFile(%fileName)) {
+		error("Could not find file" SPC %fileName);
+		return;
+	}
+	
 	if(
 		getMDGlobal(
 			%globalPrefix,
 			%name,
-			%brickCount
+			"brickCount"
 		) $= ""
 	) {
 		%file = new FileObject();
 		%file.openForRead(%fileName);
 		%brickCount = 0;
-		%origin = "0 0 1000";
+
+		%originSet = false;
+		%origin = "0 0 -10.1";
+
+		%topLeftOriginSet = false;
+		%topLeftOrigin = "10000 1000 0";
+
 		while(!%file.isEOF()) {
 			%line = %file.readLine();
-
 			// handle brick names
 			if(getWord(%line, 0) $= "+-NTOBJECTNAME") {
 				%objectName = getWord(%line, 1);
@@ -32,8 +42,9 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 						"position"
 					);
 
-					if(getWord(%position, 2) < getWord(%origin, 2)) {
+					if(!%originSet || getWord(%position, 2) < getWord(%origin, 2)) {
 						%origin = %position;
+						%originSet = true;
 					}
 
 					%brickCount--;
@@ -124,9 +135,20 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 
 				// handle all bricks
 				if(isObject(%datablock)) {
-					%rest = getSubStr(%line, %index + 2, strLen(%line));
 					if(getWord(%rest, 6) !$= "2x2f/arrow") { // only save bricks that do not have the arrow print
 						%rest = getSubStr(%line, %index + 2, strLen(%line));
+
+						// if we have a floor sketch, then calculate the left origin
+						if(%datablock.getName() $= "BrickFloorSketchData") {
+							%testPosition = vectorAdd(
+								getWords(%rest, 0, 2),
+								-BrickFloorSketchData.brickSizeX / 4 SPC -BrickFloorSketchData.brickSizeY / 4 SPC "0"
+							);
+							if(!%topLeftOriginSet || vectorDist(%testPosition, "-500000 -500000 0") < vectorDist(%topLeftOrigin, "-500000 -500000 0")) {
+								%topLeftOrigin = %testPosition;
+								%topLeftOriginSet = true;
+							}
+						}
 
 						setMDGlobal(
 							%datablock,
@@ -227,8 +249,13 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 			"brickCount"
 		);
 		for(%i = 0; %i < %count; %i++) {
-			if(getWord(%origin, 2) == 7.5) {
-				%origin = setWord(%origin, 2, 0.1);
+			if(%originSet) {
+				if(getWord(%origin, 2) == 7.5) {
+					%origin = setWord(%origin, 2, 0.1);
+				}
+			}
+			else if(%topLeftOriginSet) {
+				%origin = %topLeftOrigin;
 			}
 			
 			setMDGlobal(

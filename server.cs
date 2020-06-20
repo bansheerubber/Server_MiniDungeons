@@ -4,6 +4,7 @@ forceRequiredAddOn("Brick_MiniDungeons");
 exec("./playertype.cs");
 exec("./sounds.cs");
 
+exec("./lib/global.cs");
 exec("./lib/brick.cs");
 exec("./lib/debug.cs");
 exec("./lib/math.cs");
@@ -41,6 +42,7 @@ exec("./generator/builder.cs");
 exec("./generator/hallway interpreter.cs"); // interprets .hall files
 exec("./generator/hallway builder.cs"); // builds a hallway based on .hall files
 exec("./generator/dungeon interpreter.cs");
+exec("./generator/room builder.cs");
 
 exec("./ai/rooms.cs");
 exec("./ai/avatars.cs");
