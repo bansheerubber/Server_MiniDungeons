@@ -58,14 +58,18 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 			}
 			// handle events
 			else if(getWord(%line, 0) $= "+-EVENT") {
-				%eventCount = $MD::Hallway[%name, %brickCount - 1, "eventCount"] | 0;
 				setMDGlobal(
 					%line,
 					%globalPrefix,
 					%name,
 					%brickCount - 1,
 					"event",
-					%eventCount
+					getMDGlobal(
+						%globalPrefix,
+						%name,
+						%brickCount - 1,
+						"eventCount"
+					) | 0
 				);
 				setMDGlobal(
 					getMDGlobal(
@@ -135,9 +139,8 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 
 				// handle all bricks
 				if(isObject(%datablock)) {
+					%rest = getSubStr(%line, %index + 2, strLen(%line));
 					if(getWord(%rest, 6) !$= "2x2f/arrow") { // only save bricks that do not have the arrow print
-						%rest = getSubStr(%line, %index + 2, strLen(%line));
-
 						// if we have a floor sketch, then calculate the left origin
 						if(%datablock.getName() $= "BrickFloorSketchData") {
 							%testPosition = vectorAdd(

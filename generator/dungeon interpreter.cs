@@ -1,5 +1,10 @@
 function readDungeonFile(%fileName) {
 	deleteVariables("$MD::Dungeon*");
+
+	if(!isFile(%fileName)) {
+		error("Could not find file" SPC %fileName);
+		return;
+	}
 	
 	%file = new FileObject();
 	%file.openForRead(%fileName);
@@ -45,6 +50,11 @@ function readDungeonFile(%fileName) {
 				SPC mFloor(
 					(getWord($MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "end"], 2) + 0.1) / 2.4
 				) * 2.4 - 0.1;
+			
+			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "isHorizontal"] = getWord(%line, 4);
+			
+			$MD::DungeonHallways[getWords(%line, 0, 1)] = getWord(%line, 4);
+			$MD::DungeonHallways[getWords(%line, 2, 3)] = getWord(%line, 4);
 
 			$MD::DungeonHallwaysCount++;
 		}
@@ -55,38 +65,44 @@ function readDungeonFile(%fileName) {
 }
 
 function testRooms() {
-	for(%i = 0; %i < $MD::DungeonRoomsCount; %i++) {
+	%count = $MD::DungeonRoomsCount;
+	for(%i = 0; %i < %count; %i++) {
 		%width = getWord($MD::DungeonRooms[%i, "size"], 0);
 		%height = getWord($MD::DungeonRooms[%i, "size"], 1);
 		%position = $MD::DungeonRooms[%i, "position"];
-		for(%x = 0; %x < %width; %x++) {
-			for(%y = 0; %y < %height; %y++) {
-				%brick = new fxDTSBrick() {
-					datablock = brick16x16FData;
-					position = vectorAdd(
-						%position,
-						vectorScale(
-							%x SPC %y SPC 0,
-							8
-						)
-					);
-					angleId = 0;
-					colorID = 0;
-					isBasePlate = 1;
-					rotation = "0 0 0 1";
-					sacle = "1 1 1";
-					client = 0;
-					
-					isPlanted = 1;
-					isHackBrick = 1;
-				};
-				BrickGroup_999999.add(%brick);
-				%error = %brick.plant();
 
-				%brick.onPlant();
-				%brick.setTrusted(true);
-			}
+		if(%width == 3 && %height == 4) {
+			schedule(100 * %i, 0, plantRoom, "test_3x4", vectorAdd(%position, "-4 -4 0"), 0);
 		}
+
+		// for(%x = 0; %x < %width; %x++) {
+		// 	for(%y = 0; %y < %height; %y++) {
+		// 		%brick = new fxDTSBrick() {
+		// 			datablock = brick16x16FData;
+		// 			position = vectorAdd(
+		// 				%position,
+		// 				vectorScale(
+		// 					%x SPC %y SPC 0,
+		// 					8
+		// 				)
+		// 			);
+		// 			angleId = 0;
+		// 			colorID = 0;
+		// 			isBasePlate = 1;
+		// 			rotation = "0 0 0 1";
+		// 			sacle = "1 1 1";
+		// 			client = 0;
+					
+		// 			isPlanted = 1;
+		// 			isHackBrick = 1;
+		// 		};
+		// 		BrickGroup_999999.add(%brick);
+		// 		%error = %brick.plant();
+
+		// 		%brick.onPlant();
+		// 		%brick.setTrusted(true);
+		// 	}
+		// }
 	}
 }
 

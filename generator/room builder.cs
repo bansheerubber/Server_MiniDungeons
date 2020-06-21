@@ -1,4 +1,6 @@
 function loadWallFiles() {
+	deleteVariables("$MD::Room*");
+	
 	loadDungeonBLS("config/NewDuplicator/Saves/room_wall_s_d_b.bls", "wall_s_d_b", "Room");
 	loadDungeonBLS("config/NewDuplicator/Saves/room_wall_s_b.bls", "wall_s_b", "Room");
 	loadDungeonBLS("config/NewDuplicator/Saves/room_wall_s_m.bls", "wall_s_m", "Room");
@@ -38,11 +40,11 @@ function getWallFlags(%datablock, %color, %isDoor) {
 			return "ceiling";
 	}
 
-	if(%isDoor) {
-		%flags = %flags @ "_" @ "d";
-	}
-
 	if(%color == 0) {
+		if(%isDoor) {
+			%flags = %flags @ "_" @ "d";
+		}
+		
 		%flags = %flags @ "_" @ "b";
 	}
 	else if(%color == 1) {
@@ -85,11 +87,23 @@ function plantRoom(%name, %position, %orientation) {
 		%angleId = ($MD::Room[%name, %i, "angleId"] + %orientation) % 4;
 		
 		if(strPos($MD::Room[%name, %i, "datablock"].getName(), "SketchData") != -1) {
+			%x = mFloorMultipleCenter(getWord(%brickPosition, 0), 8) / 8;
+			%y = mFloorMultipleCenter(getWord(%brickPosition, 1), 8) / 8;
+			%isDoor = false;
+			if($MD::DungeonHallways[%x SPC %y] !$= "") {
+				if(
+					((%angleId == 0 || %angleId == 2) && $MD::DungeonHallways[%x SPC %y] == 1)
+					|| ((%angleId == 1 || %angleId == 3) && $MD::DungeonHallways[%x SPC %y] == 0)
+				) {
+					%isDoor = true;
+				}
+			}
+			
 			plantRoom(
 				getWallFlags(
 					$MD::Room[%name, %i, "datablock"].getName(),
 					$MD::Room[%name, %i, "colorId"],
-					false
+					%isDoor
 				),
 				getWallPosition($MD::Room[%name, %i, "datablock"].getName(), %brickPosition),
 				%angleId
@@ -149,4 +163,18 @@ function plantRoom(%name, %position, %orientation) {
 	}
 
 	$MD::RoomCount++;
+}
+
+function unGhostGroup(%group, %client) {
+	%count = %group.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%group.getObject(%i).unGhost(%client);
+	}
+}
+
+function reGhostGroup(%group, %client) {
+	%count = %group.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%group.getObject(%i).reGhost(%client);
+	}
 }
