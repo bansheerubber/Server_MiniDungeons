@@ -19,7 +19,16 @@ function loadWallFiles() {
 	loadDungeonBLS("config/NewDuplicator/Saves/testceiling1.bls", "ceiling", "Room");
 	loadDungeonBLS("config/NewDuplicator/Saves/testfloor1.bls", "floor", "Room");
 
-	loadDungeonBLS("config/NewDuplicator/Saves/test_3x4.bls", "test_3x4", "Room");
+	for(%width = 3; %width < 6; %width++) {
+		for(%height = 3; %height < 6; %height++) {
+			if(!%set[%width @ %height]) {
+				loadDungeonBLS("config/NewDuplicator/Saves/test_" @ %width @ "x" @ %height @ ".bls", "test_" @ %width @ "x" @ %height, "Room");
+				%set[%width @ %height] = true;
+			}
+		}
+	}
+
+	loadDungeonBLS("config/NewDuplicator/Saves/test_shop.bls", "test_shop", "Room");
 }
 
 function getWallFlags(%datablock, %color, %isDoor) {

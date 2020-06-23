@@ -635,3 +635,5 @@ Father
 Penguin
 Sentient
 Hollow
+Dracula
+Von

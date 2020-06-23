@@ -71,8 +71,11 @@ function testRooms() {
 		%height = getWord($MD::DungeonRooms[%i, "size"], 1);
 		%position = $MD::DungeonRooms[%i, "position"];
 
-		if(%width == 3 && %height == 4) {
-			schedule(100 * %i, 0, plantRoom, "test_3x4", vectorAdd(%position, "-4 -4 0"), 0);
+		if(%width == 2 && %height == 2) {
+			schedule(100 * %i, 0, plantRoom, "test_shop", vectorAdd(%position, "-4 -4 0"), 0);
+		}
+		else {
+			schedule(100 * %i, 0, plantRoom, "test_" @ %width @ "x" @ %height, vectorAdd(%position, "-4 -4 0"), 0);
 		}
 
 		// for(%x = 0; %x < %width; %x++) {
