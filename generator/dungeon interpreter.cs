@@ -1,6 +1,10 @@
 function readDungeonFile(%fileName) {
 	deleteVariables("$MD::Dungeon*");
 
+	if(!isObject($MD::DungeonRoomSet)) {
+		$MD::DungeonRoomSet = new SimSet();
+	}
+
 	if(!isFile(%fileName)) {
 		error("Could not find file" SPC %fileName);
 		return;
@@ -25,14 +29,14 @@ function readDungeonFile(%fileName) {
 		}
 		// parse rooms
 		else if(%mode == 1) {
-			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"] = vectorScale(getWords(%line, 1, 2) SPC 20, 8);
-			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"] = 
-				getWords($MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"], 0, 1)
-				SPC mFloor(
-					(getWord($MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"], 2) + 0.1) / 2.4
-				) * 2.4 - 0.1;
-			
+			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"] = getWords(%line, 1, 2);
 			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "size"] = $MD::DungeonRoomType[getWord(%line, 0)];
+
+			createRoom(
+				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"],
+				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "size"]
+			);
+
 			$MD::DungeonRoomsCount++;
 		}
 		// parse hallways
@@ -58,6 +62,21 @@ function readDungeonFile(%fileName) {
 
 			$MD::DungeonHallwaysCount++;
 		}
+		// parse neighbors
+		else if(%mode == 3) {
+			if(%neighborLineIndex $= "") {
+				%neighborLineIndex = 0;
+			}
+
+			%room = $MD::DungeonRoomSet.getObject(%neighborLineIndex);
+			%count = getWordCount(%line);
+			for(%i = 0; %i < %count; %i++) {
+				%neighbor = $MD::DungeonRoomSet.getObject(getWord(%line, %i));
+				%room.roomAddNeighbor(%neighbor);
+			}
+
+			%neighborLineIndex++;
+		}
 	}
 
 	%file.close();
@@ -65,47 +84,9 @@ function readDungeonFile(%fileName) {
 }
 
 function testRooms() {
-	%count = $MD::DungeonRoomsCount;
+	%count = $MD::DungeonRoomSet.getCount();
 	for(%i = 0; %i < %count; %i++) {
-		%width = getWord($MD::DungeonRooms[%i, "size"], 0);
-		%height = getWord($MD::DungeonRooms[%i, "size"], 1);
-		%position = $MD::DungeonRooms[%i, "position"];
-
-		if(%width == 2 && %height == 2) {
-			schedule(100 * %i, 0, plantRoom, "test_shop", vectorAdd(%position, "-4 -4 0"), 0);
-		}
-		else {
-			schedule(100 * %i, 0, plantRoom, "test_" @ %width @ "x" @ %height, vectorAdd(%position, "-4 -4 0"), 0);
-		}
-
-		// for(%x = 0; %x < %width; %x++) {
-		// 	for(%y = 0; %y < %height; %y++) {
-		// 		%brick = new fxDTSBrick() {
-		// 			datablock = brick16x16FData;
-		// 			position = vectorAdd(
-		// 				%position,
-		// 				vectorScale(
-		// 					%x SPC %y SPC 0,
-		// 					8
-		// 				)
-		// 			);
-		// 			angleId = 0;
-		// 			colorID = 0;
-		// 			isBasePlate = 1;
-		// 			rotation = "0 0 0 1";
-		// 			sacle = "1 1 1";
-		// 			client = 0;
-					
-		// 			isPlanted = 1;
-		// 			isHackBrick = 1;
-		// 		};
-		// 		BrickGroup_999999.add(%brick);
-		// 		%error = %brick.plant();
-
-		// 		%brick.onPlant();
-		// 		%brick.setTrusted(true);
-		// 	}
-		// }
+		$MD::DungeonRoomSet.getObject(%i).schedule(100 * %i, roomBuild);
 	}
 }
 

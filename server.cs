@@ -43,6 +43,8 @@ exec("./generator/hallway interpreter.cs"); // interprets .hall files
 exec("./generator/hallway builder.cs"); // builds a hallway based on .hall files
 exec("./generator/dungeon interpreter.cs");
 exec("./generator/room builder.cs");
+exec("./generator/room.cs");
+exec("./generator/ghost util.cs");
 
 exec("./ai/rooms.cs");
 exec("./ai/avatars.cs");

@@ -637,3 +637,6 @@ Sentient
 Hollow
 Dracula
 Von
+Couch
+Table
+Chair

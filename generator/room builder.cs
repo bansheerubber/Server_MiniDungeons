@@ -17,7 +17,7 @@ function loadWallFiles() {
 	loadDungeonBLS("config/NewDuplicator/Saves/room_wall_c2_t.bls", "wall_c2_t", "Room");
 
 	loadDungeonBLS("config/NewDuplicator/Saves/testceiling1.bls", "ceiling", "Room");
-	loadDungeonBLS("config/NewDuplicator/Saves/testfloor1.bls", "floor", "Room");
+	loadDungeonBLS("config/NewDuplicator/Saves/room_floor1.bls", "floor1", "Room");
 
 	for(%width = 3; %width < 6; %width++) {
 		for(%height = 3; %height < 6; %height++) {
@@ -43,7 +43,7 @@ function getWallFlags(%datablock, %color, %isDoor) {
 			%flags = "wall_" @ "c2";
 		
 		case "BrickFloorSketchData":
-			return "floor";
+			return "floor1";
 		
 		case "BrickCeilingSketchData":
 			return "ceiling";
@@ -77,7 +77,7 @@ function getWallPosition(%datablock, %position) {
 	}
 }
 
-function plantRoom(%name, %position, %orientation) {
+function plantRoom(%name, %position, %orientation, %simSet) {
 	%position = getWords(%position, 0, 1)
 		SPC mFloor(
 			(getWord(%position, 2) + 0.1) / 0.2
@@ -115,7 +115,8 @@ function plantRoom(%name, %position, %orientation) {
 					%isDoor
 				),
 				getWallPosition($MD::Room[%name, %i, "datablock"].getName(), %brickPosition),
-				%angleId
+				%angleId,
+				%simSet
 			);
 		}
 		else {
@@ -136,6 +137,11 @@ function plantRoom(%name, %position, %orientation) {
 				isHackBrick = 1;
 			};
 			BrickGroup_999999.add(%brick);
+
+			if(isObject(%simSet)) {
+				%simSet.add(%brick);
+			}
+
 			%error = %brick.plant();
 
 			if(%error == 1) {
