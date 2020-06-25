@@ -12,6 +12,8 @@ function SimObject::reGhost(%this, %client) {
 	if(isObject(%client)) {
 		%this.scopeToClient(%client);
 	}
+
+	%this.setNetFlag(6, 1);
 }
 
 function SimObject::unGhostAll(%this) {
