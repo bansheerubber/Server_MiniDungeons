@@ -118,6 +118,7 @@ add bench2 5
 
 add bookcase 5
 canmirror bookcase
+forbidtags bookcase: shelves
 forbidtagsifmirror bookcase: furniture, shelves
 
 add life 0.01

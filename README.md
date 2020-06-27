@@ -5,3 +5,4 @@ What do we call it?
 - Fungeons  
 - Doomrooms  
 - Dungrooms
+- Dempletemples

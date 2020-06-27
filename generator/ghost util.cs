@@ -11,10 +11,6 @@ function Player::createGhostUtilObject(%this, %roomSet) {
 		};
 
 		%this.ghostUtilObjects[%roomSet] = %ghostUtilObject;
-		
-		if(!isObject(%this.ghostUtilSet)) {
-			%this.ghostUtilSet = new SimSet();
-		}
 
 		%this.ghostUtilSet.add(%ghostUtilObject);
 		return %ghostUtilObject;
@@ -51,7 +47,8 @@ function Player::finishRoomGhosting(%this) {
 		if(%ghostUtilObject.marked) {
 			%ghostUtilObject.marked = false;
 			%ghostUtilObject.isPendingUnGhost = false;
-
+			
+			// if rooms aren't ghosted, then ghost them
 			if(!%ghostUtilObject.isGhosted) {
 				%ghostUtilObject.isPendingReGhost = true;
 			}
@@ -84,6 +81,10 @@ function SimSet::roomHandleGhosting(%this, %client, %depth, %start) {
 
 function Player::processGhostUtilObjects(%this, %currentObject) {
 	cancel(%this.processGhostUtilObjects);
+
+	if(!isObject(%this.ghostUtilSet)) {
+		%this.ghostUtilSet = new SimSet();
+	}
 
 	%room = %this.getCurrentRoom();
 	if(isObject(%room)) {
@@ -147,6 +148,9 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 	%this.processGhostUtilObjects = %this.schedule(100, processGhostUtilObjects, %currentObject);
 }
 
+$MD::GhostAmount = 300; // how much we ghost per tick
+$MD::GhostTick = 200; // how often we ghost the above amoujnt
+
 function GhostUtilObject::batchReGhost(%this, %startIndex) {
 	cancel(%this.ghostSchedule);
 	
@@ -154,15 +158,17 @@ function GhostUtilObject::batchReGhost(%this, %startIndex) {
 		%startIndex = 0;
 	}
 	%total = %this.roomSet.getCount();
-	%end = mClamp(%startIndex + 300, 0, %total);
+	%end = mClamp(%startIndex + $MD::GhostAmount, 0, %total);
 	for(%i = %startIndex; %i < %end; %i++) {
 		%this.roomSet.getObject(%i).reGhost(%this.owner.client);
 	}
 
 	if(%startIndex != %total) {
-		%this.ghostSchedule = %this.schedule(200, batchReGhost, %end);
+		%this.ghostSchedule = %this.schedule($MD::GhostTick, batchReGhost, %end);
 	}
 	else {
+		%this.roomSet.roomOnReGhostedToPlayer(%this.owner);
+		
 		%this.isGhosted = true;
 		%this.isPendingReGhost = false;
 	}
@@ -177,15 +183,18 @@ function GhostUtilObject::batchUnGhost(%this, %startIndex) {
 		%startIndex = 0;
 	}
 	%total = %this.roomSet.getCount();
-	%end = mClamp(%startIndex + 300, 0, %total);
+	%end = mClamp(%startIndex + $MD::GhostAmount, 0, %total);
 	for(%i = %startIndex; %i < %end; %i++) {
 		%this.roomSet.getObject(%i).unGhost(%this.owner.client);
 	}
 
 	if(%startIndex != %total) {
-		%this.ghostSchedule = %this.schedule(200, batchUnGhost, %end);
+		%this.ghostSchedule = %this.schedule($MD::GhostTick, batchUnGhost, %end);
 	}
 	else {
+		%this.roomSet.roomOnUnGhostedToPlayer(%this.owner);
+		
+		%this.isGhosted = false;
 		%this.isPendingUnGhost = false;
 		%this.owner.deleteGhostUtilObject(%this);
 	}
@@ -193,4 +202,27 @@ function GhostUtilObject::batchUnGhost(%this, %startIndex) {
 
 function Player::onEnterRoom(%this, %room) {
 	%this.startRoomGhosting();
+
+	%room.roomOnPlayerEnter(%this);
 }
+
+deActivatePackage(MiniDungeonsGhostUtil);
+package MiniDungeonsGhostUtil {
+	function GameConnection::spawnPlayer(%this) {
+		Parent::spawnPlayer(%this);
+
+		if(isObject(%this.player)) {
+			%this.player.processGhostUtilObjects(); // start ghosting rooms to players right away
+		}
+	}
+	
+	function Player::onRemove(%this) {
+		if(isObject(%this.ghostUtilSet)) {
+			%this.ghostUtilSet.deleteAll();
+			%this.ghostUtilSet.delete();
+		}
+
+		Parent::onRemove(%this);
+	}
+};
+activatePackage(MiniDungeonsGhostUtil);

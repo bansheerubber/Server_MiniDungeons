@@ -16,6 +16,7 @@ function createRoom(%position, %size) {
 		) * 2.4 - 0.1;
 	%roomSet.width = %width;
 	%roomSet.height = %height;
+	%roomSet.ghostedPlayers = new SimSet();
 	
 	for(%x = 0; %x < %width; %x++) {
 		for(%y = 0; %y < %height; %y++) {
@@ -36,20 +37,6 @@ function SimSet::roomBuild(%this) {
 	}
 	else {
 		plantRoom("test_" @ %this.width @ "x" @ %this.height, vectorAdd(%this.worldPosition, "-4 -4 0"), 0, %this);
-	}
-}
-
-function SimSet::roomUnGhost(%this, %client) {
-	%count = %this.getCount();
-	for(%i = 0; %i < %count; %i++) {
-		%this.getObject(%i).unGhost(%client);
-	}
-}
-
-function SimSet::roomReGhost(%this, %client) {
-	%count = %this.getCount();
-	for(%i = 0; %i < %count; %i++) {
-		%this.getObject(%i).reGhost(%client);
 	}
 }
 
@@ -76,57 +63,18 @@ function SimSet::roomDebugHighlightNeighbors(%this, %time, %depth, %start) {
 	}
 }
 
-function SimSet::roomReGhostBatch(%this, %client, %depth, %start) {
-	if(%start) {
-		%client.player.createGhostUtilObject(%this);
-		deleteVariables("$MD::TempDungeonIter*");
-	}
-	
-	$MD::TempDungeonIter[%this] = true;
-	for(%i = 0; %i < %this.neighborCount; %i++) {
-		%neighbor = %this.neighbor[%i];
-		if(!$MD::TempDungeonIter[%neighbor] && %depth > 0) {
-			%client.player.createGhostUtilObject(%neighbor);
-			%neighbor.schedule(1, roomReGhostBatch, %client, %depth - 1); // delay it so first depth neighbors are ghosted first
-		}
+function SimSet::roomOnReGhostedToPlayer(%this, %player) {
+	%this.ghostedPlayers.add(%player);
+}
+
+function SimSet::roomOnUnGhostedToPlayer(%this, %player) {
+	if(%this.ghostedPlayers.isMember(%player)) {
+		%this.ghostedPlayers.remove(%player);
 	}
 }
 
-function SimSet::roomReGhostQuick(%this, %client, %depth, %start) {
-	if(%start) {
-		deleteVariables("$MD::TempDungeonIter*");
-	}
-	
-	$MD::TempDungeonIter[%this] = true;
-	%this.roomReGhost(%client);
-	for(%i = 0; %i < %this.neighborCount; %i++) {
-		%neighbor = %this.neighbor[%i];
-		if(!$MD::TempDungeonIter[%neighbor] && %depth > 0) {
-			%neighbor.schedule(500, roomReGhostQuick, %client, %depth - 1);
-		}
-	}
-}
+function SimSet::roomOnPlayerEnter(%this, %player) {
 
-function SimSet::roomUnGhostQuick(%this, %client, %depth, %start) {
-	if(%start) {
-		deleteVariables("$MD::TempDungeonIter*");
-	}
-	
-	$MD::TempDungeonIter[%this] = true;
-	%this.roomUnGhost(%client);
-	for(%i = 0; %i < %this.neighborCount; %i++) {
-		%neighbor = %this.neighbor[%i];
-		if(!$MD::TempDungeonIter[%neighbor] && %depth > 0) {
-			%neighbor.schedule(500, roomUnGhostQuick, %client, %depth - 1);
-		}
-	}
-}
-
-function GameConnection::unGhostAllRooms(%this) {
-	%count = $MD::DungeonRoomSet.getCount();
-	for(%i = 0; %i < %count; %i++) {
-		$MD::DungeonRoomSet.getObject(%i).roomUnGhost(%this);
-	}
 }
 
 function Player::testGhosting(%this) {
@@ -156,3 +104,14 @@ function Player::getCurrentRoom(%this) {
 		) / 8
 	];
 }
+
+deActivatePackage(MiniDungeonsRooms);
+package MiniDungeonsRooms {
+	function SimSet::onRemove(%this) {
+		if(isObject(%this.ghostedPlayers)) {
+			%this.ghostedPlayers.delete();
+		}
+		Parent::onRemove(%this);
+	}
+};
+activatePackage(MiniDungeonsRooms);

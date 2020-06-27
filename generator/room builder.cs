@@ -136,6 +136,7 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 				isPlanted = 1;
 				isHackBrick = 1;
 			};
+			%brick.setNetFlag(6, 1); // all bricks start off unghosted
 			BrickGroup_999999.add(%brick);
 
 			if(isObject(%simSet)) {
