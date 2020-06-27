@@ -141,6 +141,10 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 
 			if(isObject(%simSet)) {
 				%simSet.add(%brick);
+
+				if($MD::Room[%name, %i, "datablock"].getName() $= "BrickAiSpawnData") {
+					%simSet.botBricks.add(%brick);
+				}
 			}
 
 			%error = %brick.plant();

@@ -36,6 +36,10 @@ function BrickAiSpawnData::spawnBot(%this, %obj) {
 		eval("%bot = " @ %function @ "(\"" @ %transform @ "\", " @ %roomIndex @ ");"); // create the bot
 		%obj.bot = %bot;
 		%bot.spawn = %obj;
+		return %bot;
+	}
+	else {
+		return 0;
 	}
 }
 

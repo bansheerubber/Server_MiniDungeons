@@ -90,6 +90,10 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 	if(isObject(%room)) {
 		if(%this.currentRoom != %room) {
 			%this.onEnterRoom(%room);
+
+			if(isObject(%this.currentRoom)) {
+				%this.onLeaveRoom(%this.currentRoom);
+			}
 		}
 		%this.currentRoom = %room;
 	}
@@ -204,6 +208,10 @@ function Player::onEnterRoom(%this, %room) {
 	%this.startRoomGhosting();
 
 	%room.roomOnPlayerEnter(%this);
+}
+
+function Player::onLeaveRoom(%this, %room) {
+	%room.roomOnPlayerLeave(%this);
 }
 
 deActivatePackage(MiniDungeonsGhostUtil);

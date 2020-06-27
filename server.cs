@@ -73,6 +73,7 @@ parseAvatarFile("Bull", "Add-Ons/Player_Beefboy/bull/avatar.txt");
 parseAvatarFile("Bard", "Add-Ons/Server_MiniDungeons/ai/avatars/bard.txt");
 parseAvatarFile("Mace", "Add-Ons/Server_MiniDungeons/ai/avatars/mace.txt");
 parseAvatarFile("Gladius", "Add-Ons/Server_MiniDungeons/ai/avatars/gladius.txt");
+parseAvatarFile("Shopkeep", "Add-Ons/Server_MiniDungeons/ai/avatars/shopkeep.txt");
 
 exec("./setpieces/swordsmanship angel.cs");
 

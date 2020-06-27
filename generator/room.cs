@@ -17,6 +17,8 @@ function createRoom(%position, %size) {
 	%roomSet.width = %width;
 	%roomSet.height = %height;
 	%roomSet.ghostedPlayers = new SimSet();
+	%roomSet.botBricks = new SimSet();
+	%roomSet.bots = new SimSet();
 	
 	for(%x = 0; %x < %width; %x++) {
 		for(%y = 0; %y < %height; %y++) {
@@ -24,6 +26,22 @@ function createRoom(%position, %size) {
 		}
 	}
 	return %roomSet;
+}
+
+function SimSet::roomSpawnBots(%this) {
+	if(!%this.hasSpawnedBots) {
+		%count = %this.botBricks.getCount();
+		for(%i = 0; %i < %count; %i++) {
+			%this.bots.add(BrickAiSpawnData.spawnBot(%this.botBricks.getObject(%i)));
+		}
+	}
+
+	%this.hasSpawnedBots = true;
+}
+
+function SimSet::roomUnSpawnBots(%this) {
+	%this.bots.deleteAll();
+	%this.hasSpawnedBots = false;
 }
 
 function SimSet::roomAddNeighbor(%this, %neighbor) {
@@ -74,7 +92,11 @@ function SimSet::roomOnUnGhostedToPlayer(%this, %player) {
 }
 
 function SimSet::roomOnPlayerEnter(%this, %player) {
+	%this.roomSpawnBots();
+}
 
+function SimSet::roomOnPlayerLeave(%this, %player) {
+	%this.roomUnSpawnBots();
 }
 
 function Player::testGhosting(%this) {
@@ -111,6 +133,16 @@ package MiniDungeonsRooms {
 		if(isObject(%this.ghostedPlayers)) {
 			%this.ghostedPlayers.delete();
 		}
+
+		if(isObject(%this.botBricks)) {
+			%this.botBricks.delete();
+		}
+
+		if(isObject(%this.bots)) {
+			%this.bots.deleteAll();
+			%this.bots.delete();
+		}
+
 		Parent::onRemove(%this);
 	}
 };

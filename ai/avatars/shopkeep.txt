@@ -1,0 +1,14 @@
+facename spookyscaryskeletons
+decalname Chef
+headup 1
+headskin 0.00 0.00 0.00 
+pack 0.29 0.21 0.15
+lhook clone headskin
+rhook clone headskin
+chest 0.13 0.13 0.13
+helmet clone chest
+larm clone chest
+rarm clone chest
+pants clone chest
+lshoe clone headskin
+rshoe clone headskin
