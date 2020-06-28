@@ -411,7 +411,12 @@ package MiniDungeonsSwords {
 	}
 
 	function miniGameCanDamage(%obj1, %obj2) {
-		if(isObject(%obj1) && isObject(%obj2)) {
+		if(
+			isObject(%obj1)
+			&& isObject(%obj2)
+			&& isFunction(%obj1.getClassName(), getDatablock)
+			&& isFunction(%obj2.getClassName(), getDatablock)
+		) {
 			if(%obj1.brickHp !$= "" || %obj2.brickHp !$= "" || %obj1.getDatablock().isBreakable || %obj2.getDatablock().isBreakable) {
 				if(%obj1.sourceObject.isEnemyAi || %obj1.isEnemyAi
 					|| %obj2.sourceObject.isEnemyAi || %obj2.isEnemyAi)
