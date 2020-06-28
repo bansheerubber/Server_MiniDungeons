@@ -26,13 +26,6 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 			// handle brick names
 			if(getWord(%line, 0) $= "+-NTOBJECTNAME") {
 				%objectName = getWord(%line, 1);
-				setMDGlobal(
-					%objectName,
-					%globalPrefix,
-					%name,
-					%brickCount - 1,
-					"name"
-				);
 				// detect the origin so we can handle it
 				if(%objectName $= "origin") {
 					%position = getMDGlobal(
@@ -53,6 +46,15 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 						%globalPrefix,
 						%name,
 						"brickCount"
+					);
+				}
+				else {
+					setMDGlobal(
+						%objectName,
+						%globalPrefix,
+						%name,
+						%brickCount - 1,
+						"name"
 					);
 				}
 			}

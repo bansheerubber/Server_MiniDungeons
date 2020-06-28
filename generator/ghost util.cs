@@ -21,7 +21,7 @@ function Player::createGhostUtilObject(%this, %roomSet) {
 }
 
 function Player::deleteGhostUtilObject(%this, %ghostUtilObject) {
-	%this.ghostUtilObjects[%ghostUtilObject.roomSet] = 0;
+	%this.ghostUtilObjects[%ghostUtilObject.roomSet] = "";
 	%ghostUtilObject.delete();
 }
 
