@@ -182,6 +182,8 @@ package MountPoint {
 			%this.updateHealth();
 
 			MiniDugneonsTargetSet.add(%this.player);
+
+			commandToClient(%this, 'MD_HandleSpawn');
 		}
 	}
 

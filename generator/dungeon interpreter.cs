@@ -18,6 +18,10 @@ function readDungeonFile(%fileName) {
 		$MD::DungeonHallwaySet = new SimSet();
 	}
 
+	if(!isObject($MD::DungeonSpawnPoints)) {
+		$MD::DungeonSpawnPoints = new SimSet();
+	}
+
 	if(!isFile(%fileName)) {
 		error("Could not find file" SPC %fileName);
 		return;

@@ -32,7 +32,7 @@ function createHallway(%startPosition, %endPosition, %isHorizontal) {
 		%position = vectorLerpUnit(%startPosition, %endPosition, %i);
 		%x = getWord(%position, 0);
 		%y = getWord(%position, 1);
-		$MD::DungeonHallway[mCeil(%x), mCeil(%y)] = %hallwaySet;
+		$MD::DungeonHallwaySet[mCeil(%x), mCeil(%y)] = %hallwaySet;
 	}
 
 	// look up the rooms that own this hallway
@@ -84,7 +84,7 @@ function SimSet::hallwayBuild(%this) {
 }
 
 function Player::getCurrentHallway(%this) {
-	return $MD::DungeonHallway[
+	return $MD::DungeonHallwaySet[
 		mFloorMultipleCenter(
 			getWord(%this.getPosition(), 0),
 			8

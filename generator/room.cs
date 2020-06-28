@@ -69,12 +69,40 @@ function SimSet::roomAddNeighbor(%this, %neighbor) {
 	%this.neighborCount++;
 }
 
+function getOffsetFromOrientation(%orientation) {
+	switch(%orientation) {
+		case 0:
+			return "-4 -4 0";
+		case 1:
+			return "-4 4 0";
+		case 2:
+			return "4 4 0";
+		case 3:
+			return "4 -4 0";
+	}
+}
+
 function SimSet::roomBuild(%this) {
-	if(%this.width == 2 && %this.height == 2) {
-		plantRoom("test_shop", vectorAdd(%this.worldPosition, "-4 -4 0"), 0, %this);
+	// create spawn room
+	if(%this.width == 1 && %this.height == 1) {
+		%orientation = 0;
+		for(%i = 0; %i < 4; %i++) {
+			// test vectors
+			%vector = cornerVectorHelper(%i);
+			%x = getWord(%vector, 0) + getWord(%this.position, 0);
+			%y = getWord(%vector, 1) + getWord(%this.position, 1);
+			if($MD::DungeonHallwaySet[%x, %y]) {
+				%orientation = %i;
+				break;
+			}
+		}
+		plantRoom("spawn", vectorAdd(%this.worldPosition, getOffsetFromOrientation(%orientation)), %orientation, %this);
+	}
+	else if(%this.width == 2 && %this.height == 2) {
+		plantRoom("test_shop", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
 	}
 	else {
-		plantRoom("test_" @ %this.width @ "x" @ %this.height, vectorAdd(%this.worldPosition, "-4 -4 0"), 0, %this);
+		plantRoom("test_" @ %this.width @ "x" @ %this.height, vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
 	}
 }
 
@@ -155,6 +183,10 @@ function Player::getCurrentRoom(%this) {
 
 deActivatePackage(MiniDungeonsRooms);
 package MiniDungeonsRooms {
+	function GameConnection::getSpawnPoint(%this) {
+		return $MD::DungeonSpawnPoints.getObject(getRandom(0, $MD::DungeonSpawnPoints.getCount() - 1)).getTransform();
+	}
+	
 	function SimSet::onRemove(%this) {
 		if(isObject(%this.ghostedPlayers)) {
 			%this.ghostedPlayers.delete();

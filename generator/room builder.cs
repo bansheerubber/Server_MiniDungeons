@@ -29,6 +29,7 @@ function loadWallFiles() {
 	}
 
 	loadDungeonBLS("config/NewDuplicator/Saves/test_shop.bls", "test_shop", "Room");
+	loadDungeonBLS("config/NewDuplicator/Saves/spawn.bls", "spawn", "Room");
 }
 
 function getWallFlags(%datablock, %color, %isDoor) {
@@ -136,7 +137,6 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 				isPlanted = 1;
 				isHackBrick = 1;
 			};
-			%brick.setNetFlag(6, 1); // all bricks start off unghosted
 			BrickGroup_999999.add(%brick);
 
 			if(isObject(%simSet)) {
@@ -145,6 +145,8 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 				if($MD::Room[%name, %i, "datablock"].getName() $= "BrickAiSpawnData") {
 					%simSet.botBricks.add(%brick);
 				}
+
+				%brick.setNetFlag(6, 1); // all bricks start off unghosted
 			}
 
 			%error = %brick.plant();
@@ -177,6 +179,10 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 				if($MD::Room[%name, %i, "name"] !$= "") {
 					%brickName = strReplace($MD::Room[%name, %i, "name"], "ID", $MD::RoomCount);
 					%brick.setNTObjectName(%brickName);
+
+					if(strPos(%brickName, "spawnpoint") != -1) {
+						$MD::DungeonSpawnPoints.add(%brick);
+					}
 				}
 			}
 		}
