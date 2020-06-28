@@ -101,6 +101,9 @@ function SimSet::roomBuild(%this) {
 	else if(%this.width == 2 && %this.height == 2) {
 		plantRoom("test_shop", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
 	}
+	else if(%this.width == 10 && %this.height == 10) {
+		plantRoom("test_finalboss", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+	}
 	else {
 		plantRoom("test_" @ %this.width @ "x" @ %this.height, vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
 	}

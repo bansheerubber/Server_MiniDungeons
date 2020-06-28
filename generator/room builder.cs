@@ -30,6 +30,7 @@ function loadWallFiles() {
 
 	loadDungeonBLS("config/NewDuplicator/Saves/test_shop.bls", "test_shop", "Room");
 	loadDungeonBLS("config/NewDuplicator/Saves/spawn.bls", "spawn", "Room");
+	loadDungeonBLS("config/NewDuplicator/Saves/test_finalboss.bls", "test_finalboss", "Room");
 }
 
 function getWallFlags(%datablock, %color, %isDoor) {
