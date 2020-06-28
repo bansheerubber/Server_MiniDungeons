@@ -2,6 +2,11 @@ function vectorLerp(%start, %end, %percent) {
 	return vectorAdd(vectorScale(%start, 1 - %percent), vectorScale(%end, %percent));
 }
 
+function vectorLerpUnit(%start, %end, %units) {
+	%percent = %units / vectorDist(%start, %end);
+	return vectorAdd(vectorScale(%start, 1 - %percent), vectorScale(%end, %percent));
+}
+
 function bezier3pt(%point1, %point2, %point3, %t) {
 	return vectorLerp(vectorLerp(%point1, %point2, %t), vectorLerp(%point2, %point3, %t), %t);
 }

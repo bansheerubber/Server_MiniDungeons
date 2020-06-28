@@ -19,6 +19,9 @@ function createRoom(%position, %size) {
 	%roomSet.ghostedPlayers = new SimSet();
 	%roomSet.botBricks = new SimSet();
 	%roomSet.bots = new SimSet();
+	%roomSet.hallways = new SimSet();
+	%roomSet.botScope = new SimSet();
+	%roomSet.type = "Room";
 	
 	for(%x = 0; %x < %width; %x++) {
 		for(%y = 0; %y < %height; %y++) {
@@ -26,6 +29,23 @@ function createRoom(%position, %size) {
 		}
 	}
 	return %roomSet;
+}
+
+function SimSet::roomHandleBotSpawning(%this) {
+	cancel(%this._roomHandleBotSpawning);
+	
+	// essentially debounce noise
+	%this._roomHandleBotSpawning = %this.schedule(33, _roomHandleBotSpawning);
+}
+
+function SimSet::_roomHandleBotSpawning(%this) {
+	// spawn bots if there's players inside the room's bot scope
+	if(%this.botScope.getCount() > 0) {
+		%this.roomSpawnBots();
+	}
+	else {
+		%this.roomUnSpawnBots();
+	}
 }
 
 function SimSet::roomSpawnBots(%this) {
@@ -92,11 +112,13 @@ function SimSet::roomOnUnGhostedToPlayer(%this, %player) {
 }
 
 function SimSet::roomOnPlayerEnter(%this, %player) {
-	%this.roomSpawnBots();
+	%this.botScope.add(%player);
+	%this.roomHandleBotSpawning();
 }
 
 function SimSet::roomOnPlayerLeave(%this, %player) {
-	%this.roomUnSpawnBots();
+	%this.botScope.remove(%player);
+	%this.roomHandleBotSpawning();
 }
 
 function Player::testGhosting(%this) {
@@ -104,11 +126,15 @@ function Player::testGhosting(%this) {
 	%y = mFloorMultipleCenter(getWord(%this.getPosition(), 1), 8) / 8;
 	%room = %this.getCurrentRoom();
 
+	%hallway = %this.getCurrentHallway();
+
 	if(isObject(%room)) {
-		%this.client.bottomPrint(%x SPC %y SPC %room SPC %room.neighborCount SPC %room.getCount(), 1);
+		%this.client.bottomPrint(
+			%x SPC %y SPC %room SPC %room.neighborCount SPC %room.getCount() @ "<br>"
+			@ %hallway, 1);
 	}
 	else {
-		%this.client.bottomPrint(%x SPC %y SPC "hallway?");
+		%this.client.bottomPrint(%x SPC %y SPC %hallway SPC "hallway?");
 	}
 	
 	%this.schedule(33, testGhosting);
@@ -141,6 +167,15 @@ package MiniDungeonsRooms {
 		if(isObject(%this.bots)) {
 			%this.bots.deleteAll();
 			%this.bots.delete();
+		}
+
+		if(isObject(%this.hallways)) {
+			%this.hallways.deleteAll();
+			%this.hallways.delete();
+		}
+
+		if(isObject(%this.botScope)) {
+			%this.botScope.delete();
 		}
 
 		Parent::onRemove(%this);

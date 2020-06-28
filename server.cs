@@ -44,6 +44,7 @@ exec("./generator/hallway builder.cs"); // builds a hallway based on .hall files
 exec("./generator/dungeon interpreter.cs");
 exec("./generator/room builder.cs");
 exec("./generator/room.cs");
+exec("./generator/hallway.cs");
 exec("./generator/ghost util.cs");
 
 exec("./ai/rooms.cs");
@@ -60,6 +61,7 @@ exec("./ai/mace.cs");
 exec("./ai/gladius.cs");
 exec("./ai/bow.cs");
 exec("./ai/cannon.cs");
+exec("./ai/shopkeep.cs");
 exec("./ai/name generator.cs");
 exec("./ai/spawn.cs");
 

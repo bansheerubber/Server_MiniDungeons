@@ -1,8 +1,21 @@
 function readDungeonFile(%fileName) {
+	// cleanup
+	if(isObject($MD::DungeonRoomSet)) {
+		$MD::DungeonRoomSet.deleteAll();
+	}
+
+	if(isObject($MD::DungeonHallwaySet)) {
+		$MD::DungeonHallwaySet.deleteAll();
+	}
+	
 	deleteVariables("$MD::Dungeon*");
 
 	if(!isObject($MD::DungeonRoomSet)) {
 		$MD::DungeonRoomSet = new SimSet();
+	}
+
+	if(!isObject($MD::DungeonHallwaySet)) {
+		$MD::DungeonHallwaySet = new SimSet();
 	}
 
 	if(!isFile(%fileName)) {
@@ -41,24 +54,21 @@ function readDungeonFile(%fileName) {
 		}
 		// parse hallways
 		else if(%mode == 2) {
-			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "start"] = vectorScale(getWords(%line, 0, 1) SPC 20, 8);
-			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "start"] = 
-				getWords($MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "start"], 0, 1)
-				SPC mFloor(
-					(getWord($MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "start"], 2) + 0.1) / 2.4
-				) * 2.4 - 0.1;
+			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "start"] = getWords(%line, 0, 1);
 
-			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "end"] = vectorScale(getWords(%line, 2, 3) SPC 20, 8);
-			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "end"] = 
-				getWords($MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "end"], 0, 1)
-				SPC mFloor(
-					(getWord($MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "end"], 2) + 0.1) / 2.4
-				) * 2.4 - 0.1;
+			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "end"] = getWords(%line, 2, 3);
 			
 			$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "isHorizontal"] = getWord(%line, 4);
 			
+			// used for determining what kind of doorway to place
 			$MD::DungeonHallways[getWords(%line, 0, 1)] = getWord(%line, 4);
 			$MD::DungeonHallways[getWords(%line, 2, 3)] = getWord(%line, 4);
+
+			createHallway(
+				$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "start"],
+				$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "end"],
+				$MD::DungeonHallways[$MD::DungeonHallwaysCount | 0, "isHorizontal"]
+			);
 
 			$MD::DungeonHallwaysCount++;
 		}
@@ -91,9 +101,8 @@ function testRooms() {
 }
 
 function testHallways() {
-	for(%i = 0; %i < $MD::DungeonHallwaysCount; %i++) {
-		%start = $MD::DungeonHallways[%i, "start"];
-		%end = $MD::DungeonHallways[%i, "end"];
-		buildHallway("test", %start, %end, getRandom(0, 10000));
+	%count = $MD::DungeonHallwaySet.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		$MD::DungeonHallwaySet.getObject(%i).schedule(10 * %i, hallwayBuild);
 	}
 }

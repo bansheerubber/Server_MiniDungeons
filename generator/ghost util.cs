@@ -87,15 +87,38 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 	}
 
 	%room = %this.getCurrentRoom();
+	%hallway = %this.getCurrentHallway();
+	// handle rooms (onEnter is always called last)
 	if(isObject(%room)) {
+		if(isObject(%this.currentHallway)) {
+			%this.onLeaveHallway(%this.currentHallway);
+			%this.currentHallway = 0;
+		}
+		
 		if(%this.currentRoom != %room) {
-			%this.onEnterRoom(%room);
-
 			if(isObject(%this.currentRoom)) {
 				%this.onLeaveRoom(%this.currentRoom);
 			}
+			
+			%this.onEnterRoom(%room);
 		}
 		%this.currentRoom = %room;
+	}
+	// handle hallways (onEnter is always called last)
+	else {
+		if(isObject(%this.currentRoom)) {
+			%this.onLeaveRoom(%this.currentRoom);
+			%this.currentRoom = 0;
+		}
+		
+		if(%this.currentHallway != %hallway) {
+			if(isObject(%this.currentHallway)) {
+				%this.onLeaveHallway(%this.currentHallway);
+			}
+
+			%this.onEnterHallway(%hallway);
+		}
+		%this.currentHallway = %hallway;
 	}
 	
 	// talk(%currentObject.isPendingUnGhost SPC %currentObject.isPendingReGhost SPC %ghostUtilObject.isGhosted SPC isEventPending(%currentObject.ghostSchedule));
@@ -214,6 +237,14 @@ function Player::onLeaveRoom(%this, %room) {
 	%room.roomOnPlayerLeave(%this);
 }
 
+function Player::onEnterHallway(%this, %hallway) {
+	%hallway.hallwayOnPlayerEnter(%this);
+}
+
+function Player::onLeaveHallway(%this, %hallway) {
+	%hallway.hallwayOnPlayerLeave(%this);
+}
+
 deActivatePackage(MiniDungeonsGhostUtil);
 package MiniDungeonsGhostUtil {
 	function GameConnection::spawnPlayer(%this) {
@@ -224,13 +255,23 @@ package MiniDungeonsGhostUtil {
 		}
 	}
 	
-	function Player::onRemove(%this) {
-		if(isObject(%this.ghostUtilSet)) {
-			%this.ghostUtilSet.deleteAll();
-			%this.ghostUtilSet.delete();
+	function Armor::onRemove(%this, %obj) {
+		if(isObject(%obj.ghostUtilSet)) {
+			%obj.ghostUtilSet.deleteAll();
+			%obj.ghostUtilSet.delete();
 		}
 
-		Parent::onRemove(%this);
+		if(isObject(%obj.currentRoom)) {
+			%obj.onLeaveRoom(%obj.currentRoom);
+			%obj.currentRoom = 0;
+		}
+
+		if(isObject(%obj.currentHallway)) {
+			%obj.onLeaveHallway(%obj.currentHallway);
+			%obj.currentHallway = 0;
+		}
+
+		Parent::onRemove(%this, %obj);
 	}
 };
 activatePackage(MiniDungeonsGhostUtil);
