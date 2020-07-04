@@ -18,6 +18,6 @@ function traceMemory(%max) {
 
 function printMemoryReport() {
 	for(%i = 0; %i < $Memory::Count; %i++) {
-		talk($Memory[$Memory::Count] SPC $Memory[$Memory[$Memory::Count]]);
+		talk($Memory[%i] SPC $Memory[$Memory[%i]]);
 	}
 }
