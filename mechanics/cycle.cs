@@ -75,6 +75,7 @@ function Armor::setCycleUI(%this, %obj, %slot) {
 		%cycle[%i - %start] = %this.swordCycle[%i];
 	}
 	
+	commandToClient(%obj.client, 'MD_SetUpParryMap');
 	commandToClient(%obj.client, 'MD_LoadGuardCycles', getCycleLetterFromName(%cycle[0]), getCycleLetterFromName(%cycle[1]), getCycleLetterFromName(%cycle[2]), getCycleLetterFromName(%cycle[3]), getCycleLetterFromName(%cycle[4]), getCycleLetterFromName(%cycle[5]));
 }
 

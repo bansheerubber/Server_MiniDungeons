@@ -204,11 +204,11 @@ function getRandomExcept(%min, %max, %except) {
 deActivatePackage(MiniDungeonsBeggar);
 package MiniDungeonsBeggar {
 	function Armor::onRemove(%this, %obj) {
-		Parent::onRemove(%this, %obj);
-
 		if(isObject(%obj.beggarsBowl)) {
 			%obj.beggarsBowl.delete();
 		}
+		
+		Parent::onRemove(%this, %obj);
 	}
 
 	function Player::applyImpulse(%this, %position, %vector) {
