@@ -14,13 +14,7 @@ function Player::progressiveKnockback(%this, %velocity, %wallSpeed, %time, %star
 			%position = %this.getHackPosition();
 			%normals = "0 0 0";
 			%count = 0;
-			%radius = 0.7;
-			%col = containerFindFirst(%masks, %position, 0.8, 0.8, 0.4);
-			if(%col && %col != sunLight.getId() && !%col.isDebug) {
-				%normals = vectorAdd(%normals, getWords(containerRaycast(%position, %col.getPosition(), %masks, false), 4, 6));
-				%count++;
-			}
-
+			initContainerRadiusSearch(%position, 1, %masks);
 			while(%col = containerFindNext()) {
 				if(%col != sunLight.getId() && !%col.isDebug) {
 					%normals = vectorAdd(%normals, getWords(containerRaycast(%position, %col.getPosition(), %masks, false), 4, 6));

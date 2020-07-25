@@ -16,7 +16,7 @@ function fxDTSBrick::searchNeighbors(%this) {
 		%raycast = containerRaycast(%this.getPosition(), %col.getPosition(), $TypeMasks::fxBrickObjectType, %this);
 		if(%col != %this && %col.getName() $= "_node" && getWord(%raycast, 0) == %col) {
 			addNeighbor(%this.nodeId, %col.nodeId);
-			drawDebugLine(%this.getPosition(), %col.getPosition(), 0.2, "1 0 0 1", 15000);
+			// drawDebugLine(%this.getPosition(), %col.getPosition(), 0.2, "1 0 0 1", 15000);
 		}
 	}
 }
