@@ -50,7 +50,6 @@ function AiPlayer::maceAttack(%this) {
 
 	%targetPosition = %this.target.getPosition();
 	%position = %this.getPosition();
-
 	
 	if(getSimTime() > %this.nextMaceAttack) {
 		%this.stop();

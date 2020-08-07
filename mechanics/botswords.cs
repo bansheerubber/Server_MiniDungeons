@@ -72,10 +72,10 @@ function Player::mountSword(%this, %swordData, %slot) {
 	// create the sword mount on the player's hand (is this needed?)
 	if(!isObject(%this.swordMount)) {
 		%this.swordMount = createMountPoint();
-		%this.mountObject(%this.swordMount, 0);
+		%this.mountObject(%this.swordMount, %swordData.swordMountSlot | 0);
 	}
 
-	if(!isObject(%this.swordHands)) {
+	if(!isObject(%this.swordHands) && %this.getDatablock().getName() $= "MiniDungeonsArmor") {
 		%this.swordHands = new AiPlayer() {
 			datablock = MiniDungeonsHandsArmor;
 			position = "0 0 -10";
@@ -129,7 +129,10 @@ function Player::mountSword(%this, %swordData, %slot) {
 	}
 
 	if(%this.getClassName() $= "AiPlayer") {
-		%this.swordHands.setControlObject(%this.swordHands);
+		if(isObject(%this.swordHands)) {
+			%this.swordHands.setControlObject(%this.swordHands);
+		}
+		
 		%this.swordMount.setControlObject(%this.swordMount);
 		%this.setControlObject(%this);
 	}

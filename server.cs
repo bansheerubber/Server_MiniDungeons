@@ -65,11 +65,13 @@ exec("./ai/cannon.cs");
 exec("./ai/shopkeep.cs");
 exec("./ai/name generator.cs");
 exec("./ai/spawn.cs");
+exec("./ai/horse.cs");
 
 exec("./aiweapons/mace.cs");
 exec("./aiweapons/gladius.cs");
 exec("./aiweapons/bow.cs");
 exec("./aiweapons/cannon.cs");
+exec("./aiweapons/horse rabis.cs");
 
 parseAvatarFile("Lanky", "Add-Ons/Player_Beefboy/lanky/avatar.txt");
 parseAvatarFile("Bull", "Add-Ons/Player_Beefboy/bull/avatar.txt");
@@ -77,6 +79,7 @@ parseAvatarFile("Bard", "Add-Ons/Server_MiniDungeons/ai/avatars/bard.txt");
 parseAvatarFile("Mace", "Add-Ons/Server_MiniDungeons/ai/avatars/mace.txt");
 parseAvatarFile("Gladius", "Add-Ons/Server_MiniDungeons/ai/avatars/gladius.txt");
 parseAvatarFile("Shopkeep", "Add-Ons/Server_MiniDungeons/ai/avatars/shopkeep.txt");
+parseAvatarFile("Horse", "Add-Ons/Server_MiniDungeons/ai/avatars/horse.txt");
 
 exec("./setpieces/swordsmanship angel.cs");
 
