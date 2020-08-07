@@ -39,13 +39,14 @@ exec("./weapons/wood shield.cs");
 exec("./weapons/vault.cs");
 
 exec("./generator/builder.cs");
-exec("./generator/hallway interpreter.cs"); // interprets .hall files
-exec("./generator/hallway builder.cs"); // builds a hallway based on .hall files
+exec("./generator/hallway interpreter.cs");
+exec("./generator/hallway builder.cs");
 exec("./generator/dungeon interpreter.cs");
 exec("./generator/room builder.cs");
 exec("./generator/room.cs");
 exec("./generator/hallway.cs");
 exec("./generator/ghost util.cs");
+exec("./generator/one way door.cs");
 
 exec("./ai/rooms.cs");
 exec("./ai/avatars.cs");

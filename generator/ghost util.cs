@@ -121,7 +121,6 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 		%this.currentHallway = %hallway;
 	}
 	
-	// talk(%currentObject.isPendingUnGhost SPC %currentObject.isPendingReGhost SPC %ghostUtilObject.isGhosted SPC isEventPending(%currentObject.ghostSchedule));
 	if(%this.debugAbsorbCurrentObject) {
 		%this.debugAbsorbCurrentObject = false;
 		%currentObject = 0;

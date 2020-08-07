@@ -18,6 +18,8 @@ function createRoom(%position, %size) {
 	%roomSet.height = %height;
 	%roomSet.ghostedPlayers = new SimSet();
 	%roomSet.botBricks = new SimSet();
+	%roomSet.doorBricks = new SimSet();
+	%roomSet.oneWayDoors = new SimSet();
 	%roomSet.bots = new SimSet();
 	%roomSet.hallways = new SimSet();
 	%roomSet.botScope = new SimSet();
@@ -29,6 +31,31 @@ function createRoom(%position, %size) {
 		}
 	}
 	return %roomSet;
+}
+
+function SimSet::roomLockDoors(%this) {
+	%this.isLocked = true;
+	%this.oneWayDoors.deleteAll();
+	
+	%count = %this.doorBricks.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%this.oneWayDoors.add(createOneWayDoor(%this.doorBricks.getObject(%i)));
+	}
+}
+
+function SimSet::roomUnLockDoors(%this) {
+	%this.isLocked = false;
+	%this.oneWayDoors.deleteAll();
+
+	%count = %this.ghostedPlayers.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%player = %this.ghostedPlayers.getObject(%i);
+
+		%count2 = %this.doorBricks.getCount();
+		for(%j = 0; %j < %count2; %j++) {
+			%this.doorBricks.getObject(%j).reGhost(%player.client);
+		}
+	}
 }
 
 function SimSet::roomHandleBotSpawning(%this) {
@@ -145,6 +172,22 @@ function SimSet::roomOnUnGhostedToPlayer(%this, %player) {
 function SimSet::roomOnPlayerEnter(%this, %player) {
 	%this.botScope.add(%player);
 	%this.roomHandleBotSpawning();
+
+	if(%this.isBattleRoom && !%this.areBattleBotsDead && !%this.isLocked) {
+		%this.roomLockDoors();
+	}
+
+	if(%this.isLocked) {
+		%count = %this.doorBricks.getCount();
+		for(%i = 0; %i < %count; %i++) {
+			%this.doorBricks.getObject(%i).unGhost(%player.client);
+		}
+
+		%count = %this.oneWayDoors.getCount();
+		for(%i = 0; %i < %count; %i++) {
+			%this.oneWayDoors.getObject(%i).reGhost(%player.client);
+		}
+	}
 }
 
 function SimSet::roomOnPlayerLeave(%this, %player) {

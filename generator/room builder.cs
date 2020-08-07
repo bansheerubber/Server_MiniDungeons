@@ -143,8 +143,11 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 			if(isObject(%simSet)) {
 				%simSet.add(%brick);
 
-				if($MD::Room[%name, %i, "datablock"].getName() $= "BrickAiSpawnData") {
+				%datablockName = $MD::Room[%name, %i, "datablock"].getName();
+				if(%datablockName $= "BrickAiSpawnData") {
 					%simSet.botBricks.add(%brick);
+				} else if(strPos(%datablockName, "brickWoodenDoor3") != -1) {
+					%simSet.doorBricks.add(%brick);
 				}
 
 				%brick.setNetFlag(6, 1); // all bricks start off unghosted
