@@ -187,7 +187,7 @@ function AiPlayer::horseAttackCleanup(%this, %nextState) {
 datablock ParticleData(HorseRabisParticle) {
 	dragCoefficient      = 0;
 	gravityCoefficient   = 0.5;
-	inheritedVelFactor   = 0.0;
+	inheritedVelFactor   = 1.0;
 	constantAcceleration = 0.0;
 	lifetimeMS           = 800;
 	lifetimeVarianceMS   = 300;

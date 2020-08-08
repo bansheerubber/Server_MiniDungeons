@@ -19,7 +19,11 @@ function drawDebugSphere(%position, %radius, %color, %time) {
 	};
 	%sphere.setScale(%radius SPC %radius SPC %radius);
 	%sphere.setNodeColor("ALL", %color);
-	%sphere.schedule(%time, delete);
+
+	if(%time != -1) {
+		%sphere.schedule(%time, delete);
+	}
+
 	return %sphere;
 }
 
@@ -34,7 +38,10 @@ function drawDebugLine(%start, %end, %scale, %color, %time) {
 	%euler = vectorToEuler(vectorNormalize(vectorSub(%end, %start)));
 	%line.setTransform(%start SPC eulerToAxis(%euler));
 	%line.setNodeColor("ALL", %color);
-	%line.schedule(%time, delete);
+
+	if(%time != -1) {
+		%line.schedule(%time, delete);
+	}
 
 	%head = new StaticShape() {
 		datablock = DebugArrowHeadStatic;
@@ -45,8 +52,23 @@ function drawDebugLine(%start, %end, %scale, %color, %time) {
 	%head.setTransform(%end SPC eulerToAxis(%euler));
 	%head.setNodeColor("ALL", %color);
 	%head.setScale(%scale SPC %scale SPC %scale);
-	%head.schedule(%time, delete);
 	%line.head = %head;
+
+	if(%time != -1) {
+		%head.schedule(%time, delete);
+	}
 
 	return %line;
 }
+
+deActivatePackage(DebugLines);
+package DebugLines {
+	function StaticShapeData::onRemove(%this, %obj) {
+		if(isObject(%obj.head)) {
+			%obj.head.delete();
+		}
+		
+		Parent::onRemove(%this, %obj);
+	}
+};
+activatePackage(DebugLines);

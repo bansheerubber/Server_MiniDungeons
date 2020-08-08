@@ -2,6 +2,88 @@ function clearPathfinding() {
 	deleteVariables("$MD::Node*");
 }
 
+datablock fxDTSBrickData(BrickPathfindingNodeData) {
+	brickFile = "base/data/bricks/flats/1x1f.blb";
+	category = "Special";
+	subCategory = "DUNGEONS!!!!!!!!";
+	uiName = "Pathfinding Node";
+	iconName = "base/client/ui/brickIcons/1x1F";
+	isInteractable = true;
+};
+
+function BrickPathfindingNodeData::onInteract(%this, %obj) {
+	%obj.isGraphMode = true;
+	if(!isEventPending(%obj.visualizeNeighbors)) {
+		if(!isObject(%obj.debugLines)) {
+			%obj.debugLines = new SimSet();
+		}
+		
+		%obj.visualizeNeighbors();
+	}
+
+	cancel(%obj.stopVisualizeNeighbors);
+	%obj.stopVisualizeNeighbors = %obj.schedule(120000, stopVisualizeNeighbors);
+}
+
+function BrickPathfindingNodeData::onLook(%this, %obj) {
+	if(!isEventPending(%obj.visualizeNeighbors)) {
+		if(!isObject(%obj.debugLines)) {
+			%obj.debugLines = new SimSet();
+		}
+		
+		%obj.visualizeNeighbors();
+	}
+
+	if(!%obj.isGraphMode) {
+		cancel(%obj.stopVisualizeNeighbors);
+		%obj.stopVisualizeNeighbors = %obj.schedule(200, stopVisualizeNeighbors);
+	}
+}
+
+function BrickPathfindingNodeData::onAdd(%this, %obj) {
+	Parent::onAdd(%this, %obj);
+
+	if(!%obj.isPlanted) {
+		%obj.debugLines = new SimSet();
+		%obj.visualizeNeighbors();
+	}
+}
+
+function BrickPathfindingNodeData::onRemove(%this, %obj) {
+	if(%obj.debugLines) {
+		%obj.debugLines.deleteAll();
+		%obj.debugLines.delete();
+	}
+	
+	Parent::onRemove(%this, %obj);
+}
+
+function fxDTSBrick::stopVisualizeNeighbors(%this) {
+	%this.debugLines.deleteAll();
+	cancel(%this.visualizeNeighbors);
+	%this.lastPosition = "";
+	%this.isGraphMode = false;
+}
+
+function fxDTSBrick::visualizeNeighbors(%this) {
+	cancel(%this.visualizeNeighbors);
+
+	if(%this.lastPosition !$= %this.getPosition()) {
+		%this.debugLines.deleteAll();
+		
+		initContainerRadiusSearch(%this.getPosition(), 14, $TypeMasks::fxBrickObjectType);
+		while(%col = containerSearchNext()) {
+			%raycast = containerRaycast(%this.getPosition(), %col.getPosition(), $TypeMasks::fxBrickObjectType, %this);
+			if(%col != %this && %col.getDatablock().getName() $= "BrickPathfindingNodeData" && getWord(%raycast, 0) == %col) {
+				%this.debugLines.add(drawDebugLine(%this.getPosition(), %col.getPosition(), 0.1, "1 0 0 1", -1));
+			}
+		}
+		%this.lastPosition = %this.getPosition();
+	}
+
+	%this.visualizeNeighbors = %this.schedule(33, visualizeNeighbors);
+}
+
 function addNeighbor(%id1, %id2) {
 	if(!$MD::NodeNeighbor[%id1, %id2]) {
 		$MD::PathTCP.send("neighbor" SPC %id1 SPC %id2 @ "\n");
