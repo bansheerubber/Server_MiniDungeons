@@ -14,6 +14,7 @@ exec("./lib/simobject.cs");
 exec("./lib/sound.cs");
 exec("./lib/vector.cs");
 exec("./lib/waitSchedule.cs");
+exec("./lib/items.cs");
 
 exec("./mechanics/knockback.cs");
 exec("./mechanics/botswords.cs");
@@ -47,6 +48,7 @@ exec("./generator/room.cs");
 exec("./generator/hallway.cs");
 exec("./generator/ghost util.cs");
 exec("./generator/one way door.cs");
+exec("./generator/test.cs");
 
 exec("./ai/rooms.cs");
 exec("./ai/avatars.cs");
@@ -131,6 +133,13 @@ function createMountPoint() {
 	return %mount;
 }
 
+function serverCmdBuildMode(%this) {
+	if(%this.isAdmin) {
+		%this.buildmode = !%this.buildmode;
+		messageClient(%this, '', "\c6Buildmode is" SPC (%this.buildmode ? "on" : "off"));
+	}
+}
+
 deActivatePackage(MountPoint);
 package MountPoint {
 	function AiPlayer::playDeathCry(%obj) {
@@ -181,6 +190,10 @@ package MountPoint {
 	function GameConnection::spawnPlayer(%this) {
 		Parent::spawnPlayer(%this);
 
+		if(!%this.buildmode) {
+			%this.player.setDatablock(MiniDungeonsArmor);
+		}
+
 		%this.lastHealthbarPercent = 1;
 		if(isObject(%this.player)) {
 			%this.updateHealth();
@@ -188,6 +201,30 @@ package MountPoint {
 			MiniDugneonsTargetSet.add(%this.player);
 
 			commandToClient(%this, 'MD_HandleSpawn');
+		}
+	}
+
+	function GameConnection::giveDefaultEquipment(%client) {
+		if(%client.buildmode) {
+			return Parent::giveDefaultEquipment(%client);
+		}
+		else {
+			%client.player.addItem(DoubleHandedItem);
+			return;
+		}
+	}
+
+	function Player::giveDefaultEquipment(%player) {
+		if(%player.client.buildmode) {
+			return Parent::giveDefaultEquipment(%player);
+		}
+		else {
+			for(%i = 0; %i < %player.getDatablock().maxTools; %i++) {
+				%player.setItem(0, %i);
+			}
+			
+			%player.setItem(DoubleHandedItem, 0);
+			return;
 		}
 	}
 

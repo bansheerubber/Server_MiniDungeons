@@ -188,7 +188,7 @@ function buildNodesFromBricks(%brickGroup) {
 
 function getClosestNode(%position) {
 	%nodeId = -1;
-	%radius = 50;
+	%radius = 20;
 	initContainerRadiusSearch(%position, %radius, $TypeMasks::fxBrickObjectType);
 	%minDistance = %radius;
 	while(%col = containerSearchNext()) {

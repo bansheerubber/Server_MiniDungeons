@@ -274,7 +274,12 @@ function Player::getCurrentRoom(%this) {
 deActivatePackage(MiniDungeonsRooms);
 package MiniDungeonsRooms {
 	function GameConnection::getSpawnPoint(%this) {
-		return $MD::DungeonSpawnPoints.getObject(getRandom(0, $MD::DungeonSpawnPoints.getCount() - 1)).getTransform();
+		if($MD::DungeonSpawnPoints.getCount() == 0) {
+			return "0 0 0 0 0 0 1";
+		}
+		else {
+			return $MD::DungeonSpawnPoints.getObject(getRandom(0, $MD::DungeonSpawnPoints.getCount() - 1)).getTransform();
+		}
 	}
 	
 	function SimSet::onRemove(%this) {
