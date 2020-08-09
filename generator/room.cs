@@ -33,6 +33,30 @@ function createRoom(%position, %size) {
 	return %roomSet;
 }
 
+function SimSet::roomResetBattle(%this) {
+	%this.areBattleBotsDead = false;
+}
+
+function SimSet::roomOnBotSpawned(%this, %bot) {
+	%this.bots.add(%bot);
+	%bot.room = %this;
+}
+
+function SimSet::roomOnBotKilled(%this, %bot) {
+	%this.bots.remove(%bot);
+
+	if(%this.isBattleRoom && %this.bots.getCount() == 0) {
+		%this.roomEndBattle(true);
+	}
+}
+
+function SimSet::roomEndBattle(%this, %victory) {
+	if(%victory) {
+		%this.areBattleBotsDead = true;
+	}
+	%this.roomUnLockDoors();
+}
+
 function SimSet::roomLockDoors(%this) {
 	%this.isLocked = true;
 	%this.oneWayDoors.deleteAll();
@@ -76,14 +100,23 @@ function SimSet::_roomHandleBotSpawning(%this) {
 }
 
 function SimSet::roomSpawnBots(%this) {
-	if(!%this.hasSpawnedBots) {
+	if(
+		!%this.hasSpawnedBots
+		&& (
+			!%this.isBattleRoom
+			|| (
+				%this.isBattleRoom
+				&& !%this.areBattleBotsDead
+			)
+		)
+	) {
 		%count = %this.botBricks.getCount();
 		for(%i = 0; %i < %count; %i++) {
 			%this.bots.add(BrickAiSpawnData.spawnBot(%this.botBricks.getObject(%i)));
 		}
-	}
 
-	%this.hasSpawnedBots = true;
+		%this.hasSpawnedBots = true;
+	}
 }
 
 function SimSet::roomUnSpawnBots(%this) {
@@ -132,7 +165,13 @@ function SimSet::roomBuild(%this) {
 		plantRoom("test_finalboss", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
 	}
 	else {
-		plantRoom("test_" @ %this.width @ "x" @ %this.height, vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+		if(%this.width == 5 && %this.height == 3) {
+			plantRoom(%this.width @ "x" @ %this.height @ "_0", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+			%this.isBattleRoom = true;
+		}
+		else {
+			plantRoom("test_" @ %this.width @ "x" @ %this.height, vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+		}
 	}
 }
 
@@ -173,7 +212,12 @@ function SimSet::roomOnPlayerEnter(%this, %player) {
 	%this.botScope.add(%player);
 	%this.roomHandleBotSpawning();
 
-	if(%this.isBattleRoom && !%this.areBattleBotsDead && !%this.isLocked) {
+	if(
+		%this.isBattleRoom
+		&& %this.bots.getCount() > 0
+		&& !%this.areBattleBotsDead
+		&& !%this.isLocked
+	) {
 		%this.roomLockDoors();
 	}
 

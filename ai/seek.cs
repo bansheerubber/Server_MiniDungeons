@@ -67,7 +67,11 @@ function AiPlayer::seek(%this) {
 					%nextPosition,
 					$TypeMasks::fxBrickObjectType,
 					0)
-				).getName() $= "_node"
+				)
+				&& (
+					%raycast.getName() $= "_node"
+					|| %raycast.getDatablock().getName() $= "BrickPathfindingNodeData"
+				)
 				&& %this.currentPathIndex < %this.pathCount
 				&& mAbs(getWord(%nextPosition, 2) - getWord(%position, 2)) < 3
 			) {

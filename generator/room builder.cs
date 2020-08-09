@@ -25,6 +25,12 @@ function loadWallFiles() {
 				loadDungeonBLS("config/NewDuplicator/Saves/test_" @ %width @ "x" @ %height @ ".bls", "test_" @ %width @ "x" @ %height, "Room");
 				%set[%width @ %height] = true;
 			}
+
+			%path = "config/NewDuplicator/Saves/";
+			for(%index = 0; isFile(%roomPath = (%path @ %width @ "x" @ %height @ "_" @ %index @ ".bls")); %index++) {
+				echo("Loaded room" SPC %width @ "x" @ %height @ "_" @ %index);
+				loadDungeonBLS(%roomPath, %width @ "x" @ %height @ "_" @ %index, "Room");
+			}
 		}
 	}
 
@@ -134,6 +140,8 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 				sacle = "1 1 1";
 				shapeFxID = $MD::Room[%name, %i, "shapeFXID"];
 				client = 0;
+
+				room = %simSet;
 				
 				isPlanted = 1;
 				isHackBrick = 1;

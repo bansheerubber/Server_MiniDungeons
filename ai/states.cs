@@ -90,6 +90,10 @@ package MiniDungeonsAI {
 
 		if(%obj.getClassName() $= "AiPlayer") {
 			%obj.loseTarget();
+
+			if(%obj.room) {
+				%obj.room.roomOnBotKilled(%obj);
+			}
 		}
 		
 		if(isObject(%obj.ai)) {
