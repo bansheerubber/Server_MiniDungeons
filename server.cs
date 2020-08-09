@@ -137,6 +137,10 @@ function serverCmdBuildMode(%this) {
 	if(%this.isAdmin) {
 		%this.buildmode = !%this.buildmode;
 		messageClient(%this, '', "\c6Buildmode is" SPC (%this.buildmode ? "on" : "off"));
+		
+		if(%this.hasSpawnedOnce) {
+			%this.spawnPlayer();
+		}
 	}
 }
 

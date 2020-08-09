@@ -59,22 +59,18 @@ class Navmesh:
 	def simplify(self):
 		self.triangles = Delaunay(self.points)
 
-		print(self.points)
-		print(self.triangles.simplices)
-
 		# figure out what neighbors we can simplify
 		# algorithm: basically create a new neighbors list. if a node was previously in the neighbor list, then add it back into it
 		for simplex in self.triangles.simplices:
-			for index in range(-1, len(simplex) - 1):
-				node1 = self.nodes[simplex[index]]
-				node2 = self.nodes[simplex[index + 1]]
+			for index in range(len(simplex)):
+				node = self.nodes[simplex[index]]
 
-				print(f"{node1.id} linked to {node2.id}")
+				for index2 in range(len(simplex)):
+					neighbor = self.nodes[simplex[index2]]
 
-				node1.add_simple_neighbor(node2)
-				node2.add_simple_neighbor(node1)
-			
-			print(" ")
+					if node != neighbor:
+						node.add_simple_neighbor(neighbor)
+						neighbor.add_simple_neighbor(node)
 		
 		old_neighbor_count = 0
 		new_neighbor_count = 0

@@ -7,7 +7,7 @@ class Node:
 		self._simple_neighbors = []
 	
 	def add_simple_neighbor(self, neighbor):
-		if neighbor in self.neighbors:
+		if neighbor in self.neighbors and neighbor not in self._simple_neighbors:
 			self._simple_neighbors.append(neighbor)
 
 	def set_simple_neighbors(self):

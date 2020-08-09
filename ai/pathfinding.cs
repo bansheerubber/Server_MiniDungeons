@@ -31,32 +31,36 @@ function BrickPathfindingNodeData::onLoadPlant(%this, %obj) {
 	%obj.getGroup().pathfindingNodes.add(%obj);
 }
 
-function BrickPathfindingNodeData::onInteract(%this, %obj) {
-	%obj.isGraphMode = true;
-	if(!isEventPending(%obj.visualizeNeighbors)) {
-		if(!isObject(%obj.debugLines)) {
-			%obj.debugLines = new SimSet();
+function BrickPathfindingNodeData::onInteract(%this, %obj, %interactee) {
+	if(%interactee.buildmode) {
+		%obj.isGraphMode = true;
+		if(!isEventPending(%obj.visualizeNeighbors)) {
+			if(!isObject(%obj.debugLines)) {
+				%obj.debugLines = new SimSet();
+			}
+			
+			%obj.visualizeNeighbors();
 		}
-		
-		%obj.visualizeNeighbors();
-	}
 
-	cancel(%obj.stopVisualizeNeighbors);
-	%obj.stopVisualizeNeighbors = %obj.schedule(120000, stopVisualizeNeighbors);
+		cancel(%obj.stopVisualizeNeighbors);
+		%obj.stopVisualizeNeighbors = %obj.schedule(120000, stopVisualizeNeighbors);
+	}
 }
 
-function BrickPathfindingNodeData::onLook(%this, %obj) {
-	if(!isEventPending(%obj.visualizeNeighbors)) {
-		if(!isObject(%obj.debugLines)) {
-			%obj.debugLines = new SimSet();
+function BrickPathfindingNodeData::onLook(%this, %obj, %interactee) {
+	if(%interactee.buildmode) {
+		if(!isEventPending(%obj.visualizeNeighbors)) {
+			if(!isObject(%obj.debugLines)) {
+				%obj.debugLines = new SimSet();
+			}
+			
+			%obj.visualizeNeighbors();
 		}
-		
-		%obj.visualizeNeighbors();
-	}
 
-	if(!%obj.isGraphMode) {
-		cancel(%obj.stopVisualizeNeighbors);
-		%obj.stopVisualizeNeighbors = %obj.schedule(200, stopVisualizeNeighbors);
+		if(!%obj.isGraphMode) {
+			cancel(%obj.stopVisualizeNeighbors);
+			%obj.stopVisualizeNeighbors = %obj.schedule(200, stopVisualizeNeighbors);
+		}
 	}
 }
 

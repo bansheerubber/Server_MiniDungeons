@@ -165,13 +165,8 @@ function SimSet::roomBuild(%this) {
 		plantRoom("test_finalboss", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
 	}
 	else {
-		if(%this.width == 5 && %this.height == 3) {
-			plantRoom(%this.width @ "x" @ %this.height @ "_0", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
-			%this.isBattleRoom = true;
-		}
-		else {
-			plantRoom("test_" @ %this.width @ "x" @ %this.height, vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
-		}
+		plantRoom(%this.width @ "x" @ %this.height @ "_0", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+		%this.isBattleRoom = true;
 	}
 }
 

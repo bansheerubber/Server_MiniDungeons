@@ -61,26 +61,26 @@ function AiPlayer::seek(%this) {
 			%nextPosition = %this.path[%this.currentPathIndex];
 
 			// skip over nodes that we can see
-			while(
-				(%raycast = containerRaycast(
-					%position,
-					%nextPosition,
-					$TypeMasks::fxBrickObjectType,
-					0)
-				)
-				&& (
-					%raycast.getName() $= "_node"
-					|| %raycast.getDatablock().getName() $= "BrickPathfindingNodeData"
-				)
-				&& %this.currentPathIndex < %this.pathCount
-				&& mAbs(getWord(%nextPosition, 2) - getWord(%position, 2)) < 3
-			) {
-				%this.currentPathIndex++;
-				%nextPosition = %this.path[%this.currentPathIndex];
-			}
+			// while(
+			// 	(%raycast = containerRaycast(
+			// 		%position,
+			// 		%nextPosition,
+			// 		$TypeMasks::fxBrickObjectType,
+			// 		0)
+			// 	)
+			// 	&& (
+			// 		%raycast.getName() $= "_node"
+			// 		|| %raycast.getDatablock().getName() $= "BrickPathfindingNodeData"
+			// 	)
+			// 	&& %this.currentPathIndex < %this.pathCount
+			// 	&& mAbs(getWord(%nextPosition, 2) - getWord(%position, 2)) < 3
+			// ) {
+			// 	%this.currentPathIndex++;
+			// 	%nextPosition = %this.path[%this.currentPathIndex];
+			// }
 
-			%this.currentPathIndex--;
-			%nextPosition = %this.path[%this.currentPathIndex];
+			// %this.currentPathIndex--;
+			// %nextPosition = %this.path[%this.currentPathIndex];
 			
 			if(vectorDist(%this.getPosition(), %nextPosition) < 3) { // if we're close to the next node, then increment the path
 				%this.currentPathIndex++;
