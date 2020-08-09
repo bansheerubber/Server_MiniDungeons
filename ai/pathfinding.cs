@@ -215,7 +215,7 @@ function getClosestNode(%position) {
 
 function createPathfindingClient() {
 	%tcp = new TCPObject(MiniDungeonsPathfinding);
-	%tcp.connect("localhost:5000");
+	%tcp.connect("localhost:30104");
 	return %tcp;
 }
 

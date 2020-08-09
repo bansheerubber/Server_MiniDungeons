@@ -1,3 +1,3 @@
 from server import PathfindingServer
 
-PathfindingServer(5000)
+PathfindingServer(30104)
