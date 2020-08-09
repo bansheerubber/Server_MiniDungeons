@@ -1,8 +1,10 @@
 import types
 import selectors
 import socket
+import random
 from node import Node
 from a_star import a_star
+from navmesh import Navmesh
 import time
 
 class PathfindingServer:
@@ -22,6 +24,7 @@ class PathfindingServer:
 		self.incoming = ""
 
 		self.nodes = {}
+		self.navmesh = {}
 		self.tick = 0
 		self.last_read = -1
 
@@ -70,6 +73,12 @@ class PathfindingServer:
 								id2 = int(words[2])
 								self.nodes[id1].neighbors.append(self.nodes[id2])
 								print(f"Linked node {id1} and {id2}")
+							elif words[0] == "simplify":
+								self.navmesh = Navmesh(0, self.nodes)
+								print(f"Simplified navmesh")
+							elif words[0] == "visualize":
+								self.navmesh.visualize()
+								print(f"Visualizing navmesh")
 							elif words[0] == "path":
 								path_id = int(words[1])
 								start = int(words[2])

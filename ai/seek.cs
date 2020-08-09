@@ -195,8 +195,8 @@ function AiPlayer::seek(%this) {
 					getWord(%this.flankForwardVector, 0),
 					getWord(%this.flankForwardVector, 1)
 				);
-				%x1 = mSin(%angle - $pi / 2) * %this.flankRadius;
-				%y1 = mCos(%angle - $pi / 2) * %this.flankRadius;
+				%x1 = mSin(%angle + %this.flankAngle) * %this.flankRadius;
+				%y1 = mCos(%angle + %this.flankAngle) * %this.flankRadius;
 				%flankPosition = vectorAdd(%targetPosition, %x1 SPC %y1 SPC "0");
 				
 				// calculate correct heading based off of targets current position

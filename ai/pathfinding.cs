@@ -11,6 +11,26 @@ datablock fxDTSBrickData(BrickPathfindingNodeData) {
 	isInteractable = true;
 };
 
+function BrickPathfindingNodeData::onPlant(%this, %obj) {
+	Parent::onPlant(%this, %obj);
+	
+	if(!%obj.getGroup().pathfindingNodes) {
+		%obj.getGroup().pathfindingNodes = new SimSet();
+	}
+
+	%obj.getGroup().pathfindingNodes.add(%obj);
+}
+
+function BrickPathfindingNodeData::onLoadPlant(%this, %obj) {
+	Parent::onLoadPlant(%this, %obj);
+	
+	if(!%obj.getGroup().pathfindingNodes) {
+		%obj.getGroup().pathfindingNodes = new SimSet();
+	}
+
+	%obj.getGroup().pathfindingNodes.add(%obj);
+}
+
 function BrickPathfindingNodeData::onInteract(%this, %obj) {
 	%obj.isGraphMode = true;
 	if(!isEventPending(%obj.visualizeNeighbors)) {
@@ -84,6 +104,20 @@ function fxDTSBrick::visualizeNeighbors(%this) {
 	%this.visualizeNeighbors = %this.schedule(33, visualizeNeighbors);
 }
 
+function testNavmesh(%brickGroup, %id) {
+	$MD::PathTCP.send("create_navmesh" SPC %id @ "\n");
+
+	%count = %brickGroup.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%brick = %brickGroup.getObject(%i);
+		if(%brick.getDatablock().getName() $= "BrickPathfindingNodeData") {
+			$MD::PathTCP.send("add_navmesh" SPC %id SPC %brick.getPosition() @ "\n");
+		}
+	}
+
+	$MD::PathTCP.send("test_navmesh" SPC %id @ "\n");
+}
+
 function addNeighbor(%id1, %id2) {
 	if(!$MD::NodeNeighbor[%id1, %id2]) {
 		$MD::PathTCP.send("neighbor" SPC %id1 SPC %id2 @ "\n");
@@ -96,7 +130,14 @@ function fxDTSBrick::searchNeighbors(%this) {
 	initContainerRadiusSearch(%this.getPosition(), 14, $TypeMasks::fxBrickObjectType);
 	while(%col = containerSearchNext()) {
 		%raycast = containerRaycast(%this.getPosition(), %col.getPosition(), $TypeMasks::fxBrickObjectType, %this);
-		if(%col != %this && %col.getName() $= "_node" && getWord(%raycast, 0) == %col) {
+		if(
+			%col != %this
+			&& (
+				%col.getName() $= "_node"
+				|| %col.getDatablock().getName() $= "BrickPathfindingNodeData"
+			)
+			&& getWord(%raycast, 0) == %col
+		) {
 			addNeighbor(%this.nodeId, %col.nodeId);
 			// drawDebugLine(%this.getPosition(), %col.getPosition(), 0.2, "1 0 0 1", 15000);
 		}
@@ -111,9 +152,27 @@ function buildNodesFromBricks(%brickGroup) {
 	}
 	
 	%nodes = %brickGroup.getNTObject("_node");
-	%count = getFieldCount(%nodes);
+	if(%nodes != -1) {
+		%count = getFieldCount(%nodes);
+		for(%i = 0; %i < %count; %i++) {
+			%brick = getField(%nodes, %i);
+			%brick.nodeId = $MD::NodeCount;
+			$MD::Node[$MD::NodeCount] = %brick.getPosition();
+			$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");
+			$MD::NodeCount++;
+		}
+
+		for(%i = 0; %i < %count; %i++) {
+			%brick = getField(%nodes, %i);
+			%brick.searchNeighbors();
+		}
+	}
+
+	// do pathfinding bricks
+	%count = %brickGroup.pathfindingNodes.getCount();
 	for(%i = 0; %i < %count; %i++) {
-		%brick = getField(%nodes, %i);
+		%brick = %brickGroup.pathfindingNodes.getObject(%i);
+		talk(%brick SPC %i);
 		%brick.nodeId = $MD::NodeCount;
 		$MD::Node[$MD::NodeCount] = %brick.getPosition();
 		$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");
@@ -121,9 +180,10 @@ function buildNodesFromBricks(%brickGroup) {
 	}
 
 	for(%i = 0; %i < %count; %i++) {
-		%brick = getField(%nodes, %i);
-		%brick.searchNeighbors();
+		%brickGroup.pathfindingNodes.getObject(%i).searchNeighbors();
 	}
+
+	$MD::PathTCP.send("simplify\n");
 }
 
 function getClosestNode(%position) {
@@ -134,7 +194,14 @@ function getClosestNode(%position) {
 	while(%col = containerSearchNext()) {
 		%raycast = containerRaycast(%position, %col.getPosition(), $TypeMasks::fxBrickObjectType);
 		
-		if(%col.getName() $= "_node" && getWord(%raycast, 0) == %col && (%distance = vectorDist(%col.getPosition(), %position)) < %minDistance) {
+		if(
+			(
+				%col.getName() $= "_node"
+				|| %col.getDatablock().getName() $= "BrickPathfindingNodeData"
+			)
+			&& getWord(%raycast, 0) == %col
+			&& (%distance = vectorDist(%col.getPosition(), %position)) < %minDistance
+		) {
 			%minDistance = %distance;
 			%nodeId = %col.nodeId;
 		}
@@ -150,6 +217,10 @@ function createPathfindingClient() {
 
 function initPathfinding() {
 	$MD::PathTCP = createPathfindingClient();
+}
+
+function visualizePathfinding() {
+	$MD::PathTCP.send("visualize\n");
 }
 
 function MiniDungeonsPathfinding::onConnected(%this) {
