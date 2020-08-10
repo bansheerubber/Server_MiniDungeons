@@ -14,10 +14,6 @@ function AiPlayer::findTarget(%this) {
 		%target = MiniDugneonsTargetSet.getObject(%i);
 		%targetPosition = %target.getHackPosition();
 
-		if(%target != findClientByName("Gy").player) {
-			continue;
-		}
-
 		// stagger out if statements in order of expensiveness
 		if((%dist = vectorDist(%position, %targetPosition)) < %this.idleDrawDistance && %dist < %minDist) {
 			// if we are in alert phase, do not do the raycast
