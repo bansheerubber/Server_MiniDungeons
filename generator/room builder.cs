@@ -85,14 +85,14 @@ function getWallPosition(%datablock, %position) {
 	}
 }
 
-function plantRoom(%name, %position, %orientation, %simSet) {
+function plantRoom(%name, %position, %orientation, %simSet, %randomId) {
 	%position = getWords(%position, 0, 1)
 		SPC mFloor(
 			(getWord(%position, 2) + 0.1) / 0.2
 		) * 0.2 - 0.1; // round position to nearest plate on z axis
 	
-	if($MD::RoomCount $= "") {
-		$MD::RoomCount = 0;
+	if(%randomId $= "") {
+		%randomId = getRandom(0, 1000000);
 	}
 	
 	for(%i = 0; %i < $MD::Room[%name, "brickCount"]; %i++) {
@@ -124,7 +124,8 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 				),
 				getWallPosition($MD::Room[%name, %i, "datablock"].getName(), %brickPosition),
 				%angleId,
-				%simSet
+				%simSet,
+				%randomId
 			);
 		}
 		else {
@@ -185,11 +186,11 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 
 				%brick.numEvents = 0;
 				for(%j = 0; %j < $MD::Room[%name, %i, "eventCount"]; %j++) {
-					%brick.handleEventLine($MD::Room[%name, %i, "event", %j], $MD::RoomCount);
+					%brick.handleEventLine($MD::Room[%name, %i, "event", %j], %randomId);
 				}
 
 				if($MD::Room[%name, %i, "name"] !$= "") {
-					%brickName = strReplace($MD::Room[%name, %i, "name"], "ID", $MD::RoomCount);
+					%brickName = strReplace($MD::Room[%name, %i, "name"], "ID", %randomId);
 					%brick.setNTObjectName(%brickName);
 
 					if(strPos(%brickName, "spawnpoint") != -1) {
@@ -199,8 +200,6 @@ function plantRoom(%name, %position, %orientation, %simSet) {
 			}
 		}
 	}
-
-	$MD::RoomCount++;
 }
 
 function unGhostGroup(%group, %client) {
