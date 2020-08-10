@@ -8,14 +8,14 @@ from navmesh import Navmesh
 import time
 
 class PathfindingServer:
-	def __init__(self, port):
+	def __init__(self, ip, port):
+		print(f"Listening on port {ip}:{port}")
+		
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.socket.bind(("localhost", port))
+		self.socket.bind((ip, port))
 		self.socket.listen()
 		self.socket.setblocking(False)
-
-		print(f"Listening on port {port}")
 
 		self.selector = selectors.DefaultSelector()
 		self.selector.register(self.socket, selectors.EVENT_READ, data=None)

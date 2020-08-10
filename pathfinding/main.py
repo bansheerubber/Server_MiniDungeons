@@ -1,3 +1,5 @@
 from server import PathfindingServer
 
-PathfindingServer(30104)
+file = open("./server.info", "r")
+PathfindingServer(file.readline().strip(), int(file.readline().strip()))
+file.close()

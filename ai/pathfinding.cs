@@ -214,8 +214,14 @@ function getClosestNode(%position) {
 }
 
 function createPathfindingClient() {
+	%file = new FileObject();
+	%file.openForRead("Add-Ons/Server_MiniDungeons/pathfinding/server.info");
+	%ip = %file.readLine();
+	%port = %file.readLine();
+	%file.close();
+	
 	%tcp = new TCPObject(MiniDungeonsPathfinding);
-	%tcp.connect("localhost:30104");
+	%tcp.connect(%ip @ ":" @ %port);
 	return %tcp;
 }
 
