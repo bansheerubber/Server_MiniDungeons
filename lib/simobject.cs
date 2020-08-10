@@ -99,7 +99,7 @@ function SimObject::call(%this,%method,%v0,%v1,%v2,%v3,%v4,%v5,%v6,%v7,%v8,%v9,%
 		}
 		else
 		{
-			if(%lastNull e
+			if(%lastNull >= 0) {
 				for(%e = %lastNull; %e < %i; %e ++)
 				{
 					if(%args !$= "")

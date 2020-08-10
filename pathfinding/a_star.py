@@ -40,6 +40,7 @@ def a_star(start, goal):
 				if neighbor not in close_set:
 					heapq.heappush(open_set, (f_score[neighbor], id(neighbor), neighbor))
 	
+	print(f"a_star error pathing from {start.id} to {goal.id}")
 	return False
 
 def reconstruct_path(came_from, current):
