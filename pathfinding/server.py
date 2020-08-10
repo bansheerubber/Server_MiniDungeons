@@ -88,11 +88,16 @@ class PathfindingServer:
 									starttime = time.time()
 									path = a_star(self.nodes[start], self.nodes[end])
 									self.outgoing = f"path {path_id}"
-									for node in path:
-										self.outgoing = f"{self.outgoing} {node.id}"
-									self.outgoing = self.outgoing + "\r\n"
-									
-									print(f"Completed path in {time.time() - starttime}")
+
+									if path != False:
+										for node in path:
+											self.outgoing = f"{self.outgoing} {node.id}"
+										self.outgoing = self.outgoing + "\r\n"
+										
+										print(f"Completed path in {time.time() - starttime}")
+									else:
+										self.outgoing = f"error {path_id}"
+										print(f"Error completing path (a_star = false)")
 								else:
 									self.outgoing = f"error {path_id}"
 									print(f"Error completing path")
