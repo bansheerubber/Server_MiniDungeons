@@ -15,6 +15,7 @@ exec("./lib/sound.cs");
 exec("./lib/vector.cs");
 exec("./lib/waitSchedule.cs");
 exec("./lib/items.cs");
+exec("./lib/ntname.cs");
 
 exec("./mechanics/knockback.cs");
 exec("./mechanics/botswords.cs");
