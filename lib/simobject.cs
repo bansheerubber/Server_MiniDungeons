@@ -30,39 +30,23 @@ function SimObject::reGhostAll(%this) {
 	}
 }
 
-function SimGroup::getNTObject(%this, %input_name) {
-	%rtn = -1;
-	
-	for(%i = 0; %i < %this.NTNameCount; %i++) {
-		%name = %this.NTName[%i];
-		
-		if(%name $= %input_name) {
-			for(%x = 0; %x < %this.NTObjectCount[%name]; %x++) {
-				%brick = %this.NTObject[%name, %x];
-				%stop = true;
-				
-				if(%rtn == -1)
-					%rtn = %brick;
-				else
-					%rtn = %rtn TAB %brick;
-			}
+function SimGroup::getNTObject(%this, %inputName) {
+	%output = -1;
+	for(%i = 0; %i < %this.NTObjectCount[%inputName]; %i++) {
+		%brick = %this.NTObject[%inputName, %i];
+		if(%output == -1) {
+			%output = %brick;
 		}
-		
-		if(%stop == true) {
-			break;
+		else {
+			%output = %output TAB %brick;
 		}
 	}
-	return %rtn;
+	return %output;
 }
 
-function SimGroup::NTObjectCall(%this, %input_name, %call, %a1, %a2, %a3, %a4, %a5, %a6, %a7) {
-	%objects = %this.getNTObject(%input_name);
-	
-	%count = getFieldCount(%objects);
-	
-	for(%i = 0; %i < %count; %i++) {
-		%obj = getField(%objects, %i);
-		%obj.schedule(%i * 5, call, %call, %a1, %a2, %a3, %a4, %a5, %a6, %a7);
+function SimGroup::NTObjectCall(%this, %inputName, %call, %a1, %a2, %a3, %a4, %a5, %a6, %a7) {
+	for(%i = 0; %i < %this.NTObjectCount[%inputName]; %i++) {
+		%this.NTObject[%inputName, %i].schedule(%i * 5, call, %call, %a1, %a2, %a3, %a4, %a5, %a6, %a7);
 	}
 }
 
@@ -115,8 +99,7 @@ function SimObject::call(%this,%method,%v0,%v1,%v2,%v3,%v4,%v5,%v6,%v7,%v8,%v9,%
 		}
 		else
 		{
-			if(%lastNull >= 0)
-			{
+			if(%lastNull e
 				for(%e = %lastNull; %e < %i; %e ++)
 				{
 					if(%args !$= "")

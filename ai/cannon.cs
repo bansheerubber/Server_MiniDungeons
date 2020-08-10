@@ -63,7 +63,7 @@ function AiPlayer::cannonAttack(%this) {
 			%this.dummyPlayer.talkForTime(50);
 			%this.dummyPlayer.setAimObject(%this.target);
 
-			%this.schedule(1000, kill);
+			%this.schedule(1200, kill);
 		}
 		%this.dummyPlayer.playThread(1, "activate2");
 	}
