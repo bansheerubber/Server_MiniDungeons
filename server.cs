@@ -67,7 +67,7 @@ exec("./ai/cannon.cs");
 exec("./ai/shopkeep.cs");
 exec("./ai/name generator.cs");
 exec("./ai/spawn.cs");
-exec("./ai/horse.cs");
+// exec("./ai/horse.cs");
 
 exec("./aiweapons/mace.cs");
 exec("./aiweapons/gladius.cs");
