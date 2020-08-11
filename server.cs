@@ -32,6 +32,9 @@ exec("./mechanics/crit.cs");
 exec("./mechanics/specials.cs");
 exec("./mechanics/compass.cs");
 exec("./mechanics/pearl compass.cs");
+exec("./mechanics/potion.cs");
+
+exec("./items/flask.cs");
 
 exec("./weapons/high flare.cs");
 exec("./weapons/low explosion.cs");
@@ -278,6 +281,7 @@ function GameConnection::updateHealth(%this, %forceHealth) {
 		%shakeY = mFloor(%shakeX / 2);
 		commandToClient(%this, 'MD_VibrateHealthbar', 12 + mFloor(%delta * 20), %shakeX SPC %shakeY);
 	}
+
 	%this.lastHealthbarPercent = %percent;
 }
 
