@@ -344,8 +344,8 @@ function VaultSwordArmor::unMount(%this, %obj, %slot) {
 	Parent::unMount(%this, %obj, %slot);
 }
 
-deActivatePackage(Vaulting);
-package Vaulting {
+deActivatePackage(MiniDungeonsVaulting);
+package MiniDungeonsVaulting {
 	function Armor::onRemove(%this, %obj) {
 		if(isObject(%obj.antiGravityZone)) {
 			%obj.antiGravityZone.delete();
@@ -353,4 +353,4 @@ package Vaulting {
 		Parent::onRemove(%this, %obj);
 	}
 };
-activatePackage(Vaulting);
+activatePackage(MiniDungeonsVaulting);

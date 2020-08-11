@@ -201,14 +201,14 @@ function Player::critPowerLoop(%this) {
 	}	
 }
 
-deActivatePackage(CritPowerPackage);
-package CritPowerPackage {
+deActivatePackage(MiniDungeonsCritPowerPackage);
+package MiniDungeonsCritPowerPackage {
 	function Armor::onRemove(%this, %obj) {
 		%obj.deleteCritPower();
 		Parent::onRemove(%this, %obj);
 	}
 };
-activatePackage(CritPowerPackage);
+activatePackage(MiniDungeonsCritPowerPackage);
 
 datablock ParticleData(CritPowerExplosionParticle) {
 	dragCoefficient      = 0;

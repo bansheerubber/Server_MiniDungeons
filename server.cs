@@ -17,6 +17,7 @@ exec("./lib/waitSchedule.cs");
 exec("./lib/items.cs");
 exec("./lib/ntname.cs");
 
+exec("./mechanics/client mod.cs");
 exec("./mechanics/knockback.cs");
 exec("./mechanics/botswords.cs");
 exec("./mechanics/cycle.cs");
@@ -134,32 +135,6 @@ function serverCmdeds(%client, %input1, %input2, %input3, %input4) {
 	}
 }
 
-datablock TSShapeConstructor(MountPointDTS) {
-	baseShape = "./shapes/mountpoint.dts";
-};
-
-datablock PlayerData(MountPointArmor : PlayerStandardArmor)  {
-	shapeFile = "./shapes/mountpoint.dts";
-	emap = "1";
-	boundingBox = "100 100 100";
-	crouchBoundingBox = "100 100 100";
-	maxDamage = 1;
-	canRide = false;
-	
-	uiName = "";
-};
-
-function createMountPoint() {
-	%mount = new AiPlayer() {
-		datablock = MountPointArmor;
-		position = "0 0 -100";
-		rotation = "0 0 0 1";
-		isStaticFX = true;
-	};
-	%mount.kill();
-	return %mount;
-}
-
 function serverCmdBuildMode(%this) {
 	if(%this.isAdmin) {
 		%this.buildmode = !%this.buildmode;
@@ -169,126 +144,4 @@ function serverCmdBuildMode(%this) {
 			%this.spawnPlayer();
 		}
 	}
-}
-
-deActivatePackage(MountPoint);
-package MountPoint {
-	function AiPlayer::playDeathCry(%obj) {
-		cancel(%obj.aiSchedule);
-		if(%obj.isStaticFX) {
-			return;
-		}
-		Parent::playDeathCry(%obj);
-	}
-	
-	function Player::removeBody(%obj) {
-		if(%obj.isStaticFX) {
-			return;
-		}
-		Parent::removeBody(%obj);
-	}
-
-	function GameConnection::autoAdminCheck(%this) {
-		schedule(1000, 0, commandToClient, %this, 'MD_Handshake');
-		
-		return Parent::autoAdminCheck(%this);
-	}
-
-	function Player::damage(%this, %col, %position, %damage, %damageType) {
-		Parent::damage(%this, %col, %position, %damage, %damageType);
-		
-		if(%this.client) {
-			%this.client.updateHealth();
-		}
-	}
-
-	function Player::setHealth(%this, %health) {
-		Parent::setHealth(%this, %health);
-
-		if(%this.client) {
-			%this.client.updateHealth();
-		}
-	}
-
-	function Player::addHealth(%this, %health) {
-		Parent::addHealth(%this, %health);
-
-		if(%this.client) {
-			%this.client.updateHealth();
-		}
-	}
-
-	function GameConnection::spawnPlayer(%this) {
-		Parent::spawnPlayer(%this);
-
-		if(!%this.buildmode) {
-			%this.player.setDatablock(MiniDungeonsArmor);
-		}
-
-		%this.lastHealthbarPercent = 1;
-		if(isObject(%this.player)) {
-			%this.updateHealth();
-
-			MiniDugneonsTargetSet.add(%this.player);
-
-			commandToClient(%this, 'MD_HandleSpawn');
-		}
-	}
-
-	function GameConnection::giveDefaultEquipment(%client) {
-		if(%client.buildmode) {
-			return Parent::giveDefaultEquipment(%client);
-		}
-		else {
-			%client.player.addItem(DoubleHandedItem);
-			return;
-		}
-	}
-
-	function Player::giveDefaultEquipment(%player) {
-		if(%player.client.buildmode) {
-			return Parent::giveDefaultEquipment(%player);
-		}
-		else {
-			for(%i = 0; %i < %player.getDatablock().maxTools; %i++) {
-				%player.setItem(0, %i);
-			}
-			
-			%player.setItem(DoubleHandedItem, 0);
-			return;
-		}
-	}
-
-	function Armor::onDisabled(%this, %obj) {
-		if(MiniDugneonsTargetSet.isMember(%obj)) {
-			MiniDugneonsTargetSet.remove(%obj);	
-		}
-		Parent::onDisabled(%this, %obj);
-	}
-
-	function GameConnection::onDeath(%client, %sourceObject, %sourceClient, %damageType, %damLoc) {
-		%client.updateHealth(0);
-		Parent::onDeath(%client, %sourceObject, %sourceClient, %damageType, %damLoc);
-	}
-};
-activatePackage(MountPoint);
-
-function GameConnection::updateHealth(%this, %forceHealth) {
-	%health = %forceHealth $= "" ? %this.player.getHealth() : %forceHealth;
-	commandToClient(%this, 'MD_SetHealthbar', %health, %this.player.getMaxHealth());
-	%percent = %health / %this.player.getMaxHealth();
-
-	if(%this.lastHealthbarPercent > %percent) {
-		%delta = %this.lastHealthbarPercent - %percent;
-		%shakeX = mClamp(%delta * 50, 0, 20);
-		%shakeY = mFloor(%shakeX / 2);
-		commandToClient(%this, 'MD_VibrateHealthbar', 12 + mFloor(%delta * 20), %shakeX SPC %shakeY);
-	}
-
-	%this.lastHealthbarPercent = %percent;
-}
-
-function serverCmdMD_Handshake_Ack(%this, %version) {
-	%this.miniDungeonsClientVersion = %version;
-	%this.hasClientAddOn = true;
 }

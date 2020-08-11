@@ -41,3 +41,22 @@ function AiPlayer::loseTarget(%this) {
 	%this.target.numAttackers--;
 	%this.target = 0;
 }
+
+deActivatePackage(MiniDungeonsFinder);
+package MiniDungeonsFinder {
+	function GameConnection::spawnPlayer(%this) {
+		Parent::spawnPlayer(%this);
+
+		if(isObject(%this.player)) {
+			MiniDugneonsTargetSet.add(%this.player);
+		}
+	}
+
+	function Armor::onDisabled(%this, %obj) {
+		if(MiniDugneonsTargetSet.isMember(%obj)) {
+			MiniDugneonsTargetSet.remove(%obj);	
+		}
+		Parent::onDisabled(%this, %obj);
+	}
+};
+activatePackage(MiniDungeonsFinder);
