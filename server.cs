@@ -38,7 +38,7 @@ exec("./mechanics/chests.cs");
 exec("./mechanics/large chest.cs");
 exec("./mechanics/small chest.cs");
 
-exec("./items/flask.cs");
+exec("./items/health flask.cs");
 
 exec("./weapons/high flare.cs");
 exec("./weapons/low explosion.cs");

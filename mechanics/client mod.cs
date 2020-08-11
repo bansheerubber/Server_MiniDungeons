@@ -54,6 +54,7 @@ package MiniDungeonsClient {
 			}
 			
 			%player.setItem(DoubleHandedItem, 0);
+			%player.setItem(HealthFlaskItem, 4);
 			return;
 		}
 	}
