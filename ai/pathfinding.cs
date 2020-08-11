@@ -181,11 +181,13 @@ function buildNodesFromBricks(%brickGroup) {
 		$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");
 		$MD::NodeCount++;
 	}
+}
 
+function buildNeighborsFromBricks(%brickGroup) {
+	%count = %brickGroup.pathfindingNodes.getCount();
 	for(%i = 0; %i < %count; %i++) {
 		%brickGroup.pathfindingNodes.getObject(%i).searchNeighbors();
 	}
-
 	$MD::PathTCP.send("simplify\n");
 }
 
