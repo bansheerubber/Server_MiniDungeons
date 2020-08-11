@@ -176,7 +176,6 @@ function buildNodesFromBricks(%brickGroup) {
 	%count = %brickGroup.pathfindingNodes.getCount();
 	for(%i = 0; %i < %count; %i++) {
 		%brick = %brickGroup.pathfindingNodes.getObject(%i);
-		talk(%brick SPC %i);
 		%brick.nodeId = $MD::NodeCount;
 		$MD::Node[$MD::NodeCount] = %brick.getPosition();
 		$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");

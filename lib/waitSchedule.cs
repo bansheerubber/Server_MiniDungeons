@@ -29,13 +29,13 @@ function WaitSchedule::loop(%this) {
 			if(%this.conditions[%i, "field"] !$= "") {
 				if(%this.conditions[%i, "isString"]) {
 					if(%obj.getField(%this.conditions[%i, "field"]) !$= %this.conditions[%i, "value"]) {
-						%this.schedule(33, loop);
+						%this.schedule(100, loop);
 						return;
 					}
 				}
 				else {
 					if(%obj.getField(%this.conditions[%i, "field"]) != %this.conditions[%i, "value"]) {
-						%this.schedule(33, loop);
+						%this.schedule(100, loop);
 						return;
 					}
 				}
@@ -44,13 +44,13 @@ function WaitSchedule::loop(%this) {
 				%methodValue = %obj.call(%this.conditions[%i, "method"]);
 				if(%this.conditions[%i, "isString"]) {
 					if(%methodValue !$= %this.conditions[%i, "value"]) {
-						%this.schedule(33, loop);
+						%this.schedule(100, loop);
 						return;
 					}
 				}
 				else {
 					if(%methodValue != %this.conditions[%i, "value"]) {
-						%this.schedule(33, loop);
+						%this.schedule(100, loop);
 						return;
 					}
 				}

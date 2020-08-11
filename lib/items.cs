@@ -17,7 +17,9 @@ function Player::addItem(%this, %item) {
 }
 
 function Player::setItem(%this, %item, %index) {
-	%item = %item.getId();
+	if(isObject(%item)) {
+		%item = %item.getId();
+	}
 	%this.tool[%index] = %item;
 	messageClient(%this.client, 'MsgItemPickup', '', %index, %item);
 }

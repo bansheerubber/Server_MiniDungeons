@@ -67,12 +67,18 @@ class PathfindingServer:
 								id = int(words[1])
 								position = (float(words[2]), float(words[3]), float(words[4]))
 								self.nodes[id] = Node(id, position)
-								print(f"Created node {id} at position {position}")
+								# print(f"Created node {id} at position {position}")
 							elif words[0] == "neighbor":
 								id1 = int(words[1])
 								id2 = int(words[2])
-								self.nodes[id1].neighbors.append(self.nodes[id2])
-								print(f"Linked node {id1} and {id2}")
+
+								if id1 not in self.nodes:
+									print(f"{id1} not in nodes, could not link to {id2}")
+								elif id2 not in self.nodes:
+									print(f"{id2} not in nodes, could not link to {id1}")
+								else:
+									self.nodes[id1].neighbors.append(self.nodes[id2])
+									print(f"Linked node {id1} and {id2}")
 							elif words[0] == "simplify":
 								self.navmesh = Navmesh(0, self.nodes)
 								print(f"Simplified navmesh")
