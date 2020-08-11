@@ -23,6 +23,10 @@ package MiniDungeonsInteractable {
 };
 activatePackage(MiniDungeonsInteractable);
 
+function SimObject::onLook(%this, %obj, %interactee) {
+
+}
+
 function SimObject::onInteract(%this, %obj, %interactee) {
 
 }
@@ -33,7 +37,13 @@ function Player::interact(%this) {
 	%masks = $TypeMasks::fxBrickObjectType | $TypeMasks::StaticObjectType | $TypeMasks::PlayerObjectType;
 	%raycast = containerRaycast(%start, %end, %masks, %this);
 
-	if(isObject(%obj = getWord(%raycast, 0)) && isFunction(%obj.getClassName(), getDatablock) && %obj.getDatablock().isInteractable) {
+	if(
+		isObject(%obj = getWord(%raycast, 0))
+		&& isFunction(%obj.getClassName(), getDatablock)
+		&& %obj.getDatablock().isInteractable
+		&& !%this.hasSwordMounted()
+		&& !%this.getMountedImage(0)
+	) {
 		%obj.getDatablock().onInteract(%obj, %this);
 	}
 }

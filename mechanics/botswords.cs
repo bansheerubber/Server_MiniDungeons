@@ -26,6 +26,15 @@ function Armor::isMounted(%this, %obj, %slot) {
 	return false;
 }
 
+function Player::hasSwordMounted(%this) {
+	for(%i = 0; %i < 4; %i++) {
+		if(isObject(%sword = %this.sword[%i])) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function Armor::mount(%this, %obj, %slot) {
 	%this = %this.getId();
 	

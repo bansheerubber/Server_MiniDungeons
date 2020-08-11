@@ -33,6 +33,9 @@ exec("./mechanics/specials.cs");
 exec("./mechanics/compass.cs");
 exec("./mechanics/pearl compass.cs");
 exec("./mechanics/potion.cs");
+exec("./mechanics/chests.cs");
+exec("./mechanics/large chest.cs");
+exec("./mechanics/small chest.cs");
 
 exec("./items/flask.cs");
 

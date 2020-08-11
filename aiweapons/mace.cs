@@ -30,7 +30,7 @@ datablock AudioProfile(MaceTelegraph2Sound) {
 
 datablock AudioProfile(MaceKickSound) {
 	filename    = "./sounds/mace kick.ogg";
-	description = AudioClose3d;
+	description = AudioClosest3d;
 	preload = true;
 };
 
