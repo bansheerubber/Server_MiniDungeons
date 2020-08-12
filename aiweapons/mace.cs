@@ -28,12 +28,6 @@ datablock AudioProfile(MaceTelegraph2Sound) {
 	preload = true;
 };
 
-datablock AudioProfile(MaceKickSound) {
-	filename    = "./sounds/mace kick.ogg";
-	description = AudioClosest3d;
-	preload = true;
-};
-
 datablock StaticShapeData(SpikesStatic) {
 	shapeFile = "./shapes/spikes10.dts";
 };

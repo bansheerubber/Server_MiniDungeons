@@ -100,3 +100,10 @@ datablock AudioProfile(HighHit1Sound) {
 	description = AudioDefault3d;
 	preload = true;
 };
+
+
+datablock AudioProfile(MaceKickSound) {
+	filename    = "./sounds/mace kick.ogg";
+	description = AudioClosest3d;
+	preload = true;
+};

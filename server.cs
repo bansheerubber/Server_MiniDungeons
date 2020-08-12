@@ -1,8 +1,8 @@
 forceRequiredAddOn("Player_BeefBoy");
 forceRequiredAddOn("Brick_MiniDungeons");
 
-exec("./playertype.cs");
 exec("./sounds.cs");
+exec("./playertype.cs");
 
 exec("./lib/global.cs");
 exec("./lib/brick.cs");
