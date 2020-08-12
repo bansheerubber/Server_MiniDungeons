@@ -36,7 +36,7 @@ datablock PlayerData(DoubleHandedSwordArmor : PlayerStandardArmor)  {
 
 	swordStartMount[0] 					= 0; // start point for raycast/interpolation
 	swordEndMount[0] 					= 1; // end point for raycast/interpolation
-	swordStepInterpolationCount 		= 3; // how many linear interpolations we do between steps, based on distance
+	swordStepInterpolationCount 		= 4; // how many linear interpolations we do between steps, based on distance
 	swordStepTick						= 33; // how fast we do sword stepping
 
 	swordInterpolationDistance[0, 0]	= 1;
