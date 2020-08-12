@@ -16,11 +16,21 @@ function Armor::spawnChest(%this, %position) {
 	return %chest;
 }
 
+function Armor::chestSpawnGoodies(%this, %obj) {
+	if(!%obj.hasSpawnedGoodies) {
+		%obj.hasSpawnedGoodies = true;
+		%z = getWord(%obj.getObjectBox(), 5) / 4;
+		spawnPickup(vectorAdd(%obj.getPosition(), "0 0" SPC %z), true);
+	}
+}
+
 function Armor::onChestInteract(%this, %obj, %interactee) {
 	if(getSimTime() > %obj.nextInteract) {
 		if(!%obj.isOpen) {
 			%obj.playThread(0, "open");
 			%obj.isOpen = true;
+
+			%this.chestSpawnGoodies(%obj);
 
 			serverPlay3dTimescale(CycleLowReadySound, %obj.getPosition(), getRandom(8, 12) / 10);
 		}

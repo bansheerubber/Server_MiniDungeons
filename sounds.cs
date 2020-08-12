@@ -107,3 +107,10 @@ datablock AudioProfile(MaceKickSound) {
 	description = AudioClosest3d;
 	preload = true;
 };
+
+
+datablock AudioProfile(EatFoodSound) {
+	filename    = "./sounds/eat food.ogg";
+	description = AudioClosest3d;
+	preload = true;
+};

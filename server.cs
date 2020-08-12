@@ -38,8 +38,10 @@ exec("./mechanics/potion.cs");
 exec("./mechanics/chests.cs");
 exec("./mechanics/large chest.cs");
 exec("./mechanics/small chest.cs");
+exec("./mechanics/pickup.cs");
 
 exec("./items/health flask.cs");
+exec("./items/steak.cs");
 
 exec("./weapons/high flare.cs");
 exec("./weapons/low explosion.cs");

@@ -155,7 +155,8 @@ function plantRoom(%name, %position, %orientation, %simSet, %randomId) {
 				%datablockName = $MD::Room[%name, %i, "datablock"].getName();
 				if(%datablockName $= "BrickAiSpawnData") {
 					%simSet.botBricks.add(%brick);
-				} else if(strPos(%datablockName, "brickWoodenDoor3") != -1) {
+				}
+				else if(strPos(%datablockName, "brickWoodenDoor3") != -1) {
 					%simSet.doorBricks.add(%brick);
 				}
 
@@ -195,6 +196,9 @@ function plantRoom(%name, %position, %orientation, %simSet, %randomId) {
 
 					if(strPos(%brickName, "spawnpoint") != -1) {
 						$MD::DungeonSpawnPoints.add(%brick);
+					}
+					else if(strPos(%brickName, "chest_spawn") != -1) {
+						%simSet.chestSpawn = %brick;
 					}
 				}
 			}

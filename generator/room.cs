@@ -24,6 +24,7 @@ function createRoom(%position, %size) {
 	%roomSet.hallways = new SimSet();
 	%roomSet.botScope = new SimSet();
 	%roomSet.type = "Room";
+	%roomSet.chestSpawn = 0;
 	
 	for(%x = 0; %x < %width; %x++) {
 		for(%y = 0; %y < %height; %y++) {
@@ -53,8 +54,17 @@ function SimSet::roomOnBotKilled(%this, %bot) {
 function SimSet::roomEndBattle(%this, %victory) {
 	if(%victory) {
 		%this.areBattleBotsDead = true;
+
+		%this.roomSpawnChest();
 	}
 	%this.roomUnLockDoors();
+}
+
+function SimSet::roomSpawnChest(%this) {
+	if(isObject(%this.chestSpawn)) {
+		%position = vectorAdd(%this.chestSpawn.getPosition(), "0 0 5");
+		%this.bots.add(SmallChestArmor.spawnChest(%position));
+	}
 }
 
 function SimSet::roomLockDoors(%this) {
