@@ -89,6 +89,14 @@ package MiniDungeonsAI {
 		cancel(%obj.talkSchedule);
 
 		if(%obj.getClassName() $= "AiPlayer") {
+			if(
+				isObject(%obj.target)
+				&& isObject(%obj.target.client)
+				&& %obj.reward
+			) {
+				%obj.target.client.addCurrency(%obj.reward);
+			}
+			
 			%obj.loseTarget();
 
 			if(%obj.room) {

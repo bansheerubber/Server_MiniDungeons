@@ -5,6 +5,8 @@ function GameConnection::addCurrency(%this, %value) {
 	if($MD::Currency[%this.getBLID()] <= 0) {
 		$MD::Currency[%this.getBLID()] = 0;
 	}
+
+	commandToClient(%this, 'MD_SetSkill', $MD::Currency[%this.getBLID()], %value);
 }
 
 function GameConnection::setCurrency(%this, %value) {
@@ -12,6 +14,8 @@ function GameConnection::setCurrency(%this, %value) {
 	if($MD::Currency[%this.getBLID()] <= 0) {
 		$MD::Currency[%this.getBLID()] = 0;
 	}
+
+	commandToClient(%this, 'MD_SetSkill', $MD::Currency[%this.getBLID()]);
 }
 
 function GameConnection::getCurrency(%this) {
@@ -39,6 +43,11 @@ function GameConnection::purchase(%this, %itemName, %price) {
 	%this.addCurrency(-1 * %price);
 }
 
-function GameConnection::frog(%this) {
-
-}
+deActivatePackage(MiniDungeonsCurrency);
+package MiniDungeonsCurrency {
+	function GameConnection::spawnPlayer(%this) {
+		Parent::spawnPlayer(%this);
+		%this.setCurrency(0);
+	}
+};
+activatePackage(MiniDungeonsCurrency);

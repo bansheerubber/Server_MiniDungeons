@@ -27,6 +27,8 @@ function createCannonAi(%transform, %roomIndex) {
 		isEnemyAi = true;
 		isBot = true;
 
+		reward = 1;
+
 		name = generateRandomName();
 	};
 	%ai.setTransform(%transform);

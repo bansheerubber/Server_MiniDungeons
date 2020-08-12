@@ -46,8 +46,10 @@ function AiPlayer::seek(%this) {
 
 			%this.requestPath(%closestNode, %targetClosestNode);
 			%this.nextPathRequest = getSimTime() + 10000;
+			%this.lastPathRequest = getSimTime();
 			
-			%this.ai = %this.waitSchedule(500, seek).addMethodCondition(%this, "hasPath", true);
+			%this.ai = %this.waitSchedule(500, seek).addMethodCondition(%this, "hasPathOrTimeout", true);
+			
 			return;
 		}
 		else { // iterate through the path

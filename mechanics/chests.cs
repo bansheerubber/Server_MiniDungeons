@@ -112,8 +112,6 @@ datablock ParticleEmitterData(ChestLandEmitter) {
 datablock ExplosionData(ChestLandExplosion) {
 	shakeCamera = false;
 
-	explosionShape = "./shapes/mace hit sphere3.dts";
-
 	emitter[0] = ChestLandEmitter;
 
 	lifeTimeMS = 200;

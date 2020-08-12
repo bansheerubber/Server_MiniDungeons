@@ -37,6 +37,8 @@ function createGladiusAi(%transform, %roomIndex) {
 		seekCleanup = "gladiusSeekCleanup";
 		attackCleanup = "gladiusAttackCleanup";
 
+		reward = 1;
+
 		seekHeightCheck = true;
 
 		customDeathCry = "GladiusDeath" @ getRandom(1, 3) @ "Sound";

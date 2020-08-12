@@ -273,6 +273,10 @@ function AiPlayer::hasPath(%this) {
 	return %this.pathCount != 0;
 }
 
+function AiPlayer::hasPathOrTimeout(%this) {
+	return %this.pathCount != 0 || (getSimTime() > %this.lastPathRequest + 2000);
+}
+
 function AiPlayer::setPath(%this, %path) {
 	%count = getWordCount(%path);
 	%this.pathCount = 0;

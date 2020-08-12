@@ -15,6 +15,8 @@ function createMaceAi(%transform, %roomIndex) {
 		seekCleanup = "maceSeekCleanup";
 		attackCleanup = "maceAttackCleanup";
 
+		reward = 5;
+
 		seekHeightCheck = true;
 
 		isEnemyAi = true;

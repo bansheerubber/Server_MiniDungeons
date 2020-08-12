@@ -19,7 +19,7 @@ function AiPlayer::idle(%this) {
 		%this.nextRotateTime = getSimTime() + getRandom(3000, 15000);
 	}
 
-	%this.ai = %this.schedule(600, idle);
+	%this.ai = %this.schedule(300, idle);
 }
 
 // called when we exit idle state

@@ -84,6 +84,10 @@ function Armor::setCycleActiveUI(%this, %obj, %slot) {
 }
 
 function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
+	if(!isObject(%obj)) {
+		return;
+	}
+	
 	// only force when we're not firing
 	if(%obj.swordCycleState[%this] == 2) {
 		return %this.schedule(33, forceCycleGuard, %obj, %slot);
@@ -100,6 +104,10 @@ function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
 }
 
 function Armor::onCycleGuard(%this, %obj, %slot) {
+	if(!isObject(%obj)) {
+		return;
+	}
+	
 	if(isObject(%obj.swordPrepSchedule)) {
 		%obj.swordPrepSchedule.delete();
 	}
@@ -113,7 +121,7 @@ function Armor::onCycleGuard(%this, %obj, %slot) {
 		%this.prepareCycleFire(%obj, %slot);
 	}
 	else {
-	%obj.playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle] @ "Swing"); // play cycle animation
+		%obj.playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle] @ "Swing"); // play cycle animation
 		%obj.stopThreadSchedule = %obj.schedule(33, stopThread, %this.swordCycleThreadSlot[%cycle]);
 		%obj.sword[%slot].playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle]);
 		%obj.playThread(0, "plant");
@@ -124,6 +132,10 @@ function Armor::onCycleGuard(%this, %obj, %slot) {
 }
 
 function Armor::prepareCycleFire(%this, %obj, %slot) {
+	if(!isObject(%obj)) {
+		return;
+	}
+	
 	cancel(%obj.stopThreadSchedule);
 	
 	%cycle = %obj.swordCurrentCycle[%this] | 0;
@@ -144,6 +156,10 @@ function Armor::prepareCycleFire(%this, %obj, %slot) {
 }
 
 function Armor::onCycleFire(%this, %obj, %slot) {
+	if(!isObject(%obj)) {
+		return;
+	}
+	
 	if(isObject(%obj.swordPrepSchedule)) {
 		%obj.swordPrepSchedule.delete();
 	}
@@ -171,6 +187,10 @@ function Armor::onCycleFire(%this, %obj, %slot) {
 }
 
 function Armor::onSwingEnd(%this, %obj, %slot) {
+	if(!isObject(%obj)) {
+		return;
+	}
+	
 	if(%this.swordCycle[0] !$= "") {
 		%start = %obj.swordCycleStart[%this];
 		%end = %obj.swordCycleEnd[%this];
@@ -188,6 +208,10 @@ function Armor::onSwingEnd(%this, %obj, %slot) {
 }
 
 function Armor::waitForCycleGuard(%this, %obj, %slot) {
+	if(!isObject(%obj)) {
+		return;
+	}
+	
 	%cycle = %obj.swordCurrentCycle[%this];
 	
 	%obj.swordCycleState[%this] = 0;
@@ -200,6 +224,10 @@ function Armor::waitForCycleGuard(%this, %obj, %slot) {
 }
 
 function Armor::transitionToCycleGuard(%this, %obj, %slot) {
+	if(!isObject(%obj)) {
+		return;
+	}
+
 	%obj.swordCycleState[%this] = 0;
 	%this.onCycleGuard(%obj, %slot);
 }

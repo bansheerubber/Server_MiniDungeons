@@ -2,6 +2,10 @@ deActivatePackage(MiniDungeonsClient);
 package MiniDungeonsClient {
 	function GameConnection::autoAdminCheck(%this) {
 		schedule(1000, 0, commandToClient, %this, 'MD_Handshake');
+
+		commandToClient(%this, 'MessageBoxOK', "Attention", "This server is very experimental/WIP. If you think something is broken, don't be afraid to speak up.");
+
+		%this.schedule(15000, promptForClientDownload);
 		
 		return Parent::autoAdminCheck(%this);
 	}
@@ -42,6 +46,8 @@ package MiniDungeonsClient {
 			%this.updateHealth();
 			commandToClient(%this, 'MD_HandleSpawn');
 		}
+
+		%this.schedule(5000, promptForClientDownload);
 	}
 
 	function Player::giveDefaultEquipment(%player) {
@@ -65,6 +71,12 @@ package MiniDungeonsClient {
 	}
 };
 activatePackage(MiniDungeonsClient);
+
+function GameConnection::promptForClientDownload(%this) {
+	if(!%this.hasClientAddOn) {
+		commandToClient(%this, 'MessageBoxOK', "Advertisement", "<a:https://blocklandglass.com/addons/addon.php?id=1314>Please download the \"Dungeons\" client mod from Blockland Glass for the best experience.</a><br><br>Includes: Parrying, extra potion information, healthbar, and more.");
+	}
+}
 
 function GameConnection::updateHealth(%this, %forceHealth) {
 	%health = %forceHealth $= "" ? %this.player.getHealth() : %forceHealth;
