@@ -42,7 +42,7 @@ package NTRewrite {
 			}
 
 			if(%group.NTObjectCount[%oldName] <= 0) {
-				%group.remoteNTName(%oldName);
+				%group.removeNTName(%oldName);
 			}
 		}
 	}

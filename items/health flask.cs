@@ -41,6 +41,8 @@ datablock ShapeBaseImageData(HealthFlaskImage) {
 	maxFluid = 150;
 	sipAmount = 15;
 	gulpAmount = 50;
+
+	interactablePassthrough = true;
 };
 
 function HealthFlaskImage::drinkPotion(%this, %obj, %amount) {

@@ -71,6 +71,12 @@ add disco 0.2
 add nothing 100
 
 ##################################################################
+slot potionrefills:
+tags center
+add potion_refill 10
+add nothing 100
+
+##################################################################
 slot loot:
 lots 1 5 add barrels%index% 5
 lots 1 5 forbidtags barrels%index%: furniture

@@ -42,7 +42,10 @@ function Player::interact(%this) {
 		&& isFunction(%obj.getClassName(), getDatablock)
 		&& %obj.getDatablock().isInteractable
 		&& !%this.hasSwordMounted()
-		&& !%this.getMountedImage(0)
+		&& (
+			!%this.getMountedImage(0)
+			|| %this.getMountedImage(0).interactablePassthrough
+		)
 	) {
 		%obj.getDatablock().onInteract(%obj, %this);
 	}

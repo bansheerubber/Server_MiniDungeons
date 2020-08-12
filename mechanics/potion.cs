@@ -10,6 +10,38 @@ datablock AudioProfile(PotionSipSound) {
 	preload = true;
 };
 
+function Player::showPotionTransformUI(%this, %fluid, %maxFluid) {
+	if(isObject(%potionImage = %this.getMountedImage(0))) {
+		commandToClient(
+			%this.client,
+			'MD_SetPotionTransferBar',
+			%fluid,
+			%maxFluid,
+			%this.potionFluid[%potionImage, %this.currTool],
+			%potionImage.maxFluid
+		);
+	}
+}
+
+function Player::refillPotion(%this, %fluid) {
+	if(
+		isObject(%potionImage = %this.getMountedImage(0))
+		&& %potionImage.isPotion
+	) {
+		%refillFluid = mClamp(
+			%potionImage.maxFluid - %this.potionFluid[%potionImage, %this.currTool],
+			0,
+			%fluid
+		);
+
+		%this.potionFluid[%potionImage, %this.currTool] += %refillFluid;
+
+		return %refillFluid;
+	}
+
+	return -1;
+}
+
 function Player::showPotionUI(%this) {
 	if(isObject(%potionImage = %this.getMountedImage(0))) {
 		commandToClient(
@@ -72,12 +104,23 @@ function Player::addHealthFromPotion(%this, %health) {
 
 deActivatePackage(MiniDungeonsPotion);
 package MiniDungeonsPotion {
+	function GameConnection::spawnPlayer(%this) {
+		Parent::spawnPlayer(%this);
+		
+		if(isObject(%this.player)) {
+			%this.player.hidePotionUI();
+		}
+	}
+	
 	function Armor::onTrigger(%this, %obj, %slot, %val) {
 		Parent::onTrigger(%this, %obj, %slot, %val);
 
 		if(
 			isObject(%potionImage = %obj.getMountedImage(0))
-			&& %potionImage.isPotion
+			&& (
+				%potionImage.isPotion
+				&& !isEventPending(%obj.hideRefillPotion)
+			)
 		) {
 			if(%val == 1) {
 				if(%slot == 0) {
