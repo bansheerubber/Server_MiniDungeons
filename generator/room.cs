@@ -122,7 +122,9 @@ function SimSet::roomSpawnBots(%this) {
 	) {
 		%count = %this.botBricks.getCount();
 		for(%i = 0; %i < %count; %i++) {
-			%this.bots.add(BrickAiSpawnData.spawnBot(%this.botBricks.getObject(%i)));
+			%bot = BrickAiSpawnData.spawnBot(%this.botBricks.getObject(%i));
+			%this.bots.add(%bot);
+			%bot.room = %this;
 		}
 
 		%this.hasSpawnedBots = true;

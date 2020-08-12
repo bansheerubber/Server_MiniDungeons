@@ -63,10 +63,6 @@ function AiPlayer::_setAiState(%this, %state) {
 	%this.state = %state;
 }
 
-function AiPlayer::hasValidTarget(%this) {
-	return isObject(%this.target) && %this.target.getState() !$= "Dead";
-}
-
 function AiPlayer::talkForTime(%this, %time) {
 	%this.playThread(3, "talk");
 	%this.talkSchedule = %this.schedule(%time * 1000, playThread, 3, "root");

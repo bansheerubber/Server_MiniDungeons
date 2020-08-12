@@ -3,6 +3,10 @@ if(!isObject(MiniDugneonsTargetSet)) {
 	new SimSet(MiniDugneonsTargetSet);
 }
 
+function AiPlayer::hasValidTarget(%this) {
+	return isObject(%this.target) && %this.target.getState() !$= "Dead" && %this.target.getCurrentRoom() == %this.room;
+}
+
 // find a potential target
 function AiPlayer::findTarget(%this) {
 	%position = %this.getPosition();
@@ -15,9 +19,12 @@ function AiPlayer::findTarget(%this) {
 		%targetPosition = %target.getHackPosition();
 
 		// stagger out if statements in order of expensiveness
-		if((%dist = vectorDist(%position, %targetPosition)) < %this.idleDrawDistance && %dist < %minDist) {
+		if(
+			%this.room == %target.getCurrentRoom()
+			&& (%dist = vectorDist(%position, %targetPosition)) < %this.idleDrawDistance && %dist < %minDist
+		) {
 			// if we are in alert phase, do not do the raycast
-			%raycast = %this.roomSet.alert ? 0 : containerRaycast(%eyePoint, %targetPosition, $TypeMasks::StaticObjectType | $TypeMasks::fxBrickObjectType, false);
+			// %raycast = %this.roomSet.alert ? 0 : containerRaycast(%eyePoint, %targetPosition, $TypeMasks::StaticObjectType | $TypeMasks::fxBrickObjectType, false);
 			
 			// determine if target is in fov
 			%theta = mRadToDeg(mACos(vectorDot(%this.getForwardVector(), vectorNormalize(vectorSub(%targetPosition, %position)))));
