@@ -15,7 +15,7 @@ datablock ItemData(SteakItem) {
 	doColorShift = false;
 
 	isPickup = true;
-	pickupHealth = 50;
+	pickupHealth = 25;
 	pickupSound = EatFoodSound;
 };
 
