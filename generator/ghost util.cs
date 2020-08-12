@@ -65,13 +65,13 @@ function SimSet::roomHandleGhosting(%this, %client, %depth, %start) {
 	if(%start) {
 		%ghostUtilObject = %client.player.createGhostUtilObject(%this);
 		%ghostUtilObject.marked = true;
-		deleteVariables("$MD::TempDungeonIter*");
+		deleteVariables("$MD::TempDungeonIter" @ %client @ "*");
 	}
 	
-	$MD::TempDungeonIter[%this] = true;
+	$MD::TempDungeonIter[%client, %this] = true;
 	for(%i = 0; %i < %this.neighborCount; %i++) {
 		%neighbor = %this.neighbor[%i];
-		if(!$MD::TempDungeonIter[%neighbor] && %depth > 0) {
+		if(!$MD::TempDungeonIter[%client, %neighbor] && %depth > 0) {
 			%ghostUtilObject = %client.player.createGhostUtilObject(%neighbor);
 			%ghostUtilObject.marked = true;
 			%neighbor.schedule(1, roomHandleGhosting, %client, %depth - 1); // delay it so first depth neighbors are ghosted first

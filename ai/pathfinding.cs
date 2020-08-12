@@ -32,7 +32,7 @@ function BrickPathfindingNodeData::onLoadPlant(%this, %obj) {
 }
 
 function BrickPathfindingNodeData::onInteract(%this, %obj, %interactee) {
-	if(%interactee.buildmode) {
+	if(%interactee.client.buildmode) {
 		%obj.isGraphMode = true;
 		if(!isEventPending(%obj.visualizeNeighbors)) {
 			if(!isObject(%obj.debugLines)) {
@@ -48,7 +48,7 @@ function BrickPathfindingNodeData::onInteract(%this, %obj, %interactee) {
 }
 
 function BrickPathfindingNodeData::onLook(%this, %obj, %interactee) {
-	if(%interactee.buildmode) {
+	if(%interactee.client.buildmode) {
 		if(!isEventPending(%obj.visualizeNeighbors)) {
 			if(!isObject(%obj.debugLines)) {
 				%obj.debugLines = new SimSet();
