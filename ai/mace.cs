@@ -21,6 +21,7 @@ function createMaceAi(%transform, %roomIndex) {
 
 		isEnemyAi = true;
 		isBot = true;
+		noJumpOnAlert = true;
 
 		name = generateRandomName();
 	};

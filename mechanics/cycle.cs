@@ -104,7 +104,7 @@ function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
 }
 
 function Armor::onCycleGuard(%this, %obj, %slot) {
-	if(!isObject(%obj)) {
+	if(!isObject(%obj) || !isObject(%obj.sword[%slot])) {
 		return;
 	}
 	

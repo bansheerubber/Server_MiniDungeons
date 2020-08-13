@@ -125,6 +125,20 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 		%this.debugAbsorbCurrentObject = false;
 		%currentObject = 0;
 	}
+
+	// if we're currently battling, then defer ghosting until later
+	if(
+		isObject(%this.getCurrentRoom())
+		&& %this.getCurrentRoom().isBattleRoom
+		&& !%this.getCurrentRoom().areBattleBotsDead
+	) {
+		if(%this.client.ghostDebug) {
+			messageClient(%this.client, '', "Defered ghosting");
+		}
+
+		%this.processGhostUtilObjects = %this.schedule(100, processGhostUtilObjects, %currentObject);
+		return;
+	}
 	
 	// if there's a pending unghost, check to see if we have any pending reghosts. those always take priority
 	if(%currentObject.isPendingUnGhost && !%currentObject.isPendingReGhost && isEventPending(%currentObject.ghostSchedule)) {
@@ -174,8 +188,8 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 	%this.processGhostUtilObjects = %this.schedule(100, processGhostUtilObjects, %currentObject);
 }
 
-$MD::GhostAmount = 300; // how much we ghost per tick
-$MD::GhostTick = 200; // how often we ghost the above amoujnt
+$MD::GhostAmount = 1000; // how much we ghost per tick
+$MD::GhostTick = 200; // how often we ghost the above amount
 
 function GhostUtilObject::batchReGhost(%this, %startIndex) {
 	cancel(%this.ghostSchedule);

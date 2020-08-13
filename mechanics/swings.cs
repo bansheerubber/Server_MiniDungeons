@@ -181,6 +181,11 @@ function Armor::parrySuccess(%this, %enemyImage, %enemy, %slot, %obj, %direction
 		%obj.applyImpulse(%obj.getPosition(), vectorAdd(vectorScale(%knockbackVector, %parryImage.parrySelfImpactImpulseSuccess), "0 0" SPC %parryImage.parrySelfVerticalImpulseSuccess));
 		%obj.playAudio(3, ParryHeavySound);
 
+		if(isObject(%obj.client) && !%enemy.skillBonus[%obj]) {
+			%obj.client.addCurrency(3);
+			%enemy.skillBonus[%obj] = true;
+		}
+
 		if(!%parryImage.parryIsShield) {
 			%obj.schedule(100, setParry, false, "", true); // reset parry w/ instant cycle recovery
 			%obj.playThread(1, "parryLand");

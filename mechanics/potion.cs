@@ -11,7 +11,10 @@ datablock AudioProfile(PotionSipSound) {
 };
 
 function Player::showPotionTransformUI(%this, %fluid, %maxFluid) {
-	if(isObject(%potionImage = %this.getMountedImage(0))) {
+	if(
+		isObject(%potionImage = %this.getMountedImage(0))
+		&& %potionImage.isPotion
+	) {
 		commandToClient(
 			%this.client,
 			'MD_SetPotionTransferBar',
@@ -20,7 +23,9 @@ function Player::showPotionTransformUI(%this, %fluid, %maxFluid) {
 			%this.potionFluid[%potionImage, %this.currTool],
 			%potionImage.maxFluid
 		);
+		return true;
 	}
+	return false;
 }
 
 function Player::refillPotion(%this, %fluid) {

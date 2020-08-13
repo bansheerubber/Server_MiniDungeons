@@ -17,13 +17,16 @@ function AiPlayer::seek(%this) {
 	);
 
 	if(
-		isObject(%raycast) // if we cannot see our target
-		||
-		( // if our target is above us
-			%this.seekHeightCheck
-			&& %this.target.isGrounded
-			&& getWord(%targetPosition, 2) - getWord(%position, 2) > 3
+		(
+			isObject(%raycast) // if we cannot see our target
+			||
+			( // if our target is above us
+				%this.seekHeightCheck
+				&& %this.target.isGrounded
+				&& getWord(%targetPosition, 2) - getWord(%position, 2) > 3
+			)
 		)
+		&& getSimTime() > %this.nextPathAttempt
 	) {
 		if(isObject(%raycast)) {
 			%this.alarmEmote = false;
@@ -38,9 +41,10 @@ function AiPlayer::seek(%this) {
 			%closestNode = getClosestNode(%position);
 			%targetClosestNode = getClosestNode(%targetPosition);
 
+			// if we couldn't find nodes, then try just normal pathing stuff for a little
 			if(%closestNode == -1 || %targetClosestNode == -1) {
-				%this.loseTarget();
-				%this.setAiState($MD::AiIdle);
+				%this.ai = %this.waitSchedule(300, seek);
+				%this.nextPathAttempt = getSimTime() + 5000;
 				return;
 			}
 
@@ -126,8 +130,11 @@ function AiPlayer::seek(%this) {
 		if(!%this.alarmEmote && getSimTime() > %this.nextAlarmEmote) {
 			%this.alarmEmote = true;
 			%this.emote(AlarmProjectile);
-			%this.setJumping(true);
-			%this.schedule(33, setJumping, false);
+
+			if(!%this.noJumpOnAlert) {
+				%this.setJumping(true);
+				%this.schedule(33, setJumping, false);
+			}
 			%this.aiSuprise = true; // if we are suprised and we are close enough to switch to the attack state, this variable will be remembered and utilized
 
 			%this.nextAlarmEmote = getSimTime() + 6000;

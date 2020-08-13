@@ -71,9 +71,9 @@ add disco 0.2
 add nothing 100
 
 ##################################################################
-slot potionrefills:
-tags center
-add potion_refill 10
+slot center:
+add bard 2
+add potion_refill 4
 add nothing 100
 
 ##################################################################
@@ -96,11 +96,6 @@ forbidtags potted1: furniture # prevent slots 6 and 7 from being loaded
 slot boards:
 canstaircase
 add boards 2
-add nothing 100
-
-##################################################################
-slot center:
-add bard 2
 add nothing 100
 
 ##################################################################

@@ -207,11 +207,19 @@ function SimSet::roomDebugHighlightNeighbors(%this, %time, %depth, %start) {
 
 function SimSet::roomOnReGhostedToPlayer(%this, %player) {
 	%this.ghostedPlayers.add(%player);
+
+	if(%player.client.ghostDebug) {
+		messageClient(%player.client, '', "Room" SPC %this SPC "ghosted");
+	}
 }
 
 function SimSet::roomOnUnGhostedToPlayer(%this, %player) {
 	if(%this.ghostedPlayers.isMember(%player)) {
 		%this.ghostedPlayers.remove(%player);
+	}
+
+	if(%player.client.ghostDebug) {
+		messageClient(%player.client, '', "Room" SPC %this SPC "unghosted");
 	}
 }
 
