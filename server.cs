@@ -39,6 +39,8 @@ exec("./mechanics/chests.cs");
 exec("./mechanics/large chest.cs");
 exec("./mechanics/small chest.cs");
 exec("./mechanics/pickup.cs");
+exec("./mechanics/projectile detect.cs");
+exec("./mechanics/is grounded.cs");
 
 exec("./items/health flask.cs");
 exec("./items/steak.cs");
@@ -61,7 +63,7 @@ exec("./generator/ghost util.cs");
 exec("./generator/one way door.cs");
 exec("./generator/test.cs");
 
-exec("./ai/rooms.cs");
+exec("./ai/on damage.cs");
 exec("./ai/avatars.cs");
 exec("./ai/states.cs");
 exec("./ai/seek.cs");

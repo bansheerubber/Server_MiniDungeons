@@ -36,10 +36,6 @@ function AiPlayer::findTarget(%this) {
 		}
 	}
 
-	if(isObject(%this.target) && isObject(%this.roomSet)) {
-		%this.roomSet.alert();
-	}
-
 	%this.target.numAttackers++;
 	return isObject(%this.target);
 }
