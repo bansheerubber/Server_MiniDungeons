@@ -25,6 +25,7 @@ function createRoom(%position, %size) {
 	%roomSet.botScope = new SimSet();
 	%roomSet.type = "Room";
 	%roomSet.chestSpawn = 0;
+	%roomSet.randomId = getRandom(1000000, 9999999);
 	
 	for(%x = 0; %x < %width; %x++) {
 		for(%y = 0; %y < %height; %y++) {
@@ -32,6 +33,18 @@ function createRoom(%position, %size) {
 		}
 	}
 	return %roomSet;
+}
+
+function rePlaceBattleRooms() {
+	%count = $MD::DungeonRoomSet.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%room = $MD::DungeonRoomSet.getObject(%i);
+
+		if(%room.areBattleBotsDead) {
+			%room.roomBuild(true);
+			echo("Built room" SPC %room.randomId);
+		}
+	}
 }
 
 function SimSet::roomResetBattle(%this) {
@@ -154,7 +167,9 @@ function getOffsetFromOrientation(%orientation) {
 	}
 }
 
-function SimSet::roomBuild(%this) {
+function SimSet::roomBuild(%this, %isRePlace) {
+	%this.areBattleBotsDead = false;
+	
 	// create spawn room
 	if(%this.width == 1 && %this.height == 1) {
 		%orientation = 0;
@@ -168,16 +183,56 @@ function SimSet::roomBuild(%this) {
 				break;
 			}
 		}
-		plantRoom("spawn", vectorAdd(%this.worldPosition, getOffsetFromOrientation(%orientation)), %orientation, %this);
+		plantRoom(
+			"spawn",
+			vectorAdd(
+				%this.worldPosition,
+				getOffsetFromOrientation(%orientation)
+			),
+			%orientation,
+			%this, 
+			%this.randomId,
+			%isRePlace
+		);
 	}
 	else if(%this.width == 2 && %this.height == 2) {
-		plantRoom("test_shop", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+		plantRoom(
+			"test_shop",
+			vectorAdd(
+				%this.worldPosition,
+				getOffsetFromOrientation(0)
+			),
+			0,
+			%this,
+			%this.randomId,
+			%isRePlace
+		);
 	}
 	else if(%this.width == 10 && %this.height == 10) {
-		plantRoom("test_finalboss", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+		plantRoom(
+			"test_finalboss",
+			vectorAdd(
+				%this.worldPosition,
+				getOffsetFromOrientation(0)
+			),
+			0,
+			%this,
+			%this.randomId,
+			%isRePlace
+		);
 	}
 	else {
-		plantRoom(%this.width @ "x" @ %this.height @ "_0", vectorAdd(%this.worldPosition, getOffsetFromOrientation(0)), 0, %this);
+		plantRoom(
+			%this.width @ "x" @ %this.height @ "_0",
+			vectorAdd(
+				%this.worldPosition,
+				getOffsetFromOrientation(0)
+			),
+			0,
+			%this,
+			%this.randomId,
+			%isRePlace
+		);
 		%this.isBattleRoom = true;
 	}
 }
@@ -318,6 +373,15 @@ package MiniDungeonsRooms {
 
 		if(isObject(%this.botScope)) {
 			%this.botScope.delete();
+		}
+
+		if(isObject(%this.doorBricks)) {
+			%this.doorBricks.delete();
+		}
+
+		if(isObject(%this.oneWayDoors)) {
+			%this.oneWayDoors.deleteAll();
+			%this.oneWayDoors.delete();
 		}
 
 		Parent::onRemove(%this);

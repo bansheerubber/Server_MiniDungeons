@@ -85,14 +85,14 @@ function getWallPosition(%datablock, %position) {
 	}
 }
 
-function plantRoom(%name, %position, %orientation, %simSet, %randomId) {
+function plantRoom(%name, %position, %orientation, %simSet, %randomId, %isRePlace) {
 	%position = getWords(%position, 0, 1)
 		SPC mFloor(
 			(getWord(%position, 2) + 0.1) / 0.2
 		) * 0.2 - 0.1; // round position to nearest plate on z axis
 	
 	if(%randomId $= "") {
-		%randomId = getRandom(0, 1000000);
+		%randomId = getRandom(1000000, 9999999);
 	}
 	
 	for(%i = 0; %i < $MD::Room[%name, "brickCount"]; %i++) {
@@ -103,7 +103,10 @@ function plantRoom(%name, %position, %orientation, %simSet, %randomId) {
 		%colorId = $MD::Room[%name, %i, "colorId"];
 		%angleId = ($MD::Room[%name, %i, "angleId"] + %orientation) % 4;
 		
-		if(strPos($MD::Room[%name, %i, "datablock"].getName(), "SketchData") != -1) {
+		if(
+			strPos($MD::Room[%name, %i, "datablock"].getName(), "SketchData") != -1
+			&& !%isRePlace
+		) {
 			%x = mFloorMultipleCenter(getWord(%brickPosition, 0), 8) / 8;
 			%y = mFloorMultipleCenter(getWord(%brickPosition, 1), 8) / 8;
 			%isDoor = false;
@@ -165,7 +168,7 @@ function plantRoom(%name, %position, %orientation, %simSet, %randomId) {
 
 			%error = %brick.plant();
 
-			if(%error == 1) {
+			if(%error == 1) { // overlap error
 				%brick.delete();
 			}
 			else {
@@ -176,20 +179,24 @@ function plantRoom(%name, %position, %orientation, %simSet, %randomId) {
 				%brick.setColliding($MD::Room[%name, %i, "isColliding"]);
 				%brick.setRendering($MD::Room[%name, %i, "isRendering"]);
 
+				// handle lights
 				if($MD::Room[%name, %i, "light"] !$= "") {
 					%brick.setLight($MD::Room[%name, %i, "light"]);
 				}
 
+				// handle emitters
 				if($MD::Room[%name, %i, "emitter"] !$= "") {
 					%brick.setEmitter($MD::Room[%name, %i, "emitter"]);
 					%brick.setEmitterDirection($MD::Room[%name, %i, "emitterDirection"]);
 				}
 
+				// handle events
 				%brick.numEvents = 0;
 				for(%j = 0; %j < $MD::Room[%name, %i, "eventCount"]; %j++) {
 					%brick.handleEventLine($MD::Room[%name, %i, "event", %j], %randomId);
 				}
 
+				// handle special names
 				if($MD::Room[%name, %i, "name"] !$= "") {
 					%brickName = strReplace($MD::Room[%name, %i, "name"], "ID", %randomId);
 					%brick.setNTObjectName(%brickName);
