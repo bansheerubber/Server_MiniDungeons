@@ -39,7 +39,7 @@ datablock ShapeBaseImageData(WoodShieldImage) {
 	parryIsShield						= true;
 
 	parryShieldHealth = 200;
-	parryShieldIncrease = 2; // how much health we regenerate per shield tick (100 ms)
+	parryShieldIncrease = 1; // how much health we regenerate per shield tick (100 ms)
 	parryShieldDecrease = 1; // how much health we lose per shield tick (100 ms)
 
 	parryStunDurationSuccess			= 0; // how long targets are stunned for

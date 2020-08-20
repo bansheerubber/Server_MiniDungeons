@@ -51,6 +51,7 @@ exec("./weapons/one handed.cs");
 exec("./weapons/double handed.cs");
 exec("./weapons/wood shield.cs");
 exec("./weapons/vault.cs");
+exec("./weapons/alligator slayer.cs");
 
 exec("./generator/builder.cs");
 exec("./generator/hallway interpreter.cs");
@@ -80,6 +81,7 @@ exec("./ai/cannon.cs");
 exec("./ai/shopkeep.cs");
 exec("./ai/name generator.cs");
 exec("./ai/spawn.cs");
+exec("./ai/arming sword.cs");
 // exec("./ai/horse.cs");
 
 exec("./aiweapons/mace.cs");
@@ -87,6 +89,7 @@ exec("./aiweapons/gladius.cs");
 exec("./aiweapons/bow.cs");
 exec("./aiweapons/cannon.cs");
 exec("./aiweapons/horse rabis.cs");
+exec("./aiweapons/arming sword.cs");
 
 parseAvatarFile("Lanky", "Add-Ons/Player_Beefboy/lanky/avatar.txt");
 parseAvatarFile("Bull", "Add-Ons/Player_Beefboy/bull/avatar.txt");

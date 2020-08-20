@@ -112,6 +112,12 @@ function Player::dungeonsFixAppearance(%obj, %client) {
 		%obj.hideNode("lhand");
 	}
 
+	if(%obj.isAlligatorSlayer) {
+		%obj.unHideNode("demonSlayer");
+		%obj.unHideNode("demonSlayerDoor");
+		%obj.unHideNode("demonSlayerStraps");
+	}
+
 	if(isObject(%obj.swordHands)) {
 		%obj.swordHands.hideNode("ALL");
 

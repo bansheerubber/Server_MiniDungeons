@@ -155,6 +155,7 @@ function Armor::checkSwingHit(%this, %obj, %slot, %col, %tangent, %isRadius, %in
 			%this.onSwingHit(%obj, %slot, %col, %tangent, true, %index, %interpolationIndex);
 		}
 		else {
+			%direction = %col.parryDirection;
 			%this.parryReceive(%col.sword[0].getDatablock(), %obj, %slot, %col, %direction, %tangent, %isRadius, %index, %radiusIndex);
 			%col.sword[0].getDatablock().parrySuccess(%this, %obj, %slot, %col, %direction, %tangent, %isRadius, %index, %radiusIndex);
 		}
@@ -177,6 +178,7 @@ function Armor::parrySuccess(%this, %enemyImage, %enemy, %slot, %obj, %direction
 	%obj.playThread(0, "plant");
 	%obj.setActionThread("shiftUp", false);
 	%knockbackVector = vectorScale(%obj.getForwardVector(), -1);
+
 	if(%swingDirection !$= %direction) {
 		%obj.applyImpulse(%obj.getPosition(), vectorAdd(vectorScale(%knockbackVector, %parryImage.parrySelfImpactImpulseSuccess), "0 0" SPC %parryImage.parrySelfVerticalImpulseSuccess));
 		%obj.playAudio(3, ParryHeavySound);
