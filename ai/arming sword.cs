@@ -91,6 +91,8 @@ function AiPlayer::armingSwordAttack(%this) {
 	%targetPosition = %this.target.getPosition();
 	%position = %this.getPosition();
 
+	%this.setAimObject(%this.target);
+
 	if(vectorDist(%targetPosition, %position) > %this.attackRange) {
 		%this.setAiState($MD::AiSeek);
 		return;
@@ -130,12 +132,10 @@ function AiPlayer::armingSwordAttack(%this) {
 
 		%this.schedule(300, setSwordTrigger, 0, true);
 		%this.schedule(400, setSwordTrigger, 0, false);
-
-		AiArmingSwordArmor.schedule(1000, forceCycleGuard, %this, 0, getRandom(0, 1));
-
+		
 		%this.schedule(600, armingSwordDashToTarget, -30);
 
-		%this.ai = %this.schedule(1000, armingSwordAttack);
+		%this.ai = %this.schedule(700, armingSwordFinishAttack);
 		return;
 	}
 	else if(
@@ -171,6 +171,18 @@ function AiPlayer::armingSwordAttack(%this) {
 	}
 
 	%this.ai = %this.schedule(100, armingSwordAttack);
+}
+
+function AiPlayer::armingSwordFinishAttack(%this) {
+	if(!%this.isStunlocked()) {
+		AiArmingSwordArmor.schedule(600, forceCycleGuard, %this, 0, getRandom(0, 1));
+		%this.ai = %this.schedule(600, armingSwordAttack);
+	}
+	else {
+		%this.schedule(600, setMoveY, -0.2);
+		AiArmingSwordArmor.schedule(1000 + getRandom(-200, 200), forceCycleGuard, %this, 0, getRandom(0, 1));
+		%this.ai = %this.schedule(1000 + getRandom(-200, 200), armingSwordAttack);
+	}
 }
 
 function AiPlayer::armingSwordDashToTarget(%this, %scalar, %useRightVector) {
