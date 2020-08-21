@@ -94,7 +94,7 @@ function createArmingSwordAi(%transform, %roomIndex) {
 	AiArmingSwordArmor.mount(%ai, 0);
 	AiArmingSwordArmor.schedule(100, forceCycleGuard, %ai, 0, getRandom(0, 1));
 
-	%ai.setMaxHealth(150);
+	%ai.setMaxHealth(200);
 	%ai.setAvatar("duelist");
 
 	%ai.onSpawn(%roomIndex);
