@@ -50,4 +50,9 @@ function HealthFlaskImage::drinkPotion(%this, %obj, %amount) {
 	%obj.potionFluid[%this, %obj.currTool] -= %amount;
 
 	%obj.playThread(0, "shiftAway");
+
+	%obj.setSpeedFactor(0);
+	%obj.setVelocity("0 0" SPC getWord(%obj.getVelocity(), 2));
+	cancel(%obj.potionSlowdown);
+	%obj.potionSlowdown = %obj.schedule(800, setSpeedFactor, 1);
 }
