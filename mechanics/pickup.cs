@@ -1,3 +1,5 @@
+$MD::PickupLifetime = 1000 * 60 * 5; // 5 minute lifetime
+
 deActivatePackage(MiniDungeonsPickup);
 package MiniDungeonsPickup {
 	function ItemData::onAdd(%this, %obj) {
@@ -41,6 +43,8 @@ function ItemData::spawnPickup(%this, %position) {
 		rotate = true;
 	};
 	%item.setVelocity("0 0 5");
+
+	%item.schedule($MD::PickupLifetime, delete);
 
 	return %item;
 }
