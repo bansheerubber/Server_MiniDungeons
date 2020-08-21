@@ -28,7 +28,6 @@ function createRoom(%position, %size, %difficulty, %type) {
 	%roomSet.bots = new SimSet();
 	%roomSet.hallways = new SimSet();
 	%roomSet.botScope = new SimSet();
-	%roomSet.type = "Room";
 	%roomSet.chestSpawn = 0;
 	%roomSet.randomId = getRandom(1000000, 9999999);
 	
