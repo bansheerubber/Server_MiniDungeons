@@ -1,0 +1,14 @@
+facename, AdamSavage, smileyPirate1, smileyPirate3, memeYaranika, memeGrinMan, memeBlockMongler, asciiTerror, smileyOld
+headup 0
+headskin 0.900 0.750 0.550, 1.000 0.850 0.750, 0.800 0.600 0.400, 1.000 0.700 0.500, 0.650 0.380 0.190, 0.400 0.200 0.000, 0.220 0.110 0.100, 0.400 0.250 0.180
+shoulderpads 0.520 0.570 0.580, 0.520 0.520 0.580, 0.570 0.520 0.580, 0.580 0.540 0.520
+femchest sameindex shoulderpads 0.730 0.800 0.830, 0.730 0.730 0.830, 0.800 0.730 0.830, 0.830 0.770 0.730
+larm clone femchest
+rarm clone femchest
+pants clone femchest
+helmet clone femchest
+lhand clone shoulderpads
+rhand clone shoulderpads
+lshoe clone shoulderpads
+rshoe clone shoulderpads
+visor 0.850 0.850 0.850

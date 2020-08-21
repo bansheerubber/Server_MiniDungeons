@@ -140,21 +140,34 @@ function serverCmdParryRight(%client) {
 	%client.parry("right");
 }
 
+function Player::canParry(%this) {
+	%sword = %this.sword[0];
+	if(isObject(%sword)) {
+		%cooldown = (%shield = %this.getMountedImage(1)).parryIsShield ? %shield.parryCooldown : %sword.getDatablock().parryCooldown;
+		return getSimTime() - %this.lastParryTime > %cooldown
+			&& getSimTime() - %this.swordLastSwing[%sword.getDatablock()] > %sword.parryWait
+			&& !%this.isStunLocked()
+			&& !%this.isParrying;	
+	}
+	else {
+		return false;
+	}
+}
+
 function GameConnection::parry(%client, %direction) {
 	%obj = %client.player;
 
-	if(isObject(%obj) && isObject(%sword = %obj.sword[0])) {
-		%cooldown = (%shield = %obj.getMountedImage(1)).parryIsShield ? %shield.parryCooldown : %sword.getDatablock().parryCooldown;
-		if(getSimTime() - %obj.lastParryTime > %cooldown && !%obj.isStunlocked() && !%obj.isParrying) {
-			%obj.setParry(true, %direction);
+	if(isObject(%obj) && %obj.canParry()) {
+		%sword = %obj.sword[0];
+		
+		%obj.setParry(true, %direction);
 
-			if(!%obj.getMountedImage(1).parryIsShield) {
-				%obj.schedule(%sword.getDatablock().parryDuration, setParry, false);
-			}
+		if(!%obj.getMountedImage(1).parryIsShield) {
+			%obj.schedule(%sword.getDatablock().parryDuration, setParry, false);
 		}
-		else {
-			%client.play2d(errorSound);
-		}
+	}
+	else {
+		%client.play2d(errorSound);
 	}
 }
 
@@ -369,6 +382,8 @@ function Player::setParry(%this, %bool, %direction, %resetSwing) {
 		}
 		else {
 			%this.playThread(1, %this.sword[0].getDatablock().parryThread);
+
+			%this.swordCycleState[%this.sword[0].getDatablock()] = 3;
 		}
 	}
 	else if(%this.isParrying) {
@@ -382,7 +397,7 @@ function Player::setParry(%this, %bool, %direction, %resetSwing) {
 		}
 
 		if(%resetSwing) { // instant recovery time
-			%this.sword[0].getDatablock().transitionToCycleGuard(%this, 0);
+			%this.sword[0].getDatablock().schedule(%this.sword[0].getDatablock().parryRecoverTimeSuccess, transitionToCycleGuard, %this, 0);
 		}
 		else {
 			%this.sword[0].getDatablock().waitForCycleGuard(%this, 0);

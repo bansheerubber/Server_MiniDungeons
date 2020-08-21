@@ -74,7 +74,7 @@ function createArmingSwordAi(%transform, %roomIndex) {
 	AiArmingSwordArmor.schedule(100, forceCycleGuard, %ai, 0, getRandom(0, 1));
 
 	%ai.setMaxHealth(150);
-	%ai.setAvatar("gladius");
+	%ai.setAvatar("duelist");
 
 	%ai.onSpawn(%roomIndex);
 
@@ -163,8 +163,9 @@ function AiPlayer::armingSwordAttack(%this) {
 		%this.ai = %this.schedule(400, armingSwordAttack);
 		return;
 	}
-	else if(getRandom(1, 15) == 10) {
+	else if(getRandom(1, 10) == 5) {
 		%this.armingSwordDashToTarget(25 * (getRandom(0, 1) ? -1 : 1), true);
+		%this.nextDash = getSimTime() + 3000;
 		%this.ai = %this.schedule(400, armingSwordAttack);
 		return;
 	}

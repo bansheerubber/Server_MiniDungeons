@@ -21,6 +21,21 @@ function parseAvatarFile(%globalName, %fileName) {
 					$MD::Avatars[%globalName, $MD::Avatars[%globalName, "nodeCount"]] = %node;
 					$MD::Avatars[%globalName, "nodeCount"]++;
 				
+				case "sameindex":
+					$MD::Avatars[%globalName, %node, "sameindex"] = getWord(%line, 2);
+
+					%count = getWordCount(%line);
+					%colorCount = 0;
+					for(%i = 3; %i < %count; %i += 3) {
+						%color = getWords(%line, %i, %i + 2);
+						$MD::Avatars[%globalName, %node, %colorCount] = %color;
+						%colorCount++;
+					}
+					$MD::Avatars[%globalName, %node, "count"] = %colorCount;
+
+					$MD::Avatars[%globalName, $MD::Avatars[%globalName, "nodeCount"]] = %node;
+					$MD::Avatars[%globalName, "nodeCount"]++;
+				
 				default:
 					switch$(%node) {
 						case "headup":
@@ -108,10 +123,16 @@ function Player::setAvatar(%this, %globalName) {
 		}
 		else {
 			if($MD::Avatars[%globalName, %node, "clone"] $= "") {
-				%randomColorIndex = getRandom(0, $MD::Avatars[%globalName, %node, "count"] - 1);
+				if((%sameIndexNode = $MD::Avatars[%globalName, %node, "sameindex"]) $= "") {
+					%randomColorIndex = getRandom(0, $MD::Avatars[%globalName, %node, "count"] - 1);
+				}
+				else {
+					%randomColorIndex = %applyTo.nodeColorIndex[%sameIndexNode];
+				}
 				%randomColor = $MD::Avatars[%globalName, %node, %randomColorIndex];
 				%applyTo.setNodeColor(%node, %randomColor SPC "1");
 				%applyTo.nodeColor[%node] = %randomColor;
+				%applyTo.nodeColorIndex[%node] = %randomColorIndex;
 			}
 			else {
 				%applyTo.setNodeColor(%node, %this.nodeColor[$MD::Avatars[%globalName, %node, "clone"]] SPC "1");

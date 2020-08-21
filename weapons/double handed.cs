@@ -96,17 +96,19 @@ datablock PlayerData(DoubleHandedSwordArmor : PlayerStandardArmor)  {
 	// parry information
 	parryCooldown						= 1500;
 	parryDuration						= 900;
+	parryWait								= 500;
 	parryThread 						= "parry1";
 
-	parryStunDurationSuccess			= 500; // how long targets are stunned for
-	parryDamageSuccess					= 10;
+	parryStunDurationSuccess					= 700; // how long targets are stunned for
+	parryRecoverTimeSuccess 					= 200;
+	parryDamageSuccess								= 10;
 	parrySelfImpactImpulseSuccess 		= 350;
 	parrySelfVerticalImpulseSuccess 	= 350;
-	parryProgressiveKnockbackSuccess 	= 15 SPC 15;
+	parryProgressiveKnockbackSuccess 	= 13 SPC 13;
 
 	parryStunDuration					= 0;
-	parryDamage							= 0;
-	parrySelfImpactImpulse				= 800;
-	parrySelfVerticalImpulse 			= 800;
-	parryProgressiveKnockback			= 8 SPC 8;
+	parryDamage								= 0;
+	parrySelfImpactImpulse		= 800;
+	parrySelfVerticalImpulse 	= 800;
+	parryProgressiveKnockback	= 8 SPC 8;
 };

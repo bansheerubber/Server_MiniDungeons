@@ -55,7 +55,10 @@ function Player::setStunlocked(%this, %bool, %time) {
 	}
 	else {
 		if(isObject(%this.sword[0])) {
-			%this.playThread(1, "armReadyRight");
+			%sword = %this.sword[0].getDatablock();
+			%cycle = %this.swordCurrentCycle[%sword] | 0;
+			%this.playThread(%sword.swordCycleThreadSlot[%cycle], %sword.swordCycleThread[%cycle] @ "Swing"); // play cycle animation
+			%this.stopThreadSchedule = %this.schedule(33, stopThread, %sword.swordCycleThreadSlot[%cycle]);
 		}
 		else {
 			%this.playThread(1, "root");
