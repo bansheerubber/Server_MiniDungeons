@@ -1,3 +1,7 @@
+$MD::Tutorial[0] = "MD_BasicParryTutorial";
+$MD::Tutorial[1] = "MD_AdvancedParryTutorial";
+$MD::TutorialCount = 2;
+
 function createHallway(%startPosition, %endPosition, %isHorizontal) {
 	%hallwaySet = new SimSet();
 	$MD::DungeonHallwaySet.add(%hallwaySet);
@@ -64,6 +68,15 @@ function SimSet::hallwayOnPlayerEnter(%this, %player) {
 	if(isObject(%this.room2)) {
 		%this.room2.botScope.add(%player);
 		%this.room2.roomHandleBotSpawning();
+	}
+
+	if(%player.client.tutorial $= "") {
+		%player.client.tutorial = 0;
+	}
+
+	if(%player.client.tutorial < $MD::TutorialCount) {
+		commandToClient(%player.client, 'MD_showTutorial', $MD::Tutorial[%player.client.tutorial]);
+		%player.client.tutorial++;
 	}
 }
 
