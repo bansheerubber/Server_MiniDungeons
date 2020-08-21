@@ -1,4 +1,7 @@
-function createRoom(%position, %size) {
+// save files as: size_type_difficulty_index.bls
+// i.e. shop is 2x2_1_0_0.bls, spawn is 1x1_1_0_0.bls, battle room might be 4x5_0_2_3.bls
+
+function createRoom(%position, %size, %difficulty, %type) {
 	%roomSet = new SimSet();
 	$MD::DungeonRoomSet.add(%roomSet);
 	
@@ -16,6 +19,8 @@ function createRoom(%position, %size) {
 		) * 2.4 - 0.1;
 	%roomSet.width = %width;
 	%roomSet.height = %height;
+	%roomSet.difficulty = %difficulty;
+	%roomSet.type = %type;
 	%roomSet.ghostedPlayers = new SimSet();
 	%roomSet.botBricks = new SimSet();
 	%roomSet.doorBricks = new SimSet();

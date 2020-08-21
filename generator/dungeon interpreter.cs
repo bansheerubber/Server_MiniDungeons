@@ -41,17 +41,22 @@ function readDungeonFile(%fileName) {
 
 		// parse room types
 		if(%mode == 0) {
-			$MD::DungeonRoomType[$MD::DungeonRoomTypeCount | 0] = %line;
+			$MD::DungeonRoomType[$MD::DungeonRoomTypeCount | 0, "size"] = getWords(%line, 0, 1);
+			$MD::DungeonRoomType[$MD::DungeonRoomTypeCount | 0, "type"] = getWord(%line, 2);
 			$MD::DungeonRoomTypeCount++;
 		}
 		// parse rooms
 		else if(%mode == 1) {
-			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"] = getWords(%line, 1, 2);
-			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "size"] = $MD::DungeonRoomType[getWord(%line, 0)];
+			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"] = getWords(%line, 2, 3);
+			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "size"] = $MD::DungeonRoomType[getWord(%line, 0), "size"];
+			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "type"] = $MD::DungeonRoomType[getWord(%line, 0), "type"];
+			$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "difficulty"] = getWord(%line, 1);
 
 			createRoom(
 				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"],
-				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "size"]
+				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "size"],
+				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "difficulty"],
+				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "type"]
 			);
 
 			$MD::DungeonRoomsCount++;
