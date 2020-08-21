@@ -53,6 +53,7 @@ function rePlaceBattleRooms() {
 
 function SimSet::roomResetBattle(%this) {
 	%this.areBattleBotsDead = false;
+	%this.hasSpawnedBots = false;
 }
 
 function SimSet::roomOnBotSpawned(%this, %bot) {
