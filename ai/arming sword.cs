@@ -34,6 +34,27 @@ datablock AudioProfile(ArmingSwordDeath2Sound) {
 	preload = true;
 };
 
+datablock AudioProfile(ArmingSwordTaunt1Sound) {
+	filename    = "./sounds/arming sword taunt1.wav";
+	description = AudioClose3d;
+	preload = true;
+	talkTime = 1000;
+};
+
+datablock AudioProfile(ArmingSwordTaunt2Sound) {
+	filename    = "./sounds/arming sword taunt2.wav";
+	description = AudioClose3d;
+	preload = true;
+	talkTime = 600;
+};
+
+datablock AudioProfile(ArmingSwordTaunt3Sound) {
+	filename    = "./sounds/arming sword taunt3.wav";
+	description = AudioClose3d;
+	preload = true;
+	talkTime = 2000;
+};
+
 function createArmingSwordAi(%transform, %roomIndex) {
 	%ai = new AiPlayer() {
 		datablock = MiniDungeonsArmor;
@@ -121,6 +142,10 @@ function AiPlayer::armingSwordAttack(%this) {
 		&& %this.isGrounded
 	) {
 		%this.nextAttack = getSimTime() + 2500;
+		%sound = "ArmingSwordTaunt" @ getRandom(1, 3) @ "Sound";
+		%this.schedule(2500, playAudio, 3, %sound);
+		%this.schedule(2500, playThread, 2, "talk");
+		%this.schedule(2500 + %sound.talkTime, playThread, 2, "root");
 
 		%this.playAudio(0, BeefboyGuard2ChargeReadySound);
 		%this.emote(winStarProjectile, 1);
