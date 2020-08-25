@@ -36,7 +36,7 @@ function createHallway(%startPosition, %endPosition, %isHorizontal) {
 		%position = vectorLerpUnit(%startPosition, %endPosition, %i);
 		%x = getWord(%position, 0);
 		%y = getWord(%position, 1);
-		$MD::DungeonHallwaySet[mCeil(%x), mCeil(%y)] = %hallwaySet;
+		$MD::DungeonHallwaySet[mRound(%x), mRound(%y)] = %hallwaySet;
 	}
 
 	// look up the rooms that own this hallway

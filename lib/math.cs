@@ -23,3 +23,24 @@ function mFloorMultiple(%number, %multiple) {
 function mFloorMultipleCenter(%number, %multiple) {
 	return mFloor((%number + %multiple / 2) / %multiple) * %multiple;
 }
+
+function mRound(%number) {
+	%decimal = %number - mFloor(%number);
+
+	if(%number < 0) {
+		if(%decimal > 0.5) {
+			return mCeil(%number);
+		}
+		else {
+			return mFloor(%number);
+		}
+	}
+	else {
+		if(%decimal >= 0.5) {
+			return mCeil(%number);
+		}
+		else {
+			return mFloor(%number);
+		}
+	}
+}

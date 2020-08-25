@@ -27,9 +27,9 @@ function loadWallFiles() {
 			}
 
 			%path = "config/NewDuplicator/Saves/";
-			for(%index = 0; isFile(%roomPath = (%path @ %width @ "x" @ %height @ "_" @ %index @ ".bls")); %index++) {
-				echo("Loaded room" SPC %width @ "x" @ %height @ "_" @ %index);
-				loadDungeonBLS(%roomPath, %width @ "x" @ %height @ "_" @ %index, "Room");
+			for(%index = 0; isFile(%roomPath = (%path @ %width @ "x" @ %height @ "_0_0_" @ %index @ ".bls")); %index++) {
+				echo("Loaded room" SPC %width @ "x" @ %height @ "_0_0_" @ %index);
+				loadDungeonBLS(%roomPath, %width @ "x" @ %height @ "_0_0_" @ %index, "Room");
 			}
 		}
 	}

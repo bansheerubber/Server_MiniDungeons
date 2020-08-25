@@ -1,7 +1,7 @@
 // save files as: size_type_difficulty_index.bls
 // i.e. shop is 2x2_1_0_0.bls, spawn is 1x1_1_0_0.bls, battle room might be 4x5_0_2_3.bls
 
-function createRoom(%position, %size, %difficulty, %type) {
+function createRoom(%position, %size, %difficulty, %type, %index) {
 	%roomSet = new SimSet();
 	$MD::DungeonRoomSet.add(%roomSet);
 	
@@ -21,6 +21,7 @@ function createRoom(%position, %size, %difficulty, %type) {
 	%roomSet.height = %height;
 	%roomSet.difficulty = %difficulty;
 	%roomSet.type = %type;
+	%roomSet.index = %index;
 	%roomSet.ghostedPlayers = new SimSet();
 	%roomSet.botBricks = new SimSet();
 	%roomSet.doorBricks = new SimSet();
@@ -227,8 +228,9 @@ function SimSet::roomBuild(%this, %isRePlace) {
 		);
 	}
 	else {
+		talk(%this.width @ "x" @ %this.height @ "_" @ %this.type @ "_" @ %this.difficulty @ "_" @ %this.index);
 		plantRoom(
-			%this.width @ "x" @ %this.height @ "_0",
+			%this.width @ "x" @ %this.height @ "_" @ %this.type @ "_" @ %this.difficulty @ "_" @ %this.index,
 			vectorAdd(
 				%this.worldPosition,
 				getOffsetFromOrientation(0)

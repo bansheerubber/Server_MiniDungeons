@@ -396,7 +396,7 @@ function Player::setParry(%this, %bool, %direction, %resetSwing) {
 			%this.setImageLoaded(1, false); // disable first person shield
 		}
 
-		if(%resetSwing) { // instant recovery time
+		if(%resetSwing && isObject(%this.sword[0])) { // instant recovery time
 			%this.sword[0].getDatablock().schedule(%this.sword[0].getDatablock().parryRecoverTimeSuccess, transitionToCycleGuard, %this, 0);
 		}
 		else {

@@ -1,5 +1,5 @@
-function testRoom(%size, %index) {
+function testRoom(%size, %difficulty, %type, %index) {
 	$MD::DungeonRoomSet = new SimSet();
 	BrickGroup_999999.deleteAll();
-	createRoom("0 0", %size).roomBuild();
+	createRoom("0 0", %size, %difficulty, %type, %index).roomBuild();
 }

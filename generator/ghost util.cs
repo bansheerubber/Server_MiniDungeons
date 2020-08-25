@@ -35,11 +35,15 @@ function Player::deleteAllGhostUtilObjects(%this) {
 
 function Player::startRoomGhosting(%this) {
 	%this.getCurrentRoom().roomHandleGhosting(%this.client, 4, true);
-
-	%this.schedule(1500, finishRoomGhosting);
 }
 
 function Player::finishRoomGhosting(%this) {
+	if(%this.client.ghostDebug) {
+		messageClient(%this.client, '', "Finished room ghosting");
+	}
+	
+	cancel(%this.finishGhosting);
+	
 	// unghost unmarked rooms
 	%count = %this.ghostUtilSet.getCount();
 	for(%i = 0; %i < %count; %i++) {
@@ -77,6 +81,9 @@ function SimSet::roomHandleGhosting(%this, %client, %depth, %start) {
 			%neighbor.schedule(1, roomHandleGhosting, %client, %depth - 1); // delay it so first depth neighbors are ghosted first
 		}
 	}
+
+	cancel(%client.player.finishGhosting);
+	%client.player.finishGhosting = %client.player.schedule(1000, finishRoomGhosting);
 }
 
 function Player::processGhostUtilObjects(%this, %currentObject) {
@@ -143,6 +150,7 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 	// if there's a pending unghost, check to see if we have any pending reghosts. those always take priority
 	if(%currentObject.isPendingUnGhost && !%currentObject.isPendingReGhost && isEventPending(%currentObject.ghostSchedule)) {
 		%count = %this.ghostUtilSet.getCount();
+		// find new currentObject if our currentObject is pending an unghost
 		for(%i = 0; %i < %count; %i++) {
 			%ghostUtilObject = %this.ghostUtilSet.getObject(%i);
 			

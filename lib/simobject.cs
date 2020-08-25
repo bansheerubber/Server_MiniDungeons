@@ -46,7 +46,9 @@ function SimGroup::getNTObject(%this, %inputName) {
 
 function SimGroup::NTObjectCall(%this, %inputName, %call, %a1, %a2, %a3, %a4, %a5, %a6, %a7) {
 	for(%i = 0; %i < %this.NTObjectCount[%inputName]; %i++) {
-		%this.NTObject[%inputName, %i].schedule(%i * 5, call, %call, %a1, %a2, %a3, %a4, %a5, %a6, %a7);
+		if(isObject(%this.NTObject[%inputName, %i])) {
+			%this.NTObject[%inputName, %i].schedule(%i * 5, call, %call, %a1, %a2, %a3, %a4, %a5, %a6, %a7);
+		}
 	}
 }
 
