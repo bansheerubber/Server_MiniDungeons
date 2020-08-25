@@ -55,8 +55,8 @@ function readDungeonFile(%fileName) {
 			createRoom(
 				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "position"],
 				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "size"],
-				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "difficulty"],
-				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "type"]
+				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "type"],
+				$MD::DungeonRooms[$MD::DungeonRoomsCount | 0, "difficulty"]
 			);
 
 			$MD::DungeonRoomsCount++;

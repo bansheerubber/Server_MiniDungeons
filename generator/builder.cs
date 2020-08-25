@@ -48,6 +48,46 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 						"brickCount"
 					);
 				}
+				else if(%objectName $= "topleftorigin") {
+					%position = getMDGlobal(
+						%globalPrefix,
+						%name,
+						%brickCount - 1,
+						"position"
+					);
+
+					%datablock = getMDGlobal(
+						%globalPrefix,
+						%name,
+						%brickCount - 1,
+						"datablock"
+					);
+
+					%angleId = getMDGlobal(
+						%globalPrefix,
+						%name,
+						%brickCount - 1,
+						"angleId"
+					);
+
+					if(%angleId % 2 == 1) {
+						%testPosition = vectorAdd(
+							%position,
+							-%datablock.brickSizeY / 4 SPC -%datablock.brickSizeX / 4 SPC "0"
+						);
+					}
+					else {
+						%testPosition = vectorAdd(
+							%position,
+							-%datablock.brickSizeX / 4 SPC -%datablock.brickSizeY / 4 SPC "0"
+						);
+					}
+
+					if(!%topLeftOriginSet || vectorDist(%testPosition, "-500000 -500000 0") < vectorDist(%topLeftOrigin, "-500000 -500000 0")) {
+						%topLeftOrigin = %testPosition;
+						%topLeftOriginSet = true;
+					}
+				}
 				else {
 					setMDGlobal(
 						%objectName,

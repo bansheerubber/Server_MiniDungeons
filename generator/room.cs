@@ -1,9 +1,11 @@
 // save files as: size_type_difficulty_index.bls
 // i.e. shop is 2x2_1_0_0.bls, spawn is 1x1_1_0_0.bls, battle room might be 4x5_0_2_3.bls
 
-function createRoom(%position, %size, %difficulty, %type, %index) {
+function createRoom(%position, %size, %type, %difficulty, %index) {
 	%roomSet = new SimSet();
 	$MD::DungeonRoomSet.add(%roomSet);
+
+	%difficulty = 0;
 	
 	%xo = getWord(%position, 0);
 	%yo = getWord(%position, 1);
@@ -21,7 +23,7 @@ function createRoom(%position, %size, %difficulty, %type, %index) {
 	%roomSet.height = %height;
 	%roomSet.difficulty = %difficulty;
 	%roomSet.type = %type;
-	%roomSet.index = %index;
+	%roomSet.index = %index !$= "" ? %index : mClamp(getRandom(0, $MD::RoomIndicesCount[%width, %height, %type, %difficulty] - 1), 0, 100000);
 	%roomSet.ghostedPlayers = new SimSet();
 	%roomSet.botBricks = new SimSet();
 	%roomSet.doorBricks = new SimSet();
@@ -190,26 +192,13 @@ function SimSet::roomBuild(%this, %isRePlace) {
 			}
 		}
 		plantRoom(
-			"spawn",
+			"1x1_2_0_0",
 			vectorAdd(
 				%this.worldPosition,
 				getOffsetFromOrientation(%orientation)
 			),
 			%orientation,
 			%this, 
-			%this.randomId,
-			%isRePlace
-		);
-	}
-	else if(%this.width == 2 && %this.height == 2) {
-		plantRoom(
-			"test_shop",
-			vectorAdd(
-				%this.worldPosition,
-				getOffsetFromOrientation(0)
-			),
-			0,
-			%this,
 			%this.randomId,
 			%isRePlace
 		);
@@ -228,7 +217,6 @@ function SimSet::roomBuild(%this, %isRePlace) {
 		);
 	}
 	else {
-		talk(%this.width @ "x" @ %this.height @ "_" @ %this.type @ "_" @ %this.difficulty @ "_" @ %this.index);
 		plantRoom(
 			%this.width @ "x" @ %this.height @ "_" @ %this.type @ "_" @ %this.difficulty @ "_" @ %this.index,
 			vectorAdd(

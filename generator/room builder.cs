@@ -22,21 +22,30 @@ function loadWallFiles() {
 	for(%width = 3; %width < 6; %width++) {
 		for(%height = 3; %height < 6; %height++) {
 			if(!%set[%width @ %height]) {
-				loadDungeonBLS("config/NewDuplicator/Saves/test_" @ %width @ "x" @ %height @ ".bls", "test_" @ %width @ "x" @ %height, "Room");
+				loadRooms(%width, %height, 0, 0);
 				%set[%width @ %height] = true;
-			}
-
-			%path = "config/NewDuplicator/Saves/";
-			for(%index = 0; isFile(%roomPath = (%path @ %width @ "x" @ %height @ "_0_0_" @ %index @ ".bls")); %index++) {
-				echo("Loaded room" SPC %width @ "x" @ %height @ "_0_0_" @ %index);
-				loadDungeonBLS(%roomPath, %width @ "x" @ %height @ "_0_0_" @ %index, "Room");
 			}
 		}
 	}
 
-	loadDungeonBLS("config/NewDuplicator/Saves/test_shop.bls", "test_shop", "Room");
-	loadDungeonBLS("config/NewDuplicator/Saves/spawn.bls", "spawn", "Room");
+	loadRooms(2, 2, 1, 0);
+	loadRooms(1, 1, 2, 0);
+
+	// loadDungeonBLS("config/NewDuplicator/Saves/test_shop.bls", "test_shop", "Room");
+	// loadDungeonBLS("config/NewDuplicator/Saves/spawn.bls", "spawn", "Room");
 	loadDungeonBLS("config/NewDuplicator/Saves/test_finalboss.bls", "test_finalboss", "Room");
+}
+
+function loadRooms(%width, %height, %type, %difficulty) {
+	%path = "config/NewDuplicator/Saves/";
+	for(%index = 0; isFile(%roomPath = (%path @ %width @ "x" @ %height @ "_" @ %type @ "_" @ %difficulty @ "_" @ %index @ ".bls")); %index++) {
+		echo("Loaded room" SPC %width @ "x" @ %height @ "_" @ %type @ "_" @ %difficulty @ "_" @ %index);
+		loadDungeonBLS(%roomPath, %width @ "x" @ %height @ "_" @ %type @ "_" @ %difficulty @ "_" @ %index, "room");
+
+		$MD::RoomIndicesCount[%width, %height, %type, %difficulty]++;
+	}
+
+	echo("Room" SPC %width @ "x" @ %height SPC "type" SPC %type SPC "difficulty" SPC %difficulty SPC "has" SPC $MD::RoomIndicesCount[%width, %height, %type, %difficulty] SPC "variations");
 }
 
 function getWallFlags(%datablock, %color, %isDoor) {
