@@ -31,6 +31,7 @@ function createRoom(%position, %size, %type, %difficulty, %index) {
 	%roomSet.bots = new SimSet();
 	%roomSet.hallways = new SimSet();
 	%roomSet.botScope = new SimSet();
+	%roomSet.pathfindingBricks = new SimSet();
 	%roomSet.chestSpawn = 0;
 	%roomSet.randomId = getRandom(1000000, 9999999);
 	
@@ -324,13 +325,17 @@ function Player::testGhosting(%this) {
 }
 
 function Player::getCurrentRoom(%this) {
+	return getRoomFromPosition(%this.getPosition());
+}
+
+function getRoomFromPosition(%position) {
 	return $MD::DungeonRoom[
 		mFloorMultipleCenter(
-			getWord(%this.getPosition(), 0),
+			getWord(%position, 0),
 			8
 		) / 8,
 		mFloorMultipleCenter(
-			getWord(%this.getPosition(), 1),
+			getWord(%position, 1),
 			8
 		) / 8
 	];
@@ -377,6 +382,10 @@ package MiniDungeonsRooms {
 		if(isObject(%this.oneWayDoors)) {
 			%this.oneWayDoors.deleteAll();
 			%this.oneWayDoors.delete();
+		}
+
+		if(isObject(%this.pathfindingBricks)) {
+			%this.pathfindingBricks.delete();
 		}
 
 		Parent::onRemove(%this);

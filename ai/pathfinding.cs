@@ -131,19 +131,25 @@ function addNeighbor(%id1, %id2) {
 }
 
 function fxDTSBrick::searchNeighbors(%this) {
-	initContainerRadiusSearch(%this.getPosition(), 14, $TypeMasks::fxBrickObjectType);
-	while(%col = containerSearchNext()) {
-		%raycast = containerRaycast(%this.getPosition(), %col.getPosition(), $TypeMasks::fxBrickObjectType, %this);
+	%count = %this.room.pathfindingBricks.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%brick = %this.room.pathfindingBricks.getObject(%i);
+
+		if(%brick == %this) {
+			continue;
+		}
+
+		%raycast = containerRaycast(%this.getPosition(), %brick.getPosition(), $TypeMasks::fxBrickObjectType, %this);
 		if(
-			%col != %this
-			&& (
-				%col.getName() $= "_node"
-				|| %col.getDatablock().getName() $= "BrickPathfindingNodeData"
+			(
+				%brick.getName() $= "_node"
+				|| %brick.getDatablock().getName() $= "BrickPathfindingNodeData"
 			)
-			&& getWord(%raycast, 0) == %col
+			&& getWord(%raycast, 0) == %brick
+			&& vectorDist(%this.getPosition(), %brick.getPosition()) < 14.5
 		) {
-			addNeighbor(%this.nodeId, %col.nodeId);
-			// drawDebugLine(%this.getPosition(), %col.getPosition(), 0.2, "1 0 0 1", 15000);
+			addNeighbor(%this.nodeId, %brick.nodeId);
+			// drawDebugLine(%this.getPosition(), %brick.getPosition(), 0.2, "1 0 0 1", 15000);
 		}
 	}
 }
@@ -163,6 +169,7 @@ function buildNodesFromBricks(%brickGroup, %start) {
 	for(%i = (%start | 0); (%i < %count) && (%i < %start + 100); %i++) {
 		%brick = %brickGroup.pathfindingNodes.getObject(%i);
 		%brick.nodeId = $MD::NodeCount;
+		%brick.room = getRoomFromPosition(%brick.getPosition());
 		$MD::Node[$MD::NodeCount] = %brick.getPosition();
 		$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");
 		$MD::NodeCount++;
@@ -182,21 +189,24 @@ function buildNeighborsFromBricks(%brickGroup) {
 function getClosestNode(%position) {
 	%nodeId = -1;
 	%radius = 20;
-	initContainerRadiusSearch(%position, %radius, $TypeMasks::fxBrickObjectType);
 	%minDistance = %radius;
-	while(%col = containerSearchNext()) {
-		%raycast = containerRaycast(%position, %col.getPosition(), $TypeMasks::fxBrickObjectType);
-		
+
+	%room = getRoomFromPosition(%position);
+	%count = %room.pathfindingBricks.getCount();
+	for(%i = 0; %i < %count; %i++) {
+		%brick = %room.pathfindingBricks.getObject(%i);
 		if(
 			(
-				%col.getName() $= "_node"
-				|| %col.getDatablock().getName() $= "BrickPathfindingNodeData"
+				%brick.getName() $= "_node"
+				|| %brick.getDatablock().getName() $= "BrickPathfindingNodeData"
 			)
-			&& getWord(%raycast, 0) == %col
-			&& (%distance = vectorDist(%col.getPosition(), %position)) < %minDistance
+			&& (%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance
 		) {
-			%minDistance = %distance;
-			%nodeId = %col.nodeId;
+			%raycast = containerRaycast(%position, %brick.getPosition(), $TypeMasks::fxBrickObjectType);
+			if(getWord(%raycast, 0) == %brick) {
+				%minDistance = %distance;
+				%nodeId = %brick.nodeId;
+			}
 		}
 	}
 	return %nodeId;

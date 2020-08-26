@@ -196,7 +196,7 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 	%this.processGhostUtilObjects = %this.schedule(100, processGhostUtilObjects, %currentObject);
 }
 
-$MD::GhostAmount = 1000; // how much we ghost per tick
+$MD::GhostAmount = 800; // how much we ghost per tick
 $MD::GhostTick = 200; // how often we ghost the above amount
 
 function GhostUtilObject::batchReGhost(%this, %startIndex) {

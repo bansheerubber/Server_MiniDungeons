@@ -168,6 +168,9 @@ function plantRoom(%name, %position, %orientation, %simSet, %randomId, %isRePlac
 				if(%datablockName $= "BrickAiSpawnData") {
 					%simSet.botBricks.add(%brick);
 				}
+				else if(%datablockName $= "BrickPathfindingNodeData") {
+					%simSet.pathfindingBricks.add(%brick);
+				}
 				else if(strPos(%datablockName, "brickWoodenDoor3") != -1) {
 					%simSet.doorBricks.add(%brick);
 				}
