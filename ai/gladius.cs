@@ -74,7 +74,10 @@ function AiPlayer::gladiusAttack(%this) {
 	%targetPosition = %this.target.getPosition();
 	%position = %this.getPosition();
 
-	if(getSimTime() > %this.nextGladiusAttack) {
+	if(
+		getSimTime() > %this.nextGladiusAttack
+		&& mAbs(getWord(%targetPosition, 2) - getWord(%position, 2)) < 2
+	) {
 		%this.setSwordTrigger(0, true);
 		%this.schedule(1400, setSwordTrigger, 0, false);
 
