@@ -63,6 +63,7 @@ exec("./generator/hallway.cs");
 exec("./generator/ghost util.cs");
 exec("./generator/one way door.cs");
 exec("./generator/test.cs");
+exec("./generator/stats.cs");
 
 exec("./ai/on damage.cs");
 exec("./ai/avatars.cs");

@@ -343,6 +343,12 @@ function getRoomFromPosition(%position) {
 
 deActivatePackage(MiniDungeonsRooms);
 package MiniDungeonsRooms {
+	function GameConnection::onDeath(%this, %sourceObject, %sourceClient, %damageType, %damLoc) {
+		%room = %this.player.getCurrentRoom();
+		addRoomDeath(%room.width, %room.height, %room.type, %room.difficulty, %room.index);
+		Parent::onDeath(%this, %sourceObject, %sourceClient, %damageType, %damLoc);
+	}
+	
 	function GameConnection::getSpawnPoint(%this) {
 		if($MD::DungeonSpawnPoints.getCount() == 0) {
 			return "0 0 0 0 0 0 1";
