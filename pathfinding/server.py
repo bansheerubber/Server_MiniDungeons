@@ -67,6 +67,7 @@ class PathfindingServer:
 								id = int(words[1])
 								position = (float(words[2]), float(words[3]), float(words[4]))
 								self.nodes[id] = Node(id, position)
+								print(f"Added node {id}")
 								# print(f"Created node {id} at position {position}")
 							elif words[0] == "neighbor":
 								id1 = int(words[1])

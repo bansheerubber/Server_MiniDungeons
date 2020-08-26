@@ -148,39 +148,27 @@ function fxDTSBrick::searchNeighbors(%this) {
 	}
 }
 
-function buildNodesFromBricks(%brickGroup) {
-	clearPathfinding();
+function buildNodesFromBricks(%brickGroup, %start) {
+	if(%start == 0) {
+		clearPathfinding();
+		echo("Cleared pathfinding");
+	}
 	
 	if($MD::NodeCount $= "") {
 		$MD::NodeCount = 0;
 	}
-	
-	%nodes = %brickGroup.getNTObject("_node");
-	if(%nodes != -1) {
-		%count = getFieldCount(%nodes);
-		for(%i = 0; %i < %count; %i++) {
-			%brick = getField(%nodes, %i);
-			%brick.nodeId = $MD::NodeCount;
-			$MD::Node[$MD::NodeCount] = %brick.getPosition();
-			$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");
-			$MD::NodeCount++;
-		}
-
-		for(%i = 0; %i < %count; %i++) {
-			%brick = getField(%nodes, %i);
-			%brick.searchNeighbors();
-		}
-	}
 
 	// do pathfinding bricks
 	%count = %brickGroup.pathfindingNodes.getCount();
-	for(%i = 0; %i < %count; %i++) {
+	for(%i = (%start | 0); (%i < %count) && (%i < %start + 100); %i++) {
 		%brick = %brickGroup.pathfindingNodes.getObject(%i);
 		%brick.nodeId = $MD::NodeCount;
 		$MD::Node[$MD::NodeCount] = %brick.getPosition();
 		$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");
 		$MD::NodeCount++;
 	}
+
+	schedule(100, 0, buildNodesFromBricks, %brickGroup, %start + 100);
 }
 
 function buildNeighborsFromBricks(%brickGroup) {
