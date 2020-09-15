@@ -10,6 +10,12 @@ datablock AudioProfile(CritActivateSound) {
 	preload = true;
 };
 
+datablock AudioProfile(CritActivateShortSound) {
+	filename = "./sounds/crit activate short.wav";
+	description = AudioDefault3d;
+	preload = true;
+};
+
 datablock ParticleData(CritParticle) {
 	dragCoefficient      = 2;
 	gravityCoefficient   = 0.1;
@@ -307,9 +313,81 @@ datablock ExplosionData(CritPowerExplosion) {
 	camShakeRadius = 100;
 	camShakeAmp = "1 1 1";
 	camShakeFreq = "10 10 10";
-	shakeCamera = true;
+	shakeCamera = false;
 };
 
 datablock ProjectileData(CritPowerProjectile) {
 	explosion = CritPowerExplosion;
+};
+
+datablock ParticleData(CritTrailFlareParticle) {
+	dragCoefficient      = 0;
+	gravityCoefficient   = 1.0;
+	inheritedVelFactor   = 0.0;
+	constantAcceleration = 0.0;
+	lifetimeMS           = 700;
+	lifetimeVarianceMS   = 600;
+	spinSpeed       	 = 0;
+	spinRandomMin        = -1000;
+	spinRandomMax        = 1000;
+
+	textureName		= "./textures/crit star";
+	animateTexture	= true;
+	framesPerSec	= 54;
+
+	colors[0] = "1 0 0 0.5";
+	colors[1] = "0 0 1 0.7";
+	colors[2] = "1 0 0 0.7";
+	colors[3] = "0 1 0 0";
+
+	sizes[0]	= 0.6;
+	sizes[1]	= 0.6;
+	sizes[2]	= 0.6;
+	sizes[3]	= 0.6;
+
+	times[0]	= 0.0;
+	times[1]	= 0.2;
+	times[2]	= 0.5;
+	times[3]	= 0.6;
+
+	useInvAlpha = false;
+};
+
+datablock ParticleEmitterData(CritTrailFlareEmitter) {
+	ejectionPeriodMS = 1;
+	periodVarianceMS = 0;
+	ejectionVelocity = 0;
+	velocityVariance = 0;
+	ejectionOffset   = 0;
+	thetaMin         = 0;
+	thetaMax         = 180;
+	phiReferenceVel  = 0;
+	phiVariance      = 360;
+	overrideAdvance = false;
+
+	orientOnVelocity = false;
+	orientParticles = false;
+
+	particles = CritTrailFlareParticle;
+};
+
+datablock ShapeBaseImageData(CritTrailFlareImage) {
+	shapeFile = "base/data/shapes/empty.dts";
+	emap = true;
+	mountPoint = 8;
+	offset = "0 0 0";
+	eyeOffset = "0 0 0";
+	rotation = eulerToMatrix("0 0 0");
+	correctMuzzleVector = true;
+	className = "WeaponImage";
+	item = "";
+
+	melee = false;
+	armReady = false;
+
+	doColorShift = false;
+
+	stateName[0]		= "Activate";
+	stateEmitter[0]		= "CritTrailFlareEmitter";
+	stateEmitterTime[0]	= 9999;
 };

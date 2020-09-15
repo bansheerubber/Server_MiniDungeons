@@ -99,7 +99,7 @@ function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
 
 		%obj.swordCycleState[%this] = 0;
 		%obj.swordCurrentCycle[%this] = %cycle;
-		%this.onCycleGuard(%obj, %slot);
+		%this.schedule(33, onCycleGuard, %obj, %slot);
 	}
 }
 

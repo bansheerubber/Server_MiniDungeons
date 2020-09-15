@@ -52,6 +52,7 @@ exec("./weapons/double handed.cs");
 exec("./weapons/wood shield.cs");
 exec("./weapons/vault.cs");
 exec("./weapons/alligator slayer.cs");
+exec("./weapons/nodachi.cs");
 
 exec("./generator/builder.cs");
 exec("./generator/hallway interpreter.cs");

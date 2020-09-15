@@ -212,8 +212,8 @@ datablock PlayerData(VaultSwordArmor : PlayerStandardArmor)  {
 	parrySelfVerticalImpulse 			= 800;
 	parryProgressiveKnockback			= 8 SPC 8;
 
-	specialMethod						= "startPoleVault";
-	specialConditionalMethod			= "canStartPoleVault";
+	specialMethod							= "startPoleVault";
+	specialConditionalMethod	= "canStartPoleVault";
 	specialCooldown						= 2500;
 	specialDuration						= 1000;
 };
