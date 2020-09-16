@@ -26,6 +26,10 @@ function Armor::isMounted(%this, %obj, %slot) {
 	return false;
 }
 
+function Armor::getCycle(%this, %obj) {
+	return %obj.swordCurrentCycle[%this];
+}
+
 function Player::hasSwordMounted(%this) {
 	for(%i = 0; %i < 4; %i++) {
 		if(isObject(%sword = %this.sword[%i])) {

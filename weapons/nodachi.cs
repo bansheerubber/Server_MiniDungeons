@@ -6,7 +6,7 @@ datablock AudioProfile(NodachiDashSound) {
 datablock ItemData(NodachiItem) {
 	category = "Weapon";
 	className = "Weapon";
-	shapeFile = "./shapes/nodachi4.dts";
+	shapeFile = "./shapes/nodachi.dts";
 	rotate = false;
 	mass = 1;
 	density = 0.2;
@@ -20,7 +20,7 @@ datablock ItemData(NodachiItem) {
 	canDrop = true;
 };
 datablock TSShapeConstructor(NodachiSwordDTS) {
-	baseShape = "./shapes/nodachi4.dts";
+	baseShape = "./shapes/nodachi.dts";
 };
 datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor) {
 	shapeFile = NodachiSwordDTS.baseShape;
@@ -46,25 +46,28 @@ datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor) {
 	// GUARD CYCLE: M -> L -> M
 	swordMaxCycles = 3;
 	swordDoubleHanded = true;
-	// middle attack 1, just a standard attack
-	swordCycle[0] = "middle left";
-	swordCycleThread[0] = "mid3";
-	swordCycleThreadSlot[0] = 1;
-	swordCycleDamage[0] = 60;
-	swordCycleImpactImpulse[0] = 300;
-	swordCycleVerticalImpulse[0] = 500;
-	swordCycleHitExplosion[0] = MidHitProjectile;
-	swordCycleHitSound[0] = BeefBoySwordHit2Sound;
-	swordCyclePrepTime[0] = 0.7;
-	swordCycleGuardSound[0] = CycleMidReadySound;
-	swordCycleSwingSound[0] = MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
-	swordCycleSwingSteps[0] = 4;
 	// low attack, sends the opponent flying
-	swordCycle[1] = "low right";
-	swordCycleThread[1] = "low1";
+	swordCycle[0] = "low right";
+	swordCycleThread[0] = "low1";
+	swordCycleThreadSlot[0] = 1;
+	swordCycleDamage[0] = 35;
+	swordCycleImpactImpulse[0] = 1000;
+	swordCycleVerticalImpulse[0] = 800;
+	swordCycleHitExplosion[0] = LowHitProjectile;
+	swordCycleHitSound[0] = LowHit1Sound;
+	swordCyclePrepTime[0] = 0.3;
+	swordCycleGuardSound[0] = CycleLowReadySound;
+	swordCycleSwingSound[0] = LowSwingSound;
+	swordCycleSwingEmitter[0] = HighFlareImage;
+	swordCycleSwingEmitterTime[0] = 120;
+	swordCycleSwingEmitterSlot[0] = 1;
+	swordCycleSwingSteps[0] = 5;
+	// low attack, sends the opponent flying
+	swordCycle[1] = "low left";
+	swordCycleThread[1] = "low2";
 	swordCycleThreadSlot[1] = 1;
 	swordCycleDamage[1] = 35;
-	swordCycleImpactImpulse[1] = 1500;
+	swordCycleImpactImpulse[1] = 1000;
 	swordCycleVerticalImpulse[1] = 800;
 	swordCycleHitExplosion[1] = LowHitProjectile;
 	swordCycleHitSound[1] = LowHit1Sound;
@@ -152,11 +155,13 @@ function NodachiSwordArmor::startDash(%this, %obj) {
 	}
 	%obj.setVelocity("0 0 0");
 	%obj.addVelocity(vectorScale(%obj.getForwardVector(), 30));
+	%obj.nodachiSavedCycle = %this.getCycle(%obj);
 	%this.setCycleRange(%obj, 0, 3, 3);
 	%this.forceCycleGuard(%obj, 0, 3);
 	%this.dashLoop(%obj, 3);
 	%this.waitSchedule(33, "landDash", %obj).addCondition(%obj, "isGrounded", true);
 	%obj.spawnExplosion(CritPowerProjectile, 0.5);
+	commandToClient(%obj.client, 'MD_interpolateFOV', "", "+7", 0.1);
 }
 function NodachiSwordArmor::dashLoop(%this, %obj, %ticks) {
 	if(%ticks < 0) {
@@ -169,7 +174,7 @@ function NodachiSwordArmor::dashLoop(%this, %obj, %ticks) {
 function NodachiSwordArmor::landDash(%this, %obj) {
 	if(%obj.isGrounded && %this.isMounted(%obj, 0)) {
 		%this.setCycleRange(%obj, 0, 0, %this.swordMaxCycles - 1);
-		%this.forceCycleGuard(%obj, 0, 0);
+		%this.forceCycleGuard(%obj, 0, %obj.nodachiSavedCycle);
 		%this.waitForCycleGuard(%obj, 0);
 		%obj.playAudio(1, VaultLandingSound);
 	}

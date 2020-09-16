@@ -44,7 +44,7 @@ function Player::spawnNearbyBots(%this) {
 	%count = MiniDungeonsBotSpawnSet.getCount();
 	for(%i = 0; %i < %count; %i++) {
 		%brick = MiniDungeonsBotSpawnSet.getObject(%i);
-		if(vectorDist(%this.getPosition(), %brick.getPosition()) < 15 &&  ! isObject(%brick.bot)) {
+		if(vectorDist(%this.getPosition(), %brick.getPosition()) < 25 &&  ! isObject(%brick.bot)) {
 			%brick.getDatablock().spawnBot(%brick);
 		}
 	}
