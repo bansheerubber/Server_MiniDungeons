@@ -110,7 +110,7 @@ datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor)  {
 	swordCycleVerticalImpulse[3]= 700;
 	swordCycleHitExplosion[3]		= HighHitProjectile;
 	swordCycleHitSound[3]				= BeefBoySwordHit2Sound;
-	swordCyclePrepTime[3]				= 1.0;
+	swordCyclePrepTime[3]				= 2.0;
 	swordCycleGuardSound[3]			= CycleHighReadySound;
 	swordCycleSwingEmitter[3]			= CritTrailFlareImage;
 	swordCycleSwingEmitterTime[3]	= 100;

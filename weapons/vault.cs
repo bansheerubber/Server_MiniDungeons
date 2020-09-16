@@ -258,6 +258,7 @@ function VaultSwordArmor::startPoleVault(%this, %obj, %slot) {
 	%obj.setLookLimits(0.5, 0.5);
 
 	%this.schedule(150, poleVaultLoop, %obj, %slot, 10);
+	%this.schedule(600, stopPoleVault, %obj, %slot);
 
 	%this.setCycleRange(%obj, %slot, 3, 3);
 }
@@ -290,9 +291,6 @@ function VaultSwordArmor::poleVaultLoop(%this, %obj, %slot, %ticks) {
 		%obj.schedule(33, setVelocity, %velocity);
 		%obj.poleVaultSchedule = %this.schedule(33, poleVaultLoop, %obj, %slot, %ticks - 1);
 	}
-	else {
-		%obj.poleVaultSchedule = %this.schedule(200, stopPoleVault, %obj, %slot);
-	}
 }
 
 function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
@@ -302,29 +300,19 @@ function VaultSwordArmor::stopPoleVault(%this, %obj, %slot) {
 	%obj.client.applyBodyParts();
 	%obj.setLookLimits(1, 0);
 
-	if(%this.isMounted(%obj, %slot)) {
-		%this.forceCycleGuard(%obj, %slot, 3);
-	}
+	%this.forceCycleGuard(%obj, %slot, 3);
 
-	%this.waitSchedule(100, "resetPoleVault", %obj, %slot, true).addCondition(%obj, "isGrounded", true);
+	%this.waitSchedule(33, "resetPoleVault", %obj, %slot).addCondition(%obj, "isGrounded", true);
 }
 
-function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
-	if(%this.isMounted(%obj, %slot)) {
-		%this.setCycleRange(%obj, %slot, 0, 2);
-	}
+function VaultSwordArmor::resetPoleVault(%this, %obj, %slot) {
+	%this.setCycleRange(%obj, %slot, 0, 2);
+	%this.forceCycleGuard(%obj, %slot, 0, true);
 	
 	%obj.unMountImageSafe(3);
-	if(%force) {
-		if(%this.isMounted(%obj, %slot)) {
-			%this.forceCycleGuard(%obj, %slot, 0);
-		}
-		%obj.playAudio(1, VaultLandingSound);
-		%obj.playThread(0, "plant");
-	}
-	else {
-		%obj.stopAudio(1);
-	}
+	
+	%obj.playAudio(1, VaultLandingSound);
+	%obj.playThread(0, "plant");
 
 	if(isObject(%obj.antiGravityZone)) {
 		%obj.antiGravityZone.delete();
@@ -339,7 +327,7 @@ function VaultSwordArmor::resetPoleVault(%this, %obj, %slot, %force) {
 }
 
 function VaultSwordArmor::unMount(%this, %obj, %slot) {
-	%this.resetPoleVault(%obj, %slot, false);
+	// %this.resetPoleVault(%obj, %slot);
 	cancel(%obj.poleVaultSchedule);
 	Parent::unMount(%this, %obj, %slot);
 }
