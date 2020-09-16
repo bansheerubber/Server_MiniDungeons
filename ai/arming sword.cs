@@ -140,6 +140,7 @@ function AiPlayer::armingSwordAttack(%this) {
 		&& vectorDist(%targetPosition, %position) < 7
 		&& %this.target.isGrounded
 		&& %this.isGrounded
+		&& %this.canAttack()
 	) {
 		%this.nextAttack = getSimTime() + 2500;
 		%sound = "ArmingSwordTaunt" @ getRandom(1, 3) @ "Sound";
