@@ -35,12 +35,12 @@ datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor) {
 	// start point for raycast/interpolation
 	swordEndMount[0] = 1;
 	// end point for raycast/interpolation
-	swordStepInterpolationCount = 4;
+	swordStepInterpolationCount = 5;
 	// how many linear interpolations we do between steps, based on distance
 	swordStepTick = 33;
 	// how fast we do sword stepping
 	swordInterpolationDistance[0, 0] = 1;
-	swordInterpolationRadius[0, 0] = 0.75;
+	swordInterpolationRadius[0, 0] = 0.9;
 	swordStopSwingOnBrickHit = false;
 	// whether or not we want to stop our sword swing when we hit a brick wall (and setImageLoaded to false)
 	// GUARD CYCLE: M -> L -> M
@@ -108,7 +108,7 @@ datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor) {
 	swordCycleCrit[3] = true;
 	// parry information
 	parryCooldown = 1500;
-	parryDuration = 900;
+	parryDuration = 700;
 	parryWait = 500;
 	parryThread = "parry1";
 	parryStunDurationSuccess = 700;
@@ -172,12 +172,9 @@ function NodachiSwordArmor::dashLoop(%this, %obj, %ticks) {
 	%obj.dashLoop = %this.schedule(100, dashLoop, %obj, %ticks - 1);
 }
 function NodachiSwordArmor::landDash(%this, %obj) {
-	if(%obj.isGrounded && %this.isMounted(%obj, 0)) {
-		%this.setCycleRange(%obj, 0, 0, %this.swordMaxCycles - 1);
-		%this.forceCycleGuard(%obj, 0, %obj.nodachiSavedCycle);
-		%this.waitForCycleGuard(%obj, 0);
-		%obj.playAudio(1, VaultLandingSound);
-	}
+	%this.setCycleRange(%obj, 0, 0, %this.swordMaxCycles - 1);
+	%this.forceCycleGuard(%obj, 0, %obj.nodachiSavedCycle, true);
+	%obj.playAudio(1, VaultLandingSound);
 }
 function NodachiSwordArmor::stopDash(%this, %obj) {
 	if(isObject(%obj.antiGravityZone)) {

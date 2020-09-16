@@ -64,7 +64,9 @@ function Armor::setCycleRange(%this, %obj, %slot, %start, %end) {
 	%obj.swordCycleStart[%this.getId()] = %start;
 	%obj.swordCycleEnd[%this.getId()] = %end;
 
-	%this.setCycleUI(%obj, %slot);
+	if(%this.isMounted(%obj, %slot)) {
+		%this.setCycleUI(%obj, %slot);
+	}
 }
 
 function Armor::setCycleUI(%this, %obj, %slot) {
@@ -83,7 +85,7 @@ function Armor::setCycleActiveUI(%this, %obj, %slot) {
 	commandToClient(%obj.client, 'MD_SetActiveCycle', %obj.swordCurrentCycle[%this] - %obj.swordCycleStart[%this.getId()]);
 }
 
-function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
+function Armor::forceCycleGuard(%this, %obj, %slot, %cycle, %wait) {
 	if(!isObject(%obj)) {
 		return;
 	}
@@ -93,13 +95,21 @@ function Armor::forceCycleGuard(%this, %obj, %slot, %cycle) {
 		return %this.schedule(33, forceCycleGuard, %obj, %slot);
 	}
 	else {
-		if(isObject(%obj.swordPrepSchedule)) {
-			%obj.swordPrepSchedule.delete();
-		}
-
 		%obj.swordCycleState[%this] = 0;
 		%obj.swordCurrentCycle[%this] = %cycle;
-		%this.schedule(33, onCycleGuard, %obj, %slot);
+	
+		if(%this.isMounted(%obj, %slot)) {
+			if(isObject(%obj.swordPrepSchedule)) {
+				%obj.swordPrepSchedule.delete();
+			}
+
+			if(!%wait) {
+				%this.onCycleGuard(%obj, %slot);
+			}
+			else {
+				%this.waitForCycleGuard(%obj, 0);
+			}
+		}
 	}
 }
 
