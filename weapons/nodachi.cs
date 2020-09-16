@@ -101,9 +101,9 @@ datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor) {
 	swordCyclePrepTime[3] = 1.0;
 	swordCycleGuardSound[3] = CycleHighReadySound;
 	swordCycleSwingEmitter[3] = CritTrailFlareImage;
-	swordCycleSwingEmitterTime[3] = 150;
+	swordCycleSwingEmitterTime[3] = 100;
 	swordCycleSwingEmitterSlot[3] = 1;
-	swordCycleSwingSound[3] = MidSwing1Sound TAB MidSwing2Sound TAB MidSwing3Sound;
+	swordCycleSwingSound[3] = CritImpactShortSound;
 	swordCycleSwingSteps[3] = 5;
 	swordCycleCrit[3] = true;
 	// parry information
@@ -161,7 +161,7 @@ function NodachiSwordArmor::startDash(%this, %obj) {
 	%this.dashLoop(%obj, 3);
 	%this.waitSchedule(33, "landDash", %obj).addCondition(%obj, "isGrounded", true);
 	%obj.spawnExplosion(CritPowerProjectile, 0.5);
-	commandToClient(%obj.client, 'MD_interpolateFOV', "", "+7", 0.1);
+	commandToClient(%obj.client, 'MD_interpolateFOV', "", "+25", 0.05);
 }
 function NodachiSwordArmor::dashLoop(%this, %obj, %ticks) {
 	if(%ticks < 0) {

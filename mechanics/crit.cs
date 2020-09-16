@@ -10,6 +10,12 @@ datablock AudioProfile(CritActivateSound) {
 	preload = true;
 };
 
+datablock AudioProfile(CritImpactShortSound) {
+	filename = "./sounds/crit impact short.ogg";
+	description = AudioDefault3d;
+	preload = true;
+};
+
 datablock AudioProfile(CritActivateShortSound) {
 	filename = "./sounds/crit activate short.wav";
 	description = AudioDefault3d;
