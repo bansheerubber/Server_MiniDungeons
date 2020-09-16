@@ -36,18 +36,24 @@ function Player::interact(%this) {
 	%end = vectorAdd(%start, vectorScale(%this.getEyeVector(), 5));
 	%masks = $TypeMasks::fxBrickObjectType | $TypeMasks::StaticObjectType | $TypeMasks::PlayerObjectType;
 	%raycast = containerRaycast(%start, %end, %masks, %this);
-
+	
 	if(
 		isObject(%obj = getWord(%raycast, 0))
-		&& isFunction(%obj.getClassName(), getDatablock)
-		&& %obj.getDatablock().isInteractable
 		&& !%this.hasSwordMounted()
 		&& (
 			!%this.getMountedImage(0)
 			|| %this.getMountedImage(0).interactablePassthrough
 		)
 	) {
-		%obj.getDatablock().onInteract(%obj, %this);
+		if(
+			isFunction(%obj.getClassName(), getDatablock)
+			&& %obj.getDatablock().isInteractable
+		) {
+			%obj.getDatablock().onInteract(%obj, %this);
+		}
+		else if(%obj.onInteractCall !$= "") {
+			%obj.getDatablock().call(%obj.onInteractCall, %obj, %this);
+		}
 	}
 }
 

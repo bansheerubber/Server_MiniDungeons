@@ -17,6 +17,8 @@ exec("./lib/waitSchedule.cs");
 exec("./lib/items.cs");
 exec("./lib/ntname.cs");
 exec("./lib/mount point.cs");
+exec("./lib/brick text.cs");
+exec("./lib/message.cs");
 
 exec("./mechanics/client mod.cs");
 exec("./mechanics/knockback.cs");
