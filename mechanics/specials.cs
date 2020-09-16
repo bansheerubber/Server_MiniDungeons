@@ -7,11 +7,12 @@ package MiniDungeonsSpecials {
 			&& %val == 1
 			&& getSimTime() > %obj.parryDuration
 			&& isObject(%sword = %obj.sword[0])
-			&& %sword.getDatablock().specialMethod !$= ""
-			&& getSimTime() > %sword.nextSpecial
+			&& (%swordData = %sword.getDatablock())
+			&& %swordData.specialMethod !$= ""
+			&& getSimTime() > %obj.nextSpecial[%swordData]
 			&& %sword.getDatablock().call(%sword.getDatablock().specialConditionalMethod, %obj, 0)
 		) {
-			%sword.nextSpecial = getSimTime() + %sword.getDatablock().specialCooldown + %sword.getDatablock().specialDuration;
+			%obj.nextSpecial[%swordData] = getSimTime() + %sword.getDatablock().specialCooldown + %sword.getDatablock().specialDuration;
 			%sword.getDatablock().call(%sword.getDatablock().specialMethod, %obj, 0);
 		}
 		else {
