@@ -84,6 +84,7 @@ datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor)  {
 	swordCyclePrepTime[1]					= 0.3;
 	swordCycleGuardSound[1]				= CycleLowReadySound;
 	swordCycleSwingSound[1]				= LowSwingSound;
+	swordCycleSwingSlot[1]				= 1;
 	swordCycleSwingEmitter[1]			= HighFlareImage;
 	swordCycleSwingEmitterTime[1]	= 120;
 	swordCycleSwingEmitterSlot[1]	= 1;
