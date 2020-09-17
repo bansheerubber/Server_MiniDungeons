@@ -6,21 +6,24 @@ datablock AudioProfile(NodachiDashSound) {
 datablock ItemData(NodachiItem) {
 	category = "Weapon";
 	className = "Weapon";
-	shapeFile = "./shapes/nodachi.dts";
+	shapeFile = "./shapes/nodachi item.dts";
 	rotate = false;
 	mass = 1;
 	density = 0.2;
 	elasticity = 0.2;
 	friction = 0.6;
 	emap = true;
-	uiName = "Nodachi";
+	uiName = "The Nodachi";
 	iconName = "./";
 	doColorShift = false;
 	sword = NodachiSwordArmor;
 	canDrop = true;
+	price = 50;
+	description = "Forged using the Honsanmai technique, this sword's power comes not from its blade but from its special dash attack.";
+	nameColor = "1 1 0";
 };
 datablock TSShapeConstructor(NodachiSwordDTS) {
-	baseShape = "./shapes/nodachi.dts";
+	baseShape = "./shapes/nodachi2.dts";
 };
 datablock PlayerData(NodachiSwordArmor : PlayerStandardArmor) {
 	shapeFile = NodachiSwordDTS.baseShape;

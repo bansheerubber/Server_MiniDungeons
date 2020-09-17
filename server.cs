@@ -43,6 +43,7 @@ exec("./mechanics/small chest.cs");
 exec("./mechanics/pickup.cs");
 exec("./mechanics/projectile detect.cs");
 exec("./mechanics/is grounded.cs");
+exec("./mechanics/shop.cs");
 
 exec("./items/health flask.cs");
 exec("./items/steak.cs");

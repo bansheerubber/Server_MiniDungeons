@@ -23,3 +23,14 @@ function Player::setItem(%this, %item, %index) {
 	%this.tool[%index] = %item;
 	messageClient(%this.client, 'MsgItemPickup', '', %index, %item);
 }
+
+function Player::hasItem(%this, %data) {
+	%data = %data.getId();
+	
+	for(%i = 0; %i < %this.getDatablock().maxTools; %i++) {
+		if(%this.tool[%i] == %data) {
+			return true;
+		}
+	}
+	return false;
+}

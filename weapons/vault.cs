@@ -97,12 +97,16 @@ datablock ItemData(VaultSwordItem) {
 	friction = 0.6;
 	emap = true;
 
-	uiName = "Upstick";
+	uiName = "Pole Vault";
 	iconName = "./";
 	doColorShift = false;
 
 	sword = VaultSwordArmor;
 	canDrop = true;
+
+	price = 50;
+	description = "The unassuming, long, flexible spear can be used to vault over one's enemies and gain the ultimate height advantage -- flight.";
+	nameColor = "1 1 0";
 };
 
 datablock TSShapeConstructor(VaultSwordDTS) {
