@@ -81,13 +81,7 @@ function Armor::unMount(%this, %obj, %slot) {
 	commandToClient(%obj.client, 'MD_LoadGuardCycles', "", "", "", "", "", "");
 }
 
-function Player::mountSword(%this, %swordData, %slot) {
-	// create the sword mount on the player's hand (is this needed?)
-	if(!isObject(%this.swordMount)) {
-		%this.swordMount = createMountPoint();
-		%this.mountObject(%this.swordMount, %swordData.swordMountSlot | 0);
-	}
-
+function Player::createSwordHands(%this) {
 	if(!isObject(%this.swordHands) && %this.getDatablock().getName() $= "MiniDungeonsArmor") {
 		%this.swordHands = new AiPlayer() {
 			datablock = MiniDungeonsHandsArmor;
@@ -98,6 +92,16 @@ function Player::mountSword(%this, %swordData, %slot) {
 		%this.swordHands.kill();
 		%this.swordMount.mountObject(%this.swordHands, 0);
 	}
+}
+
+function Player::mountSword(%this, %swordData, %slot) {
+	// create the sword mount on the player's hand (is this needed?)
+	if(!isObject(%this.swordMount)) {
+		%this.swordMount = createMountPoint();
+		%this.mountObject(%this.swordMount, %swordData.swordMountSlot | 0);
+	}
+
+	%this.createSwordHands();
 
 	if(isObject(%this.sword)) {
 		%this.sword.delete();

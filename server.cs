@@ -34,7 +34,6 @@ exec("./mechanics/notifications.cs");
 exec("./mechanics/aim prediction.cs");
 exec("./mechanics/crit.cs");
 exec("./mechanics/specials.cs");
-exec("./mechanics/compass.cs");
 exec("./mechanics/pearl compass.cs");
 exec("./mechanics/potion.cs");
 exec("./mechanics/chests.cs");
@@ -47,6 +46,7 @@ exec("./mechanics/shop.cs");
 
 exec("./items/health flask.cs");
 exec("./items/steak.cs");
+exec("./items/compass.cs");
 
 exec("./weapons/high flare.cs");
 exec("./weapons/low explosion.cs");

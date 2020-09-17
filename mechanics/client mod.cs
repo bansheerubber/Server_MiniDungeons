@@ -60,6 +60,7 @@ package MiniDungeonsClient {
 			}
 			
 			%player.setItem(DoubleHandedItem, 0);
+			%player.setItem(CompassItem, 3);
 			%player.setItem(HealthFlaskItem, 4);
 			return;
 		}
