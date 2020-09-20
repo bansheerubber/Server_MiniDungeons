@@ -13,6 +13,6 @@ function AiPlayer::canAttack(%this) {
 		}
 	}
 	else {
-		return true;
+		return false;
 	}
 }

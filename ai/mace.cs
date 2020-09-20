@@ -53,10 +53,11 @@ function AiPlayer::maceAttack(%this) {
 
 	%targetPosition = %this.target.getPosition();
 	%position = %this.getPosition();
+	%canAttack = %this.canAttack();
 	
 	if(
 		getSimTime() > %this.nextMaceAttack
-		&& %this.canAttack()
+		&& %canAttack
 	) {
 		%this.stop();
 		%this.setMoveX(0);
@@ -136,12 +137,12 @@ function AiPlayer::maceAttack(%this) {
 		}
 	}
 
-	%this.ai = %this.schedule(100, maceAttack);
+	%this.ai = %this.schedule(%canAttack ? 100 : 400, maceAttack);
 }
 
 function AiPlayer::maceAttackCleanup(%this, %state) {
 	%this.setSwordTrigger(0, false); // stop firing
-	// %this.setMoveX(0);
+	%this.setMoveX(0);
 	// %this.setMoveY(0);
 
 	%this.attackCleanup();

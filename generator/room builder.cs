@@ -202,6 +202,14 @@ function plantRoom(%name, %position, %orientation, %simSet, %randomId, %isRePlac
 					%brick.setEmitterDirection($MD::Room[%name, %i, "emitterDirection"]);
 				}
 
+				// handle items
+				if($MD::Room[%name, %i, "item"] !$= "") {
+					%brick.setItem($MD::Room[%name, %i, "item"]);
+					%brick.setItemDirection($MD::Room[%name, %i, "itemPosition"]);
+					%brick.setItemPosition($MD::Room[%name, %i, "itemDirection"]);
+					%brick.setItemRespawntime($MD::Room[%name, %i, "itemRespawnTime"]);
+				}
+
 				// handle events
 				%brick.numEvents = 0;
 				for(%j = 0; %j < $MD::Room[%name, %i, "eventCount"]; %j++) {

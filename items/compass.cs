@@ -65,6 +65,7 @@ function CompassImage::onUnMount(%this, %obj, %slot) {
 }
 
 function Player::showCompass(%this) {
+	%this.createSwordMount();
 	%this.createSwordHands();
 	%this.swordHands.unHideNode("rhand");
 	%this.swordHands.playThread(0, "holdCompass");

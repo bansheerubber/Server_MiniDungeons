@@ -142,6 +142,52 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 					"light"
 				);
 			}
+			else if(getWord(%line, 0) $= "+-ITEM") {
+				%linething = getWords(%line, 1, getWordCount(%line));
+				%rest = getSubStr(%line, strPos("\"") + 2, strLen(%line));
+				%item = $uiNameTable_Items[
+					getSubStr(
+						%linething,
+						0,
+						strPos(%linething, "\"")
+					)
+				];
+				%position = getWord(%rest, 0);
+				%direction = getWord(%rest, 1);
+				%respawnTime = getWord(%rest, 2);
+
+				setMDGlobal(
+					%item,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"item"
+				);
+
+				setMDGlobal(
+					%position,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"itemPosition"
+				);
+
+				setMDGlobal(
+					%direction,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"itemDirection"
+				);
+
+				setMDGlobal(
+					%respawnTime,
+					%globalPrefix,
+					%name,
+					%brickCount - 1,
+					"itemRespawnTime"
+				);
+			}
 			else if(getWord(%line, 0) $= "+-EMITTER") {
 				%linething = getWords(%line, 1, getWordCount(%line));
 				%emitter = $uiNameTable_Emitters[

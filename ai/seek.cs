@@ -36,25 +36,31 @@ function AiPlayer::seek(%this) {
 		}
 		
 		if(!%this.hasPath()) { // if we have no path, then get one. wait around until we have one
-			%this.setAimObject(%this.target);
+			if(%this.isGrounded) {
+				%this.setAimObject(%this.target);
 
-			%closestNode = getClosestNode(%position);
-			%targetClosestNode = getClosestNode(%targetPosition);
+				%closestNode = getClosestNode(%position);
+				%targetClosestNode = getClosestNode(%targetPosition);
 
-			// if we couldn't find nodes, then try just normal pathing stuff for a little
-			if(%closestNode == -1 || %targetClosestNode == -1) {
-				%this.ai = %this.waitSchedule(300, seek);
-				%this.nextPathAttempt = getSimTime() + 5000;
+				// if we couldn't find nodes, then try just normal pathing stuff for a little
+				if(%closestNode == -1 || %targetClosestNode == -1) {
+					%this.ai = %this.waitSchedule(300, seek);
+					%this.nextPathAttempt = getSimTime() + 5000;
+					return;
+				}
+
+				%this.requestPath(%closestNode, %targetClosestNode);
+				%this.nextPathRequest = getSimTime() + 10000;
+				%this.lastPathRequest = getSimTime();
+				
+				%this.ai = %this.waitSchedule(500, seek).addMethodCondition(%this, "hasPathOrTimeout", true);
+				
 				return;
 			}
-
-			%this.requestPath(%closestNode, %targetClosestNode);
-			%this.nextPathRequest = getSimTime() + 10000;
-			%this.lastPathRequest = getSimTime();
-			
-			%this.ai = %this.waitSchedule(500, seek).addMethodCondition(%this, "hasPathOrTimeout", true);
-			
-			return;
+			else {
+				%this.ai = %this.waitSchedule(100, seek).addCondition(%this, "isGrounded", true);
+				return;
+			}
 		}
 		else { // iterate through the path
 			if(getSimTime() > %this.nextPathRequest) {

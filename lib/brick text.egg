@@ -23,3 +23,15 @@ function fxDtsBrick::setBrickText(%this, %message, %color, %offset)
 	%this.textShape.setShapeNameColor(%color $= "" ? "1 1 1" : %color);
 	%this.textShape.setShapeNameDistance(500);
 }
+
+deActivatePackage(MiniDungeonsBrickText);
+package MiniDungeonsBrickText {
+	function fxDTSBrick::onRemove(%this) {
+		if(isObject(%this.textShape)) {
+			%this.textShape.delete();
+		}
+		
+		Parent::onRemove(%this);
+	}
+};
+activatePackage(MiniDungeonsBrickText);

@@ -18,6 +18,6 @@ package MiniDungeonsIsGrounded {
 activatePackage(MiniDungeonsIsGrounded);
 
 function Player::isGroundedLoop(%this) {
-	%this.isGrounded = !containerBoxEmpty($TypeMasks::fxBrickObjectType | $TypeMasks::StaticObjectType, %this.getPosition(), 0.6, 0.6, 0.6);
+	%this.isGrounded = !containerBoxEmpty($TypeMasks::fxBrickObjectType | $TypeMasks::StaticObjectType, %this.getPosition(), 0.6, 0.6, 0.8);
 	%this.isGroundedSchedule = %this.schedule(100, isGroundedLoop);
 }

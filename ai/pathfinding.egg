@@ -155,6 +155,14 @@ function fxDTSBrick::searchNeighbors(%this) {
 }
 
 function buildNodesFromBricks(%brickGroup, %start) {
+	if(!isObject(%brickGroup)) {
+		return;
+	}
+	
+	if(%start $= "") {
+		%start = 0;
+	}
+	
 	if(%start == 0) {
 		clearPathfinding();
 		echo("Cleared pathfinding");
@@ -175,10 +183,19 @@ function buildNodesFromBricks(%brickGroup, %start) {
 		$MD::NodeCount++;
 	}
 
-	schedule(100, 0, buildNodesFromBricks, %brickGroup, %start + 100);
+	if(%i >= %count) {
+		buildNeighborsFromBricks(%brickGroup);
+	}
+	else {
+		schedule(100, 0, buildNodesFromBricks, %brickGroup, %start + 100);
+	}
 }
 
 function buildNeighborsFromBricks(%brickGroup) {
+	if(!isObject(%brickGroup)) {
+		return;
+	}
+	
 	%count = %brickGroup.pathfindingNodes.getCount();
 	for(%i = 0; %i < %count; %i++) {
 		%brickGroup.pathfindingNodes.getObject(%i).searchNeighbors();
@@ -205,7 +222,7 @@ function getClosestNode(%position) {
 				(%zDistance = mAbs(`%brick.getPosition().z - %position.z`)) < %minZDistance
 				|| (
 					%zDistance <= %minZDistance
-					(%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance
+					&& (%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance
 				)
 			)
 		) {
@@ -214,9 +231,19 @@ function getClosestNode(%position) {
 				%minDistance = %distance;
 				%minZDistance = %zDistance;
 				%nodeId = %brick.nodeId;
+				%closestBrick = %brick;
 			}
 		}
 	}
+
+	(new Projectile() {
+		datablock = GunProjectile;
+		initialPosition = %closestBrick.getPosition();
+		initialVelocity = "0 0 0";
+		sourceObject = 0;
+		sourceSlot = 0;
+	}).explode();
+
 	return %nodeId;
 }
 

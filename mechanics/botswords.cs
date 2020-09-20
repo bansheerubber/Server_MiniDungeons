@@ -91,16 +91,21 @@ function Player::createSwordHands(%this) {
 		};
 		%this.swordHands.kill();
 		%this.swordMount.mountObject(%this.swordHands, 0);
+
+		%this.swordHands.setControlObject(%this.swordHands);
+	}
+}
+
+function Player::createSwordMount(%this) {
+	if(!isObject(%this.swordMount)) {
+		%this.swordMount = createMountPoint();
+		%this.mountObject(%this.swordMount, %swordData.swordMountSlot | 0);
 	}
 }
 
 function Player::mountSword(%this, %swordData, %slot) {
 	// create the sword mount on the player's hand (is this needed?)
-	if(!isObject(%this.swordMount)) {
-		%this.swordMount = createMountPoint();
-		%this.mountObject(%this.swordMount, %swordData.swordMountSlot | 0);
-	}
-
+	%this.createSwordMount();
 	%this.createSwordHands();
 
 	if(isObject(%this.sword)) {

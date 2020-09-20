@@ -118,6 +118,12 @@ function fxDTSBrick::searchNeighbors(%this) {
 	}
 }
 function buildNodesFromBricks(%brickGroup, %start) {
+	if( ! isObject(%brickGroup)) {
+		return;
+	}
+	if(%start $= "") {
+		%start = 0;
+	}
 	if(%start == 0) {
 		clearPathfinding();
 		echo("Cleared pathfinding");
@@ -135,9 +141,17 @@ function buildNodesFromBricks(%brickGroup, %start) {
 		$MD::PathTCP.send("add" SPC $MD::NodeCount SPC %brick.getPosition() @ "\n");
 		$MD::NodeCount++;
 	}
-	schedule(100, 0, buildNodesFromBricks, %brickGroup, %start + 100);
+	if(%i >= %count) {
+		buildNeighborsFromBricks(%brickGroup);
+	}
+	else {
+		schedule(100, 0, buildNodesFromBricks, %brickGroup, %start + 100);
+	}
 }
 function buildNeighborsFromBricks(%brickGroup) {
+	if( ! isObject(%brickGroup)) {
+		return;
+	}
 	%count = %brickGroup.pathfindingNodes.getCount();
 	for(%i = 0; %i < %count; %i++) {
 		%brickGroup.pathfindingNodes.getObject(%i).searchNeighbors();
@@ -153,15 +167,23 @@ function getClosestNode(%position) {
 	%count = %room.pathfindingBricks.getCount();
 	for(%i = 0; %i < %count; %i++) {
 		%brick = %room.pathfindingBricks.getObject(%i);
-		if((%brick.getName() $= "_node" || %brick.getDatablock().getName() $= "BrickPathfindingNodeData") && ((%zDistance = mAbs(vectorSub((getWord(%brick.getPosition(), 2)), (getWord(%position, 2))))) < %minZDistance || (%zDistance <= %minZDistance(%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance))) {
+		if((%brick.getName() $= "_node" || %brick.getDatablock().getName() $= "BrickPathfindingNodeData") && ((%zDistance = mAbs(vectorSub((getWord(%brick.getPosition(), 2)), (getWord(%position, 2))))) < %minZDistance || (%zDistance <= %minZDistance && (%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance))) {
 			%raycast = containerRaycast(%position, %brick.getPosition(), $TypeMasks::fxBrickObjectType);
 			if(getWord(%raycast, 0) == %brick) {
 				%minDistance = %distance;
 				%minZDistance = %zDistance;
 				%nodeId = %brick.nodeId;
+				%closestBrick = %brick;
 			}
 		}
 	}
+	(new Projectile() {
+		datablock = GunProjectile;
+		initialPosition = %closestBrick.getPosition();
+		initialVelocity = "0 0 0";
+		sourceObject = 0;
+		sourceSlot = 0;
+	}).explode();
 	return %nodeId;
 }
 function createPathfindingClient() {
