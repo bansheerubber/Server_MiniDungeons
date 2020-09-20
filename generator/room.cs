@@ -127,15 +127,15 @@ function getOffsetFromOrientation(%orientation) {
 	switch(%orientation) {
 		case 0:
 			return "-4 -4 0";
-			case 1:
-				return "-4 4 0";
-				case 2:
-					return "4 4 0";
-					case 3:
-						return "4 -4 0";
 
+		case 1:
+			return "-4 4 0";
 
+		case 2:
+			return "4 4 0";
 
+		case 3:
+			return "4 -4 0";
 
 	}
 }

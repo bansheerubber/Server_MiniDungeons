@@ -177,13 +177,6 @@ function getClosestNode(%position) {
 			}
 		}
 	}
-	(new Projectile() {
-		datablock = GunProjectile;
-		initialPosition = %closestBrick.getPosition();
-		initialVelocity = "0 0 0";
-		sourceObject = 0;
-		sourceSlot = 0;
-	}).explode();
 	return %nodeId;
 }
 function createPathfindingClient() {
@@ -197,7 +190,7 @@ function createPathfindingClient() {
 	return %tcp;
 }
 function initPathfinding() {
-	$MD::PathCP = createPathfindingClient();
+	$MD::PathTCP = createPathfindingClient();
 }
 function visualizePathfinding() {
 	$MD::PathTCP.send("visualize\n");

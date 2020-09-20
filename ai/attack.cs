@@ -4,13 +4,7 @@ function AiPlayer::attackCleanup(%this) {
 }
 function AiPlayer::canAttack(%this) {
 	if(isObject(%target = %this.target) && %this.isGrounded && %target.isGrounded) {
-		// strict height checks. basically, we don't want bots to start attacking as they're walking up stairs
-		if(mAbs(vectorSub((getWord(%this.getPosition(), 2)), (getWord(%target.getPosition(), 2)))) < 1) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return true;
 	}
 	else {
 		return false;
