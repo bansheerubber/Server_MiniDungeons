@@ -218,18 +218,11 @@ function getClosestNode(%position) {
 				%brick.getName() $= "_node"
 				|| %brick.getDatablock().getName() $= "BrickPathfindingNodeData"
 			)
-			&& (
-				(%zDistance = mAbs(`%brick.getPosition().z - %position.z`)) < %minZDistance
-				|| (
-					%zDistance <= %minZDistance
-					&& (%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance
-				)
-			)
+			&& (%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance
 		) {
 			%raycast = containerRaycast(%position, %brick.getPosition(), $TypeMasks::fxBrickObjectType);
 			if(getWord(%raycast, 0) == %brick) {
 				%minDistance = %distance;
-				%minZDistance = %zDistance;
 				%nodeId = %brick.nodeId;
 				%closestBrick = %brick;
 			}

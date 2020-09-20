@@ -1,4 +1,8 @@
 function Player::calculateAcceleration(%this, %test) {
+	if(%this.isStaticFX || %this.getState() $= "Dead") {
+		return;
+	}
+	
 	%timeCoefficient = 1000 / (getSimTime() - %this.lastVelocityRead);
 	%this.acceleration = vectorScale(vectorSub(%this.getVelocity(), %this.lastVelocity), %timeCoefficient);
 	%this.jerk = vectorScale(vectorSub(%this.acceleration, %this.lastAcceleration), %timeCoefficient);

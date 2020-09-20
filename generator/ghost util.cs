@@ -135,9 +135,9 @@ function Player::processGhostUtilObjects(%this, %currentObject) {
 
 	// if we're currently battling, then defer ghosting until later
 	if(
-		isObject(%this.getCurrentRoom())
-		&& %this.getCurrentRoom().isBattleRoom
-		&& !%this.getCurrentRoom().areBattleBotsDead
+		isObject(%room)
+		&& %room.isBattleRoom
+		&& !%room.areBattleBotsDead
 	) {
 		if(%this.client.ghostDebug) {
 			messageClient(%this.client, '', "Defered ghosting");

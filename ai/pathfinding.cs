@@ -167,11 +167,10 @@ function getClosestNode(%position) {
 	%count = %room.pathfindingBricks.getCount();
 	for(%i = 0; %i < %count; %i++) {
 		%brick = %room.pathfindingBricks.getObject(%i);
-		if((%brick.getName() $= "_node" || %brick.getDatablock().getName() $= "BrickPathfindingNodeData") && ((%zDistance = mAbs(vectorSub((getWord(%brick.getPosition(), 2)), (getWord(%position, 2))))) < %minZDistance || (%zDistance <= %minZDistance && (%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance))) {
+		if((%brick.getName() $= "_node" || %brick.getDatablock().getName() $= "BrickPathfindingNodeData") && (%distance = vectorDist(%brick.getPosition(), %position)) < %minDistance) {
 			%raycast = containerRaycast(%position, %brick.getPosition(), $TypeMasks::fxBrickObjectType);
 			if(getWord(%raycast, 0) == %brick) {
 				%minDistance = %distance;
-				%minZDistance = %zDistance;
 				%nodeId = %brick.nodeId;
 				%closestBrick = %brick;
 			}

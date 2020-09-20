@@ -74,7 +74,7 @@ datablock PlayerData(MaceSwordArmor : PlayerStandardArmor)  {
 	swordStepTick						= 33; // how fast we do sword stepping
 
 	swordInterpolationDistance[0, 0]	= 1;
-	swordInterpolationRadius[0, 0]		= 2;
+	swordInterpolationRadius[0, 0]		= 1;
 
 	swordStopSwingOnBrickHit			= false; // whether or not we want to stop our sword swing when we hit a brick wall (and setImageLoaded to false)
 

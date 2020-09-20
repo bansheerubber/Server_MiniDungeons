@@ -3,7 +3,7 @@ function AiPlayer::attackCleanup(%this) {
 	%this.nextAlarmEmote = getSimTime() + 6000;
 }
 function AiPlayer::canAttack(%this) {
-	if(isObject(%target = %this.target) && %this.isGrounded && %target.isGrounded) {
+	if(isObject(%target = %this.target) && %this.isGrounded) {
 		return true;
 	}
 	else {
