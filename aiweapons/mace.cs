@@ -86,7 +86,7 @@ datablock PlayerData(MaceSwordArmor : PlayerStandardArmor)  {
 	swordCycle[0] 					= "high leftright";
 	swordCycleThread[0] 			= "high2";
 	swordCycleThreadSlot[0]			= 1;
-	swordCycleDamage[0]				= 80;
+	swordCycleDamage[0]				= 65;
 	swordCycleImpactImpulse[0]		= 2500;
 	swordCycleVerticalImpulse[0]	= 800;
 	swordCycleHitExplosion[0]		= HighHitProjectile;
@@ -288,7 +288,7 @@ datablock ExplosionData(MaceSpikesExplosion) {
 	impulseForce = 700;
 	impulseRadius = 4;
 
-	radiusDamage = 40;
+	radiusDamage = 30;
 	damageRadius = 3;
 
 	debris = Stalagmite1Part4BrokenDebris;
