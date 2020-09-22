@@ -178,15 +178,15 @@ function Armor::onCycleFire(%this, %obj, %slot) {
 	
 	%cycle = %obj.swordCurrentCycle[%this] | 0;
 
+	%this.startSwing(%obj, %slot, %this.swordCycleSwingSteps[%cycle]);
+	%obj.swordLastSwing[%this] = getSimTime();
+
 	%obj.playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle] @ "Swing");
 	%obj.sword[%slot].playThread(%this.swordCycleThreadSlot[%cycle], %this.swordCycleThread[%cycle] @ "Swing");
 
 	%sounds = %this.swordCycleSwingSound[%cycle];
 	%audioSlot = %this.swordCycleSwingSlot[%cycle] $= "" ? 0 : %this.swordCycleSwingSlot[%cycle];
 	%obj.playAudio(%audioSlot, getField(%sounds, getRandom(0, getFieldCount(%sounds) - 1)));
-
-	%this.startSwing(%obj, %slot, %this.swordCycleSwingSteps[%cycle]);
-	%obj.swordLastSwing[%this] = getSimTime();
 
 	if(isObject(%emitterImage = %this.swordCycleSwingEmitter[%cycle])) {
 		%obj.sword[%slot].swordMount[%this.swordCycleSwingEmitterSlot[%cycle]].mountImage(%emitterImage, 0);

@@ -144,7 +144,7 @@ function loadDungeonBLS(%fileName, %name, %globalPrefix) {
 			}
 			else if(getWord(%line, 0) $= "+-ITEM") {
 				%linething = getWords(%line, 1, getWordCount(%line));
-				%rest = getSubStr(%line, strPos("\"") + 2, strLen(%line));
+				%rest = getSubStr(%linething, strPos(%linething, "\"") + 2, strLen(%linething));
 				%item = $uiNameTable_Items[
 					getSubStr(
 						%linething,
