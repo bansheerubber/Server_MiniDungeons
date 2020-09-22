@@ -111,8 +111,7 @@ function AiPlayer::maceAttack(%this) {
 			}
 		}
 		else {
-			%raycast = containerRaycast(%this.getEyePoint(), %this.target.getHackPosition(), $TypeMasks::fxBrickObjectType | $TypeMasks::PlayerObjectType, %this);
-			if(vectorDist(%targetPosition, %position) > %this.attackRange || getWord(%raycast, 0) != %this.target) {
+			if(!%this.canBeelineToPlayer()) {
 				%this.setAiState($MD::AiSeek);
 				return;
 			}

@@ -90,7 +90,7 @@ function AiPlayer::armingSwordAttack(%this) {
 	%position = %this.getPosition();
 	%target = %this.target;
 	%this.setAimObject(%this.target);
-	if(vectorDist(%targetPosition, %position) > %this.attackRange) {
+	if(vectorDist(%targetPosition, %position) > %this.attackRange ||  ! %this.canBeelineToPlayer()) {
 		%this.setAiState($MD::AiSeek);
 		return;
 	}

@@ -10,3 +10,17 @@ function AiPlayer::canAttack(%this) {
 		return false;
 	}
 }
+// whether or not we can beeline to the player. needs to be an unobstructed path
+function AiPlayer::canBeelineToPlayer(%this) {
+	if(vectorDist(%targetPosition, %position) > %this.attackRange) {
+		return false;
+	}
+	%raycast = containerRaycast(%this.getEyePoint(), %this.target.getHackPosition(), $TypeMasks::fxBrickObjectType | $TypeMasks::PlayerObjectType, %this);
+	if(getWord(%raycast, 0) != %this.target) {
+		return false;
+	}
+	if( ! %this.canWalkCliff()) {
+		return false;
+	}
+	return true;
+}
